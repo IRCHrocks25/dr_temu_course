@@ -19,11 +19,11 @@ class Course(models.Model):
     ]
     
     name = models.CharField(max_length=200)
-    slug = models.SlugField(unique=True)
+    slug = models.SlugField(unique=True, max_length=200)
     course_type = models.CharField(max_length=20, choices=COURSE_TYPES, default='sprint')
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='active')
     description = models.TextField()
-    short_description = models.CharField(max_length=300)
+    short_description = models.CharField(max_length=1000)
     thumbnail = models.ImageField(upload_to='course_thumbnails/', null=True, blank=True)
     coach_name = models.CharField(max_length=100, default='Sprint Coach')
     is_subscribers_only = models.BooleanField(default=False)
@@ -510,7 +510,7 @@ class Bundle(models.Model):
     ]
     
     name = models.CharField(max_length=200, unique=True)
-    slug = models.SlugField(unique=True)
+    slug = models.SlugField(unique=True, max_length=200)
     description = models.TextField(blank=True)
     bundle_type = models.CharField(max_length=20, choices=BUNDLE_TYPES, default='fixed')
     courses = models.ManyToManyField(Course, related_name='bundles', blank=True)

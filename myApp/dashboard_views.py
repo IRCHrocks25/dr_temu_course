@@ -43,6 +43,7 @@ from .models import (
     CohortMember,
 )
 from django.contrib import messages
+from django.core.cache import cache
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models import Avg, Count, Q, Sum
@@ -915,12 +916,31 @@ Only return valid JSON, no additional text."""
         raise Exception(f'AI generation failed: {str(e)}')
 
 
+def _get_ai_gen_cache_key(course_id):
+    return f'ai_gen_{course_id}'
+
+
+def _update_ai_gen_progress(course_id, course_name, status, progress=0, total=0, current='', error=None):
+    """Update AI generation progress in cache (15 min TTL)"""
+    data = {
+        'status': status,
+        'progress': progress,
+        'total': total,
+        'current': current,
+        'course_name': course_name,
+        'error': error,
+    }
+    cache.set(_get_ai_gen_cache_key(course_id), data, timeout=900)  # 15 min
+
+
 def _generate_course_ai_content(course_id, course_name, description, course_type, coach_name):
     """Background function to generate AI course content"""
     try:
         from django.db import connection
         # Close any existing database connections before starting thread
         connection.close()
+        
+        _update_ai_gen_progress(course_id, course_name, 'generating_structure', progress=5, current='Generating course structure...')
         
         # Re-fetch course to ensure we have latest data
         course = Course.objects.get(id=course_id)
@@ -933,11 +953,19 @@ def _generate_course_ai_content(course_id, course_name, description, course_type
             coach_name=coach_name
         )
         
+        modules_data = course_structure.get('modules', [])
+        total_items = sum(1 + len(m.get('lessons', [])) for m in modules_data)  # each module + each lesson
+        if total_items == 0:
+            total_items = 1
+        items_done = 0
+        
+        _update_ai_gen_progress(course_id, course_name, 'creating_content', progress=15, total=total_items, current='Creating modules and lessons...')
+        
         # Create modules and lessons
         modules_created = 0
         lessons_created = 0
         
-        for module_data in course_structure.get('modules', []):
+        for module_data in modules_data:
             module = Module.objects.create(
                 course=course,
                 name=module_data.get('name', 'Untitled Module'),
@@ -945,6 +973,9 @@ def _generate_course_ai_content(course_id, course_name, description, course_type
                 order=module_data.get('order', 0)
             )
             modules_created += 1
+            items_done += 1
+            pct = min(95, 15 + int(80 * items_done / total_items))
+            _update_ai_gen_progress(course_id, course_name, 'creating_content', progress=pct, total=total_items, current=f'Creating: {module.name}')
             
             # Create lessons for this module
             for lesson_data in module_data.get('lessons', []):
@@ -999,15 +1030,34 @@ def _generate_course_ai_content(course_id, course_name, description, course_type
                     ai_generation_status='generated'
                 )
                 lessons_created += 1
+                items_done += 1
+                pct = min(95, 15 + int(80 * items_done / total_items))
+                _update_ai_gen_progress(course_id, course_name, 'creating_content', progress=pct, total=total_items, current=f'Lesson: {lesson_title[:50]}')
         
-        # Log success (could also update a status field on Course model if needed)
+        _update_ai_gen_progress(course_id, course_name, 'completed', progress=100, total=total_items, current='Complete!')
         print(f'[Background] Successfully generated AI content for course "{course_name}": {modules_created} modules, {lessons_created} lessons')
         
     except Exception as e:
-        # Log error (could also update a status field on Course model if needed)
+        _update_ai_gen_progress(course_id, course_name, 'failed', progress=0, error=str(e))
         print(f'[Background] Error generating AI content for course "{course_name}": {str(e)}')
         import traceback
         traceback.print_exc()
+
+
+@staff_member_required
+def api_ai_generation_status(request, course_id):
+    """JSON endpoint for polling AI course generation progress"""
+    data = cache.get(_get_ai_gen_cache_key(course_id))
+    if data is None:
+        # Cache expired or job never started - clear session so widget hides
+        request.session.pop('ai_generating_course_id', None)
+        request.session.pop('ai_generating_course_name', None)
+        return JsonResponse({'status': 'unknown', 'progress': 0})
+    # Clear session when done so widget stops showing on next page load
+    if data.get('status') in ('completed', 'failed'):
+        request.session.pop('ai_generating_course_id', None)
+        request.session.pop('ai_generating_course_name', None)
+    return JsonResponse(data)
 
 
 @staff_member_required
@@ -1016,6 +1066,8 @@ def dashboard_add_course(request):
     if request.method == 'POST':
         name = request.POST.get('name')
         slug = generate_slug(name)
+        if len(slug) > 200:
+            slug = slug[:200].rstrip('-') or 'course'
         short_description = request.POST.get('short_description', '')
         description = request.POST.get('description', '')
         course_type = request.POST.get('course_type', 'sprint')
@@ -1043,20 +1095,17 @@ def dashboard_add_course(request):
         
         # Generate course structure with AI if requested (in background)
         if use_ai and description:
-            # Start background thread for AI generation
+            # Store in session so floating widget can poll (no success message - widget shows progress)
+            request.session['ai_generating_course_id'] = course.id
+            request.session['ai_generating_course_name'] = course.name
+            # Initial progress before thread starts
+            _update_ai_gen_progress(course.id, course.name, 'starting', progress=0, current='Starting...')
             thread = threading.Thread(
                 target=_generate_course_ai_content,
                 args=(course.id, name, description, course_type, coach_name),
                 daemon=True
             )
             thread.start()
-            
-            messages.success(
-                request, 
-                f'Course "{course.name}" created successfully! AI content generation has started in the background. '
-                'Modules and lessons will be added automatically when generation completes. '
-                'This may take a few minutes - please refresh the course page to see updates.'
-            )
         else:
             messages.success(request, f'Course "{course.name}" has been created successfully.')
         

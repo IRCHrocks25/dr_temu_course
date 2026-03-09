@@ -144,6 +144,31 @@
         </main>
     </div>
     
+    <!-- AI Generation Progress - Google Drive style floating widget -->
+    {% if ai_generating_course_id %}
+    <div id="ai-generation-widget" class="fixed bottom-6 right-6 z-50 w-80 sm:w-96 bg-[#1a1f3a] border border-cyan-electric/30 rounded-xl shadow-2xl shadow-cyan-electric/20 overflow-hidden">
+        <div class="p-4">
+            <div class="flex items-center gap-3 mb-2">
+                <div class="w-10 h-10 rounded-full bg-cyan-electric/20 flex items-center justify-center flex-shrink-0">
+                    <i class="fas fa-robot text-cyan-electric"></i>
+                </div>
+                <div class="min-w-0 flex-1">
+                    <div class="text-sm font-semibold text-white truncate">Generating AI Content</div>
+                    <div id="ai-widget-course-name" class="text-xs text-gray-400 truncate">{{ ai_generating_course_name|truncatechars:45 }}</div>
+                </div>
+                <button id="ai-widget-dismiss" type="button" class="text-gray-400 hover:text-white p-1.5 rounded hover:bg-white/10 transition-colors" title="Dismiss" aria-label="Dismiss">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div id="ai-widget-status" class="text-xs text-cyan-electric/90 mb-2">Starting...</div>
+            <div class="h-1.5 bg-[#0a0e27] rounded-full overflow-hidden">
+                <div id="ai-widget-progress" class="h-full bg-gradient-to-r from-cyan-electric to-purple-accent rounded-full transition-all duration-500" style="width: 0%"></div>
+            </div>
+            <div id="ai-widget-error" class="mt-2 text-xs text-red-400 hidden"></div>
+        </div>
+    </div>
+    {% endif %}
+
     <!-- Universal Preloader -->
     <div id="universal-preloader" class="fixed inset-0 z-50 hidden items-center justify-center bg-[#0a0e27]/95 backdrop-blur-md">
         <div class="text-center">
@@ -265,6 +290,57 @@
     })();
     </script>
     
+    {% if ai_generating_course_id %}
+    <script>
+    (function() {
+        const widget = document.getElementById('ai-generation-widget');
+        const statusEl = document.getElementById('ai-widget-status');
+        const progressEl = document.getElementById('ai-widget-progress');
+        const errorEl = document.getElementById('ai-widget-error');
+        const dismissBtn = document.getElementById('ai-widget-dismiss');
+        const statusUrl = "{% url 'api_ai_generation_status' ai_generating_course_id %}";
+
+        function hideWidget() {
+            if (widget) widget.style.display = 'none';
+        }
+
+        function poll() {
+            fetch(statusUrl, { headers: { 'X-Requested-With': 'XMLHttpRequest' }, credentials: 'same-origin' })
+                .then(r => r.json())
+                .then(data => {
+                    if (data.status === 'unknown') {
+                        hideWidget();
+                        return;
+                    }
+                    progressEl.style.width = (data.progress || 0) + '%';
+                    statusEl.textContent = data.current || 'Processing...';
+                    if (data.error) {
+                        errorEl.textContent = data.error;
+                        errorEl.classList.remove('hidden');
+                        statusEl.classList.add('text-red-400');
+                    }
+                    if (data.status === 'completed') {
+                        progressEl.style.width = '100%';
+                        statusEl.textContent = 'Complete!';
+                        statusEl.className = 'text-xs text-green-400 mb-2';
+                        setTimeout(hideWidget, 2500);
+                        return;
+                    }
+                    if (data.status === 'failed') {
+                        statusEl.textContent = 'Generation failed';
+                        statusEl.classList.add('text-red-400');
+                        return;
+                    }
+                    setTimeout(poll, 2500);
+                })
+                .catch(() => setTimeout(poll, 3000));
+        }
+
+        if (dismissBtn) dismissBtn.addEventListener('click', hideWidget);
+        poll();
+    })();
+    </script>
+    {% endif %}
     {% block extra_js %}{% endblock %}
 </body>
 </html>
