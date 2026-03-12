@@ -1,0 +1,861 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{% if request.user.is_authenticated %}My Dashboard{% else %}Courses{% endif %} — SOP Master{% endblock %}
+
+{% block content %}
+
+<style>
+    :root {
+        --blue:   #1A6BFF;
+        --blue2:  #4d8fff;
+        --pink:   #E4177E;
+        --purple: #7B3FE4;
+        --yellow: #F5A800;
+        --navy:   #060d1a;
+        --card:   rgba(255,255,255,0.035);
+        --border: rgba(255,255,255,0.07);
+        --text:   rgba(255,255,255,0.9);
+        --muted:  rgba(255,255,255,0.42);
+    }
+
+    .hub-page { font-family: 'DM Sans', 'Barlow', sans-serif; }
+
+    /* ── PAGE HEADER ── */
+    .page-hd {
+        display: flex; align-items: flex-start; justify-content: space-between;
+        gap: 24px; flex-wrap: wrap;
+        margin-bottom: 40px;
+        padding-bottom: 32px;
+        border-bottom: 1px solid var(--border);
+    }
+    .page-eyebrow {
+        font-size: 11px; font-weight: 700; letter-spacing: 2.5px;
+        text-transform: uppercase; color: var(--blue2);
+        margin-bottom: 8px; display: flex; align-items: center; gap: 8px;
+    }
+    .page-eyebrow .live-dot {
+        width: 7px; height: 7px; border-radius: 50%; background: #22d47b;
+        animation: blink 2s infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0.35;} }
+    .page-title {
+        font-family: 'Barlow', 'DM Sans', sans-serif;
+        font-size: clamp(28px, 3vw, 42px);
+        font-weight: 900; letter-spacing: -1px; line-height: 1.05;
+        color: #fff; margin-bottom: 6px;
+    }
+    .page-subtitle { font-size: 14px; color: var(--muted); max-width: 480px; line-height: 1.6; }
+
+    .btn-certs {
+        display: inline-flex; align-items: center; gap: 9px;
+        background: var(--blue); color: #fff; font-weight: 700; font-size: 14px;
+        padding: 13px 26px; border-radius: 10px; text-decoration: none;
+        transition: transform .2s, box-shadow .2s;
+        box-shadow: 0 0 28px rgba(26,107,255,0.35);
+        white-space: nowrap; flex-shrink: 0; margin-top: 4px;
+    }
+    .btn-certs:hover { transform: translateY(-2px); box-shadow: 0 8px 36px rgba(26,107,255,0.5); }
+
+    /* ── SEARCH / CONTROLS ── */
+    .controls-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 6px; }
+    .ctrl-input {
+        background: rgba(255,255,255,0.04); border: 1.5px solid rgba(255,255,255,0.08);
+        border-radius: 10px; color: rgba(255,255,255,0.75);
+        font-size: 13px; font-weight: 500; padding: 10px 14px 10px 38px;
+        width: 220px; outline: none; transition: border-color .2s; font-family: inherit;
+    }
+    .ctrl-input::placeholder { color: rgba(255,255,255,0.2); }
+    .ctrl-input:focus { border-color: rgba(26,107,255,0.4); color: #fff; }
+    .search-wrap { position: relative; }
+    .search-wrap i {
+        position: absolute; left: 13px; top: 50%; transform: translateY(-50%);
+        color: rgba(255,255,255,0.25); font-size: 12px; pointer-events: none;
+    }
+    .search-wrap:focus-within i { color: var(--blue2); }
+
+    /* ── STAT CARDS (dashboard only) ── */
+    .stats-row {
+        display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;
+        margin-bottom: 24px;
+    }
+    .stat-card {
+        background: var(--card); border: 1px solid var(--border);
+        border-radius: 16px; padding: 26px 24px;
+        position: relative; overflow: hidden;
+        transition: border-color .25s, transform .25s;
+    }
+    .stat-card:hover { border-color: rgba(26,107,255,0.3); transform: translateY(-2px); }
+    .stat-card::after {
+        content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+        background: transparent; transition: background .25s;
+    }
+    .stat-card:hover::after { background: linear-gradient(90deg, var(--blue), var(--purple)); }
+    .stat-icon {
+        width: 42px; height: 42px; border-radius: 10px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 16px; margin-bottom: 20px;
+    }
+    .si-blue   { background: rgba(26,107,255,0.15);  color: var(--blue2); }
+    .si-green  { background: rgba(34,212,123,0.12);  color: #22d47b; }
+    .si-purple { background: rgba(123,63,228,0.15);  color: #b78cff; }
+    .si-yellow { background: rgba(245,168,0,0.15);   color: #ffc94d; }
+    .stat-value {
+        font-family: 'Barlow', sans-serif;
+        font-size: 34px; font-weight: 900; line-height: 1;
+        color: #fff; letter-spacing: -1px; margin-bottom: 6px;
+    }
+    .stat-label { font-size: 12px; color: var(--muted); font-weight: 500; }
+    .stat-card .bg-num {
+        position: absolute; bottom: -8px; right: 12px;
+        font-family: 'Barlow', sans-serif; font-size: 70px; font-weight: 900;
+        color: rgba(255,255,255,0.025); line-height: 1; pointer-events: none;
+    }
+
+    /* ── PROGRESS BANNER ── */
+    .progress-banner {
+        background: var(--card); border: 1px solid var(--border);
+        border-radius: 16px; padding: 24px 28px;
+        margin-bottom: 40px;
+        display: flex; align-items: center; gap: 28px;
+    }
+    .pb-label { font-size: 14px; font-weight: 700; color: #fff; white-space: nowrap; }
+    .pb-bar-wrap { flex: 1; }
+    .pb-track {
+        width: 100%; height: 8px; border-radius: 99px;
+        background: rgba(255,255,255,0.07); overflow: hidden;
+    }
+    .pb-fill {
+        height: 100%; border-radius: 99px;
+        background: linear-gradient(90deg, var(--blue), var(--blue2));
+        box-shadow: 0 0 12px rgba(26,107,255,0.45);
+        transition: width .8s cubic-bezier(.4,0,.2,1);
+    }
+    .pb-pct {
+        font-family: 'Barlow', sans-serif;
+        font-size: 22px; font-weight: 900; letter-spacing: -0.5px;
+        color: var(--blue2); white-space: nowrap;
+    }
+
+    /* ── SECTION HEADER ── */
+    .section-hd {
+        display: flex; align-items: center; justify-content: space-between;
+        flex-wrap: wrap; gap: 12px; margin-bottom: 24px;
+    }
+    .section-title {
+        font-family: 'Barlow', sans-serif;
+        font-size: 22px; font-weight: 900; letter-spacing: -0.5px;
+    }
+    .section-count { font-size: 12px; color: var(--muted); font-weight: 500; margin-left: 10px; margin-top: 2px; }
+
+    /* ── SECTION DIVIDER (catalog) ── */
+    .section-divider {
+        display: flex; align-items: center; gap: 16px;
+        margin-bottom: 24px; margin-top: 8px;
+    }
+    .divider-line { flex: 1; height: 1px; background: var(--border); }
+    .divider-label { display: flex; align-items: center; gap: 10px; white-space: nowrap; }
+    .divider-icon {
+        width: 34px; height: 34px; border-radius: 8px;
+        display: flex; align-items: center; justify-content: center; font-size: 14px;
+    }
+    .di-blue   { background: rgba(26,107,255,0.15); color: var(--blue2); }
+    .di-purple { background: rgba(123,63,228,0.15); color: #b78cff; }
+    .divider-title { font-family: 'Barlow', sans-serif; font-size: 20px; font-weight: 900; letter-spacing: -0.4px; }
+
+    /* ── FILTER CHIPS ── */
+    .filter-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .chip {
+        display: inline-flex; align-items: center; gap: 6px;
+        padding: 8px 16px; border-radius: 8px;
+        font-size: 12px; font-weight: 700; letter-spacing: 0.3px;
+        text-decoration: none; transition: all .2s; border: 1.5px solid transparent;
+    }
+    .chip-active-blue { background: rgba(26,107,255,0.15); border-color: rgba(26,107,255,0.4); color: var(--blue2); }
+    .chip-active-yellow { background: rgba(245,168,0,0.12); border-color: rgba(245,168,0,0.35); color: #ffc94d; }
+    .chip-idle { background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.08); color: var(--muted); }
+    .chip-idle:hover { border-color: rgba(26,107,255,0.3); color: #fff; }
+    .sort-select {
+        padding: 8px 14px; border-radius: 8px;
+        background: rgba(255,255,255,0.04); border: 1.5px solid rgba(255,255,255,0.08);
+        color: var(--muted); font-size: 12px; font-weight: 600;
+        outline: none; cursor: pointer; font-family: inherit;
+    }
+    .sort-select:focus { border-color: rgba(26,107,255,0.35); color: #fff; }
+    .sort-select option { background: #0d1830; }
+
+    /* ── COURSE CARD (catalog - horizontal) ── */
+    .c-card {
+        background: var(--card); border: 1px solid var(--border);
+        border-radius: 18px; display: grid;
+        grid-template-columns: 220px 1fr auto; gap: 0;
+        overflow: hidden; position: relative;
+        transition: border-color .25s, transform .25s, box-shadow .25s;
+        margin-bottom: 16px;
+    }
+    .c-card:hover {
+        border-color: rgba(26,107,255,0.3);
+        transform: translateY(-2px);
+        box-shadow: 0 16px 48px rgba(0,0,0,0.3);
+    }
+    .c-card.is-fav { border-color: rgba(245,168,0,0.22); }
+    .c-card.is-fav:hover { border-color: rgba(245,168,0,0.42); }
+    .c-card::before {
+        content: ''; position: absolute;
+        left: 0; top: 0; bottom: 0; width: 3px;
+        background: linear-gradient(180deg, var(--blue), var(--purple));
+        opacity: 0; transition: opacity .25s;
+    }
+    .c-card:hover::before { opacity: 1; }
+    .c-thumb {
+        position: relative; overflow: hidden;
+        background: rgba(26,107,255,0.08); min-height: 160px;
+    }
+    .c-thumb img { width: 100%; height: 100%; object-fit: cover; transition: transform .5s; }
+    .c-card:hover .c-thumb img { transform: scale(1.04); }
+    .c-thumb-placeholder {
+        width: 100%; height: 100%; min-height: 160px;
+        display: flex; align-items: center; justify-content: center;
+        background: linear-gradient(135deg, rgba(26,107,255,0.12), rgba(123,63,228,0.12));
+        font-size: 32px; color: rgba(26,107,255,0.4);
+    }
+    .thumb-badge {
+        position: absolute; top: 10px; left: 10px;
+        background: rgba(26,107,255,0.9); color: #fff;
+        font-size: 9px; font-weight: 800; letter-spacing: 1.5px;
+        text-transform: uppercase; padding: 4px 8px; border-radius: 4px;
+    }
+    .thumb-tag {
+        position: absolute; bottom: 10px; right: 10px;
+        background: rgba(123,63,228,0.9); color: #fff;
+        font-size: 9px; font-weight: 800; letter-spacing: 1.5px;
+        text-transform: uppercase; padding: 4px 8px; border-radius: 4px;
+    }
+    .thumb-meta {
+        position: absolute; bottom: 0; left: 0; right: 0;
+        background: linear-gradient(transparent, rgba(6,13,26,0.85));
+        padding: 20px 12px 10px; display: flex; flex-direction: column; gap: 4px;
+    }
+    .thumb-meta-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: rgba(255,255,255,0.7); }
+    .thumb-meta-item i { font-size: 10px; color: var(--blue2); }
+    .c-body {
+        padding: 24px 28px; display: flex; flex-direction: column;
+        justify-content: space-between; gap: 16px; min-width: 0;
+    }
+    .c-body-top { flex: 1; }
+    .c-name-row {
+        display: flex; align-items: flex-start; justify-content: space-between;
+        gap: 12px; margin-bottom: 8px;
+    }
+    .c-name {
+        font-family: 'Barlow', sans-serif;
+        font-size: 20px; font-weight: 900; letter-spacing: -0.4px;
+        color: #fff; line-height: 1.2; min-width: 0;
+    }
+    .status-badge {
+        display: inline-flex; align-items: center; gap: 5px;
+        padding: 4px 10px; border-radius: 6px;
+        font-size: 11px; font-weight: 700; letter-spacing: 0.3px;
+        white-space: nowrap; flex-shrink: 0;
+    }
+    .sb-active { background: rgba(34,212,123,0.1); border: 1px solid rgba(34,212,123,0.25); color: #22d47b; }
+    .sb-locked { background: rgba(239,68,68,0.1);  border: 1px solid rgba(239,68,68,0.25);  color: #f87171; }
+    .sb-other  { background: rgba(245,168,0,0.1);  border: 1px solid rgba(245,168,0,0.25);  color: #ffc94d; }
+    .c-short { font-size: 14px; color: rgba(255,255,255,0.7); line-height: 1.65; margin-bottom: 10px; }
+    .c-desc  { font-size: 13px; color: var(--muted); line-height: 1.6; }
+    .pill-row { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 14px; }
+    .f-pill {
+        display: inline-flex; align-items: center; gap: 6px;
+        padding: 5px 11px; border-radius: 7px; font-size: 11px; font-weight: 600;
+        background: rgba(26,107,255,0.08); border: 1px solid rgba(26,107,255,0.2);
+        color: var(--blue2); transition: background .2s;
+    }
+    .f-pill i { font-size: 10px; }
+    .f-pill:hover { background: rgba(26,107,255,0.14); }
+    .c-progress-wrap { margin-top: 14px; }
+    .c-prog-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+    .c-prog-label { font-size: 12px; color: var(--muted); font-weight: 500; }
+    .c-prog-pct { font-family: 'Barlow', sans-serif; font-size: 14px; font-weight: 800; color: var(--blue2); }
+    .c-prog-track {
+        width: 100%; height: 5px; border-radius: 99px;
+        background: rgba(255,255,255,0.06); overflow: hidden;
+    }
+    .c-prog-fill {
+        height: 100%; border-radius: 99px;
+        background: linear-gradient(90deg, var(--blue), #5b9eff);
+        transition: width .6s;
+    }
+    .c-actions {
+        padding: 24px 20px 24px 0;
+        display: flex; flex-direction: column;
+        align-items: stretch; justify-content: center;
+        gap: 10px; min-width: 148px;
+    }
+    .btn-primary-sm {
+        padding: 11px 18px; border-radius: 10px;
+        font-size: 13px; font-weight: 700; text-align: center; text-decoration: none;
+        background: var(--blue); color: #fff;
+        transition: transform .2s, box-shadow .2s;
+        box-shadow: 0 0 20px rgba(26,107,255,0.3);
+        white-space: nowrap; display: block;
+    }
+    .btn-primary-sm:hover { transform: translateY(-1px); box-shadow: 0 6px 28px rgba(26,107,255,0.45); }
+    .btn-ghost-sm {
+        padding: 11px 18px; border-radius: 10px;
+        font-size: 13px; font-weight: 700; text-align: center; text-decoration: none;
+        background: rgba(26,107,255,0.07);
+        border: 1.5px solid rgba(26,107,255,0.2); color: var(--blue2);
+        transition: all .2s; white-space: nowrap; display: block;
+    }
+    .btn-ghost-sm:hover { background: rgba(26,107,255,0.14); border-color: rgba(26,107,255,0.4); }
+    .btn-locked {
+        padding: 11px 18px; border-radius: 10px;
+        font-size: 13px; font-weight: 700; text-align: center;
+        background: rgba(255,255,255,0.04);
+        border: 1.5px solid rgba(255,255,255,0.07); color: rgba(255,255,255,0.25);
+        cursor: not-allowed; display: block;
+    }
+    .fav-btn {
+        background: none; border: none; cursor: pointer;
+        padding: 6px; border-radius: 8px; flex-shrink: 0;
+        color: rgba(255,255,255,0.18); font-size: 15px;
+        transition: color .2s, transform .2s, background .2s;
+    }
+    .fav-btn:hover { color: #ffc94d; background: rgba(245,168,0,0.1); transform: scale(1.2); }
+    .fav-btn.active { color: #ffc94d; }
+
+    /* ── COURSE CARD (dashboard - grid) ── */
+    .course-grid {
+        display: grid; grid-template-columns: repeat(2, 1fr);
+        gap: 20px; margin-bottom: 48px;
+    }
+    .course-card {
+        background: var(--card); border: 1px solid var(--border);
+        border-radius: 18px; padding: 28px;
+        position: relative; overflow: hidden;
+        transition: border-color .25s, transform .25s, box-shadow .25s;
+    }
+    .course-card:hover {
+        border-color: rgba(26,107,255,0.3);
+        transform: translateY(-3px);
+        box-shadow: 0 16px 48px rgba(0,0,0,0.35);
+    }
+    .course-card.is-fav { border-color: rgba(245,168,0,0.25); }
+    .course-card.is-fav:hover { border-color: rgba(245,168,0,0.45); }
+    .course-card::before {
+        content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+        background: linear-gradient(90deg, var(--blue), var(--purple));
+        opacity: 0; transition: opacity .25s;
+    }
+    .course-card:hover::before { opacity: 1; }
+    .card-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 20px; gap: 12px; }
+    .card-name {
+        font-family: 'Barlow', sans-serif;
+        font-size: 18px; font-weight: 800; letter-spacing: -0.3px;
+        color: #fff; line-height: 1.2;
+    }
+    .card-desc { font-size: 13px; color: var(--muted); margin-top: 5px; line-height: 1.6; }
+    .prog-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+    .prog-label { font-size: 12px; color: var(--muted); font-weight: 500; }
+    .prog-pct { font-family: 'Barlow', sans-serif; font-size: 15px; font-weight: 800; color: var(--blue2); }
+    .prog-track {
+        width: 100%; height: 6px; border-radius: 99px;
+        background: rgba(255,255,255,0.07); overflow: hidden;
+        margin-bottom: 16px;
+    }
+    .prog-fill {
+        height: 100%; border-radius: 99px;
+        background: linear-gradient(90deg, var(--blue), #5b9eff);
+        transition: width .6s;
+    }
+    .prog-fill.full { background: linear-gradient(90deg, #22d47b, #00c8aa); }
+    .meta-row { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; margin-bottom: 16px; }
+    .meta-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted); font-weight: 500; }
+    .meta-item i { font-size: 11px; }
+    .expiry-note { font-size: 11px; color: #ffc94d; margin-bottom: 14px; display: flex; align-items: center; gap: 5px; }
+    .badge-row { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 20px; }
+    .badge {
+        display: inline-flex; align-items: center; gap: 5px;
+        padding: 5px 11px; border-radius: 6px;
+        font-size: 11px; font-weight: 700; letter-spacing: 0.3px;
+    }
+    .badge-green  { background: rgba(34,212,123,0.1); border: 1px solid rgba(34,212,123,0.25); color: #22d47b; }
+    .badge-yellow { background: rgba(245,168,0,0.1);  border: 1px solid rgba(245,168,0,0.25);  color: #ffc94d; }
+    .badge-blue   { background: rgba(26,107,255,0.12); border: 1px solid rgba(26,107,255,0.25); color: var(--blue2); }
+    .card-actions { display: flex; gap: 10px; }
+    .btn-ghost {
+        flex: 1; padding: 10px 14px; border-radius: 9px;
+        font-size: 13px; font-weight: 700; text-align: center;
+        text-decoration: none; transition: all .2s;
+        background: rgba(26,107,255,0.08);
+        border: 1.5px solid rgba(26,107,255,0.2); color: var(--blue2);
+    }
+    .btn-ghost:hover { background: rgba(26,107,255,0.15); border-color: rgba(26,107,255,0.4); }
+    .btn-solid {
+        padding: 10px 18px; border-radius: 9px;
+        font-size: 13px; font-weight: 700; text-decoration: none;
+        background: var(--blue); color: #fff;
+        transition: transform .2s, box-shadow .2s; white-space: nowrap;
+        box-shadow: 0 0 20px rgba(26,107,255,0.3);
+    }
+    .btn-solid:hover { transform: translateY(-1px); box-shadow: 0 6px 28px rgba(26,107,255,0.45); }
+
+    /* ── UNLOCK SECTION ── */
+    .unlock-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+    .unlock-card {
+        background: var(--card); border: 1.5px solid rgba(245,168,0,0.18);
+        border-radius: 18px; padding: 28px;
+        transition: border-color .25s, transform .25s;
+    }
+    .unlock-card:hover { border-color: rgba(245,168,0,0.38); transform: translateY(-2px); }
+    .unlock-badge {
+        display: inline-flex; align-items: center; gap: 5px;
+        background: rgba(245,168,0,0.1); border: 1px solid rgba(245,168,0,0.25);
+        border-radius: 6px; padding: 4px 10px;
+        font-size: 11px; font-weight: 700; color: #ffc94d;
+        margin-bottom: 16px;
+    }
+    .unlock-name { font-family: 'Barlow', sans-serif; font-size: 18px; font-weight: 800; letter-spacing: -0.3px; margin-bottom: 6px; }
+    .unlock-desc { font-size: 13px; color: var(--muted); margin-bottom: 16px; line-height: 1.6; }
+    .prereq-box {
+        background: rgba(245,168,0,0.07); border: 1px solid rgba(245,168,0,0.2);
+        border-radius: 10px; padding: 14px 16px; margin-bottom: 18px;
+    }
+    .prereq-title { font-size: 11px; font-weight: 700; color: #ffc94d; margin-bottom: 8px; letter-spacing: 0.5px; text-transform: uppercase; }
+    .prereq-item { font-size: 12px; color: rgba(255,255,255,0.55); display: flex; align-items: center; gap: 7px; margin-bottom: 4px; }
+    .bundle-list { margin-bottom: 18px; }
+    .bundle-item { font-size: 13px; color: var(--blue2); display: flex; align-items: center; gap: 6px; margin-bottom: 6px; }
+    .bundle-price { color: var(--muted); }
+    .btn-unlock-ghost {
+        flex: 1; padding: 10px 14px; border-radius: 9px;
+        font-size: 13px; font-weight: 700; text-align: center;
+        text-decoration: none; transition: all .2s;
+        background: rgba(245,168,0,0.08);
+        border: 1.5px solid rgba(245,168,0,0.2); color: #ffc94d;
+    }
+    .btn-unlock-ghost:hover { background: rgba(245,168,0,0.15); }
+
+    /* ── EMPTY STATES ── */
+    .empty-block, .empty-state {
+        background: var(--card); border: 1px solid var(--border);
+        border-radius: 18px; padding: 64px 40px; text-align: center;
+    }
+    .empty-state { padding: 72px 40px; }
+    .empty-ico, .empty-icon {
+        width: 68px; height: 68px; border-radius: 16px;
+        background: rgba(26,107,255,0.1);
+        display: flex; align-items: center; justify-content: center;
+        font-size: 26px; color: var(--blue2);
+        margin: 0 auto 20px;
+    }
+    .empty-icon { width: 72px; height: 72px; font-size: 28px; margin-bottom: 24px; }
+    .empty-ico.green-ico, .empty-icon.green-ico { background: rgba(34,212,123,0.1); color: #22d47b; }
+    .empty-title { font-family: 'Barlow', sans-serif; font-size: 18px; font-weight: 800; margin-bottom: 7px; }
+    .empty-text { font-size: 13px; color: var(--muted); max-width: 340px; margin: 0 auto; line-height: 1.65; }
+
+    .reveal { opacity: 0; transform: translateY(16px); transition: opacity .5s ease, transform .5s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    @media (max-width: 900px) {
+        .stats-row { grid-template-columns: repeat(2, 1fr); }
+        .course-grid, .unlock-grid { grid-template-columns: 1fr; }
+        .progress-banner { flex-wrap: wrap; }
+        .c-card { grid-template-columns: 1fr; }
+        .c-thumb { min-height: 180px; }
+        .c-actions { flex-direction: row; padding: 0 20px 20px; }
+        .c-actions a, .c-actions button { flex: 1; }
+    }
+    @media (max-width: 600px) {
+        .stats-row { grid-template-columns: 1fr 1fr; }
+        .page-hd { flex-direction: column; align-items: flex-start; }
+        .controls-row { flex-direction: column; align-items: stretch; }
+        .ctrl-input { width: 100%; }
+    }
+</style>
+
+<div class="hub-page">
+
+{% if is_guest_view %}
+    <!-- ═══════════════════════════════════════
+         GUEST: COURSE CATALOG
+    ═══════════════════════════════════════ -->
+    <div class="page-hd reveal">
+        <div>
+            <div class="page-eyebrow"><i class="fas fa-layer-group" style="font-size:10px;"></i> Course Catalog</div>
+            <h1 class="page-title">Your AI-Assisted<br/>Growth Track</h1>
+            <p class="page-subtitle">Every program is wired into its own AI coach. Choose your sprint — we'll handle the momentum.</p>
+        </div>
+        <form method="get" class="controls-row" style="align-self:flex-end;">
+            <div class="search-wrap">
+                <i class="fas fa-search"></i>
+                <input type="text" name="search" value="{{ search_query|default:'' }}" placeholder="Search courses…" class="ctrl-input" id="courseSearch" oninput="filterCourses(this.value)">
+            </div>
+        </form>
+    </div>
+
+    <div class="section-divider reveal" style="transition-delay:.05s">
+        <div class="divider-line"></div>
+        <div class="divider-label">
+            <div class="divider-icon di-purple"><i class="fas fa-book-open"></i></div>
+            <span class="divider-title">All Courses</span>
+        </div>
+        <div class="divider-line"></div>
+    </div>
+
+    <div id="catalogList">
+    {% for data in guest_catalog %}
+    {% with course=data.course %}
+    <div class="c-card" data-name="{{ course.name|lower }}">
+        <div class="c-thumb">
+            {% if course.thumbnail %}
+            <img src="{{ course.thumbnail.url }}" alt="{{ course.name }}" loading="lazy">
+            {% else %}
+            <div class="c-thumb-placeholder"><i class="fas fa-play-circle"></i></div>
+            {% endif %}
+            <div class="thumb-badge">Video Program</div>
+            {% if course.special_tag %}<div class="thumb-tag">{{ course.special_tag }}</div>{% endif %}
+            <div class="thumb-meta">
+                <div class="thumb-meta-item"><i class="fas fa-play"></i> {{ course.get_lesson_count }} lessons</div>
+            </div>
+        </div>
+        <div class="c-body">
+            <div class="c-body-top">
+                <div class="c-name-row">
+                    <span class="c-name">{{ course.name }}</span>
+                    <span class="status-badge
+                        {% if course.status == 'active' %}sb-active
+                        {% elif course.status == 'locked' %}sb-locked
+                        {% else %}sb-other{% endif %}">
+                        <i class="fas fa-circle" style="font-size:6px;"></i>
+                        {{ course.get_status_display }}
+                    </span>
+                </div>
+                <p class="c-short">{{ course.short_description }}</p>
+                <p class="c-desc">{{ course.description|truncatewords:28 }}</p>
+                <div class="pill-row">
+                    {% if course.coach_name %}<span class="f-pill"><i class="fas fa-robot"></i> AI Lesson Coach</span>{% endif %}
+                    {% if course.is_accredible_certified %}<span class="f-pill"><i class="fas fa-certificate"></i> Accredible Certified</span>{% endif %}
+                    {% if course.has_asset_templates %}<span class="f-pill"><i class="fas fa-layer-group"></i> Asset Templates</span>{% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="c-actions">
+            {% if course.status == 'active' %}
+            <a href="{% url 'course_detail' course.slug %}" class="btn-primary-sm">View Course</a>
+            {% else %}
+            <span class="btn-locked"><i class="fas fa-lock" style="margin-right:6px;font-size:10px;"></i>Locked</span>
+            {% endif %}
+        </div>
+    </div>
+    {% endwith %}
+    {% empty %}
+    <div class="empty-block">
+        <div class="empty-ico"><i class="fas fa-layer-group"></i></div>
+        <div class="empty-title">No Courses Available</div>
+        <p class="empty-text">No courses have been published yet. Check back soon.</p>
+    </div>
+    {% endfor %}
+    </div>
+
+{% else %}
+    <!-- ═══════════════════════════════════════
+         AUTHENTICATED: DASHBOARD
+    ═══════════════════════════════════════ -->
+    <div class="page-hd reveal">
+        <div>
+            <div class="page-eyebrow">
+                <span class="live-dot"></span>
+                Learning Dashboard
+            </div>
+            <h1 class="page-title">My Dashboard</h1>
+            <p class="page-subtitle">Track your learning progress and achievements</p>
+        </div>
+        <a href="{% url 'student_certifications' %}" class="btn-certs">
+            <i class="fas fa-certificate"></i>
+            View Certifications
+        </a>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-row">
+        <div class="stat-card reveal" style="transition-delay:.05s">
+            <div class="stat-icon si-blue"><i class="fas fa-layer-group"></i></div>
+            <div class="stat-value">{{ total_courses }}</div>
+            <div class="stat-label">Enrolled Courses</div>
+            <span class="bg-num">{{ total_courses }}</span>
+        </div>
+        <div class="stat-card reveal" style="transition-delay:.1s">
+            <div class="stat-icon si-green"><i class="fas fa-circle-check"></i></div>
+            <div class="stat-value">{{ completed_courses }}</div>
+            <div class="stat-label">Completed</div>
+            <span class="bg-num">{{ completed_courses }}</span>
+        </div>
+        <div class="stat-card reveal" style="transition-delay:.15s">
+            <div class="stat-icon si-purple"><i class="fas fa-play"></i></div>
+            <div class="stat-value">{{ completed_lessons_all }}<span style="font-size:18px;color:rgba(255,255,255,0.3)">/{{ total_lessons_all }}</span></div>
+            <div class="stat-label">Lessons Done</div>
+        </div>
+        <div class="stat-card reveal" style="transition-delay:.2s">
+            <div class="stat-icon si-yellow"><i class="fas fa-chart-line"></i></div>
+            <div class="stat-value">{{ overall_progress }}<span style="font-size:18px;color:rgba(255,255,255,0.35)">%</span></div>
+            <div class="stat-label">Overall Progress</div>
+        </div>
+    </div>
+
+    <!-- Progress Banner -->
+    <div class="progress-banner reveal" style="transition-delay:.25s">
+        <span class="pb-label">Overall Progress</span>
+        <div class="pb-bar-wrap">
+            <div class="pb-track">
+                <div class="pb-fill" style="width:{{ overall_progress }}%"></div>
+            </div>
+        </div>
+        <span class="pb-pct">{{ overall_progress }}%</span>
+    </div>
+
+    <!-- My Courses -->
+    <div class="reveal" style="transition-delay:.3s">
+        <div class="section-hd">
+            <div style="display:flex;align-items:baseline;gap:6px;">
+                <h2 class="section-title">My Courses</h2>
+                {% if my_courses %}
+                <span class="section-count">{{ my_courses|length }} course{{ my_courses|length|pluralize }}</span>
+                {% endif %}
+            </div>
+            <div class="filter-row">
+                <a href="?favorites=true&sort={{ sort_by }}" class="chip {% if filter_favorites == 'true' %}chip-active-yellow{% else %}chip-idle{% endif %}">
+                    <i class="fas fa-heart"></i> Favorites
+                </a>
+                <a href="?sort={{ sort_by }}" class="chip {% if filter_favorites != 'true' %}chip-active-blue{% else %}chip-idle{% endif %}">
+                    All Courses
+                </a>
+                <select id="sortSelect" onchange="window.location.href='?sort='+this.value+'&favorites={{ filter_favorites }}'" class="sort-select">
+                    <option value="progress" {% if sort_by == 'progress' %}selected{% endif %}>By Progress</option>
+                    <option value="favorites" {% if sort_by == 'favorites' %}selected{% endif %}>By Favorites</option>
+                    <option value="name" {% if sort_by == 'name' %}selected{% endif %}>By Name</option>
+                </select>
+            </div>
+        </div>
+
+        {% if my_courses %}
+        <div class="course-grid">
+            {% for data in my_courses %}
+            <div class="course-card {% if data.is_favorited %}is-fav{% endif %}">
+                <div class="card-top">
+                    <div>
+                        <div class="card-name">{{ data.course.name }}</div>
+                        <p class="card-desc">{{ data.course.short_description|truncatewords:18 }}</p>
+                    </div>
+                    <button onclick="toggleFavorite({{ data.course.id }}, this)"
+                            class="fav-btn {% if data.is_favorited %}active{% endif %}"
+                            data-course-id="{{ data.course.id }}"
+                            data-is-favorited="{{ data.is_favorited|yesno:'true,false' }}"
+                            title="{% if data.is_favorited %}Remove from favorites{% else %}Add to favorites{% endif %}">
+                        <i class="fa{% if data.is_favorited %}s{% else %}r{% endif %} fa-heart"></i>
+                    </button>
+                </div>
+
+                <div class="prog-row">
+                    <span class="prog-label">Course Progress</span>
+                    <span class="prog-pct">{{ data.progress_percentage }}%</span>
+                </div>
+                <div class="prog-track">
+                    <div class="prog-fill {% if data.progress_percentage == 100 %}full{% endif %}" style="width:{{ data.progress_percentage }}%"></div>
+                </div>
+
+                <div class="meta-row">
+                    <span class="meta-item">
+                        <i class="fas fa-circle-check" style="color:#22d47b;"></i>
+                        {{ data.completed_lessons }}/{{ data.total_lessons }} Lessons
+                    </span>
+                    {% if data.avg_watch_percentage > 0 %}
+                    <span class="meta-item">
+                        <i class="fas fa-eye" style="color:var(--blue2);"></i>
+                        {{ data.avg_watch_percentage }}% Avg Watch
+                    </span>
+                    {% endif %}
+                </div>
+
+                {% if data.access_record and data.access_record.expires_at %}
+                <div class="expiry-note">
+                    <i class="fas fa-clock"></i>
+                    Expires {{ data.access_record.expires_at|date:"M d, Y" }}
+                </div>
+                {% endif %}
+
+                {% if data.exam_info.exists or data.certification %}
+                <div class="badge-row">
+                    {% if data.exam_info.exists %}
+                        {% if data.exam_info.passed %}
+                        <span class="badge badge-green"><i class="fas fa-check"></i> Exam Passed</span>
+                        {% elif data.exam_info.is_available %}
+                        <span class="badge badge-yellow"><i class="fas fa-clock"></i> Exam Ready</span>
+                        {% endif %}
+                    {% endif %}
+                    {% if data.certification %}
+                        {% if data.cert_status == 'passed' %}
+                        <span class="badge badge-yellow"><i class="fas fa-certificate"></i> Certified</span>
+                        {% elif data.cert_status == 'eligible' %}
+                        <span class="badge badge-blue"><i class="fas fa-certificate"></i> Cert Eligible</span>
+                        {% endif %}
+                    {% endif %}
+                </div>
+                {% endif %}
+
+                <div class="card-actions">
+                    {% if data.has_any_progress %}
+                        <a href="{% url 'student_course_progress' data.course.slug %}" class="btn-ghost">
+                            <i class="fas fa-chart-bar" style="margin-right:6px;font-size:11px;"></i>View Progress
+                        </a>
+                        {% if data.course.lessons.first %}
+                        <a href="{% url 'lesson_detail' data.course.slug data.course.lessons.first.slug %}" class="btn-solid">
+                            <i class="fas fa-play" style="margin-right:6px;font-size:11px;"></i>Continue
+                        </a>
+                        {% endif %}
+                    {% else %}
+                        {% if data.course.lessons.first %}
+                        <a href="{% url 'course_detail' data.course.slug %}" class="btn-ghost">View Details</a>
+                        <a href="{% url 'lesson_detail' data.course.slug data.course.lessons.first.slug %}" class="btn-solid">
+                            <i class="fas fa-play" style="margin-right:6px;font-size:11px;"></i>Start Course
+                        </a>
+                        {% else %}
+                        <a href="{% url 'course_detail' data.course.slug %}" class="btn-ghost" style="flex:1;text-align:center;">View Details</a>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-icon"><i class="fas fa-layer-group"></i></div>
+            <div class="empty-title">No Courses Yet</div>
+            <p class="empty-text">You don't have access to any courses yet. Check available courses below or contact your administrator.</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Available to Unlock -->
+    {% if available_to_unlock %}
+    <div class="reveal" style="margin-top:48px;">
+        <div class="section-hd">
+            <h2 class="section-title">Available to Unlock</h2>
+        </div>
+        <div class="unlock-grid">
+            {% for data in available_to_unlock %}
+            <div class="unlock-card">
+                <div class="unlock-badge"><i class="fas fa-lock-open"></i> Available</div>
+                <div class="unlock-name">{{ data.course.name }}</div>
+                <p class="unlock-desc">{{ data.course.short_description|truncatewords:20 }}</p>
+
+                {% if not data.prereqs_met %}
+                <div class="prereq-box">
+                    <div class="prereq-title"><i class="fas fa-lock" style="margin-right:4px;"></i>Prerequisites Required</div>
+                    {% for prereq in data.missing_prereqs %}
+                    <div class="prereq-item"><i class="fas fa-minus" style="font-size:9px;"></i>{{ prereq.name }}</div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                {% if data.bundles %}
+                <div class="bundle-list">
+                    {% for bundle in data.bundles %}
+                    <div class="bundle-item">
+                        <i class="fas fa-gift" style="color:#ffc94d;font-size:12px;"></i>
+                        {{ bundle.name }}
+                        {% if bundle.price %}<span class="bundle-price">· ${{ bundle.price }}</span>{% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <div class="card-actions">
+                    <a href="{% url 'course_detail' data.course.slug %}" class="btn-unlock-ghost">View Details</a>
+                    {% if data.can_self_enroll %}
+                    <a href="{% url 'enroll_course' data.course.slug %}" class="btn-solid">
+                        <i class="fas fa-play" style="margin-right:6px;font-size:11px;"></i>Start Course
+                    </a>
+                    {% elif data.bundles %}
+                    <a href="{% url 'courses' %}" class="btn-solid">View Bundles</a>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+{% endif %}
+
+</div>
+
+<script>
+const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.08 });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// Card stagger (for c-cards in catalog)
+document.querySelectorAll('.c-card').forEach((el, i) => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(14px)';
+    el.style.transition = `opacity .45s ease ${i * 60}ms, transform .45s ease ${i * 60}ms, border-color .25s, box-shadow .25s`;
+    setTimeout(() => { el.style.opacity = '1'; el.style.transform = 'translateY(0)'; }, 80 + i * 60);
+});
+
+function filterCourses(query) {
+    const q = (typeof query === 'string' ? query : (query && query.value) || '').toLowerCase().trim();
+    document.querySelectorAll('.c-card').forEach(card => {
+        const name = card.dataset.name || '';
+        card.style.display = (!q || name.includes(q)) ? '' : 'none';
+    });
+}
+
+function toggleFavorite(courseId, buttonElement) {
+    const icon = buttonElement.querySelector('i');
+    const isCurrentlyFavorited = buttonElement.dataset.isFavorited === 'true';
+    const card = buttonElement.closest('.course-card');
+
+    if (isCurrentlyFavorited) {
+        icon.className = 'far fa-heart';
+        buttonElement.classList.remove('active');
+        card?.classList.remove('is-fav');
+    } else {
+        icon.className = 'fas fa-heart';
+        buttonElement.classList.add('active');
+        card?.classList.add('is-fav');
+    }
+    buttonElement.dataset.isFavorited = String(!isCurrentlyFavorited);
+    icon.className = 'fas fa-spinner fa-spin';
+
+    fetch(`/api/courses/${courseId}/favorite/`, {
+        method: 'POST',
+        headers: { 'X-CSRFToken': getCookie('csrftoken'), 'Content-Type': 'application/json' },
+    })
+    .then(r => r.json())
+    .then(data => {
+        icon.className = data.is_favorited ? 'fas fa-heart' : 'far fa-heart';
+        buttonElement.dataset.isFavorited = String(data.is_favorited);
+        if (data.is_favorited) {
+            buttonElement.classList.add('active');
+            card?.classList.add('is-fav');
+        } else {
+            buttonElement.classList.remove('active');
+            card?.classList.remove('is-fav');
+        }
+    })
+    .catch(() => {
+        const reverted = isCurrentlyFavorited;
+        icon.className = reverted ? 'fas fa-heart' : 'far fa-heart';
+        buttonElement.dataset.isFavorited = String(reverted);
+        reverted ? buttonElement.classList.add('active') : buttonElement.classList.remove('active');
+    });
+}
+
+function getCookie(name) {
+    const v = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
+    return v ? v.pop() : '';
+}
+</script>
+
+{% endblock %}

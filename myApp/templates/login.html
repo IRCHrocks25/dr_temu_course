@@ -446,7 +446,7 @@
 
             <form method="POST" action="{% url 'login' %}" id="loginForm">
                 {% csrf_token %}
-                <input type="hidden" name="next" value="{{ request.GET.next|default:'student_dashboard' }}">
+                <input type="hidden" name="next" value="{{ request.GET.next|default:'courses' }}">
 
                 <!-- Username -->
                 <div class="field-group">

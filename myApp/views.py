@@ -42,7 +42,7 @@ def login_view(request):
     # Allow access to login page even when logged in if ?force=true (for testing)
     force = request.GET.get('force', '').lower() == 'true'
     if request.user.is_authenticated and not force:
-        return redirect('student_dashboard')
+        return redirect('courses')
     
     if request.method == 'POST':
         username = request.POST.get('username')
@@ -51,7 +51,7 @@ def login_view(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            next_url = request.GET.get('next', 'student_dashboard')
+            next_url = request.GET.get('next', 'courses')
             return redirect(next_url)
         else:
             messages.error(request, 'Invalid username or password.')
@@ -67,141 +67,282 @@ def logout_view(request):
 
 
 def courses(request):
-    """Courses listing page"""
-    course_type = request.GET.get('type', 'all')
+    """
+    Unified learning hub: dashboard for logged-in users, catalog for guests.
+    Replaces the separate courses + student_dashboard pages.
+    """
+    if request.user.is_authenticated:
+        return _courses_authenticated(request)
+    return _courses_guest(request)
+
+
+def _courses_guest(request):
+    """Catalog view for logged-out users"""
     search_query = request.GET.get('search', '')
-    
-    # Optimize queries with select_related and prefetch_related
-    courses = Course.objects.prefetch_related('lessons').all()
-    
-    if course_type != 'all':
-        courses = courses.filter(course_type=course_type)
-    
+    courses_qs = Course.objects.prefetch_related('lessons').filter(status='active')
     if search_query:
-        courses = courses.filter(name__icontains=search_query)
-    
-    # Get progress and favorite status for each course if user is authenticated
-    courses_data = []
-    in_progress_courses = []
-    not_started_courses = []
-    user = request.user if request.user.is_authenticated else None
-    
-    # Convert to list to avoid multiple queryset evaluations
-    courses_list = list(courses)
-    course_ids = [c.id for c in courses_list]
-    
-    if user:
-        # Batch fetch all progress data for this user
-        from .models import FavoriteCourse
-        user_progress = UserProgress.objects.filter(
-            user=user,
-            lesson__course_id__in=course_ids
-        ).values(
-            'lesson__course_id',
-            'completed',
-            'video_watch_percentage',
-            'status'
-        )
-        
-        # Batch fetch all favorites
-        favorite_course_ids = set(
-            FavoriteCourse.objects.filter(user=user, course_id__in=course_ids).values_list('course_id', flat=True)
-        )
-        
-        # Batch count lessons per course
-        from django.db.models import Count
-        course_lesson_counts = {
-            course_id: count 
-            for course_id, count in Course.objects.filter(
-                id__in=course_ids
-            ).annotate(lesson_count=Count('lessons')).values_list('id', 'lesson_count')
-        }
-        
-        # Organize progress data by course
-        progress_by_course = {}
-        completed_by_course = {}
-        for progress in user_progress:
-            course_id = progress['lesson__course_id']
-            if course_id not in progress_by_course:
-                progress_by_course[course_id] = []
-                completed_by_course[course_id] = 0
-            progress_by_course[course_id].append(progress)
-            if progress['completed']:
-                completed_by_course[course_id] += 1
-    else:
-        progress_by_course = {}
-        completed_by_course = {}
-        favorite_course_ids = set()
-        course_lesson_counts = {}
-    
-    for course in courses_list:
-        course_info = {
-            'course': course,
-            'has_any_progress': False,
-            'progress_percentage': 0,
-            'is_favorited': False,
-        }
-        
-        if user:
-            course_id = course.id
-            # Check if course has any progress (from batch data)
-            has_any_progress = False
-            completed_lessons = 0
-            
-            if course_id in progress_by_course:
-                course_progresses = progress_by_course[course_id]
-                has_any_progress = any(
-                    p['completed'] or p['video_watch_percentage'] > 0 or 
-                    p['status'] in ['in_progress', 'completed']
-                    for p in course_progresses
-                )
-                completed_lessons = completed_by_course.get(course_id, 0)
-            
-            # Calculate progress percentage
-            total_lessons = course_lesson_counts.get(course_id, course.lessons.count())
-            progress_percentage = int((completed_lessons / total_lessons * 100)) if total_lessons > 0 else 0
-            
-            # Check if favorited (from batch data)
-            is_favorited = course_id in favorite_course_ids
-            
-            course_info.update({
-                'has_any_progress': has_any_progress,
-                'progress_percentage': progress_percentage,
-                'is_favorited': is_favorited,
-            })
-            
-            # Separate into in-progress and not-started
-            if has_any_progress:
-                in_progress_courses.append(course_info)
-            else:
-                not_started_courses.append(course_info)
-        else:
-            # For non-authenticated users, put all in not_started
-            not_started_courses.append(course_info)
-        
-        courses_data.append(course_info)
-    
-    return render(request, 'courses.html', {
-        'courses_data': courses_data,  # Keep for backward compatibility
-        'in_progress_courses': in_progress_courses,
-        'not_started_courses': not_started_courses,
-        'courses': courses,  # Keep for backward compatibility
-        'selected_type': course_type,
+        courses_qs = courses_qs.filter(name__icontains=search_query)
+    courses_list = list(courses_qs)
+    courses_data = [{'course': c, 'has_any_progress': False, 'progress_percentage': 0, 'is_favorited': False} for c in courses_list]
+    return render(request, 'learning_hub.html', {
+        'my_courses': [],
+        'available_to_unlock': [],
+        'courses_data': courses_data,
+        'in_progress_courses': [],
+        'not_started_courses': [],
+        'total_courses': 0,
+        'completed_courses': 0,
+        'total_lessons_all': 0,
+        'completed_lessons_all': 0,
+        'overall_progress': 0,
+        'filter_favorites': '',
+        'sort_by': 'progress',
         'search_query': search_query,
+        'guest_catalog': courses_data,
+        'is_guest_view': True,
+    })
+
+
+def _courses_authenticated(request):
+    """Full dashboard for logged-in users - merges dashboard + courses"""
+    from .utils.access import get_courses_by_visibility, has_course_access, check_course_prerequisites, batch_has_course_access
+    from .models import FavoriteCourse, Bundle
+    from django.db.models import Count
+
+    user = request.user
+    search_query = request.GET.get('search', '')
+
+    # Dashboard data (access-based)
+    courses_by_visibility = get_courses_by_visibility(user)
+    my_courses = list(courses_by_visibility['my_courses'])
+    available_to_unlock = list(courses_by_visibility['available_to_unlock'])
+
+    # Legacy enrollments
+    enrollments = CourseEnrollment.objects.filter(user=user).select_related('course')
+    if not enrollments.exists() and user.is_staff:
+        for course in Course.objects.filter(status='active'):
+            CourseEnrollment.objects.get_or_create(user=user, course=course)
+        enrollments = CourseEnrollment.objects.filter(user=user).select_related('course')
+
+    my_course_ids = [c.id for c in my_courses]
+    enrollments_dict = {e.course_id: e for e in CourseEnrollment.objects.filter(user=user, course_id__in=my_course_ids).select_related('course')}
+
+    progress_data = UserProgress.objects.filter(user=user, lesson__course_id__in=my_course_ids).values('lesson__course_id').annotate(
+        total_lessons=Count('lesson_id', distinct=True),
+        completed_lessons=Count('lesson_id', filter=Q(completed=True), distinct=True),
+        has_any_progress=Count('id', filter=Q(completed=True) | Q(video_watch_percentage__gt=0) | Q(status__in=['in_progress', 'completed'])),
+        avg_watch=Avg('video_watch_percentage')
+    )
+    progress_by_course = {item['lesson__course_id']: item for item in progress_data}
+    course_lesson_counts = {cid: cnt for cid, cnt in Course.objects.filter(id__in=my_course_ids).annotate(lesson_count=Count('lessons')).values_list('id', 'lesson_count')}
+
+    exams_dict = {e.course_id: e for e in Exam.objects.filter(course_id__in=my_course_ids).select_related('course')}
+    exam_attempts_by_exam = {}
+    if exams_dict:
+        exam_ids = [e.id for e in exams_dict.values()]
+        for a in ExamAttempt.objects.filter(user=user, exam_id__in=exam_ids).select_related('exam'):
+            exam_attempts_by_exam.setdefault(a.exam_id, []).append(a)
+    certifications_dict = {c.course_id: c for c in Certification.objects.filter(user=user, course_id__in=my_course_ids).select_related('course')}
+    favorite_course_ids = set(FavoriteCourse.objects.filter(user=user, course_id__in=my_course_ids).values_list('course_id', flat=True))
+    access_by_course = batch_has_course_access(user, my_course_ids)
+
+    # Build my_courses_data
+    my_courses_data = []
+    for course in my_courses:
+        has_access, access_record, _ = access_by_course.get(course.id, (False, None, "No access"))
+        if not has_access:
+            continue
+        enrollment = enrollments_dict.get(course.id)
+        cid = course.id
+        total_lessons = course_lesson_counts.get(cid, 0)
+        prog = progress_by_course.get(cid, {})
+        completed = prog.get('completed_lessons', 0)
+        has_any = prog.get('has_any_progress', 0) > 0
+        avg_watch = prog.get('avg_watch', 0) or 0
+        pct = int((completed / total_lessons * 100)) if total_lessons > 0 else 0
+
+        exam = exams_dict.get(cid)
+        exam_info = {'exists': False}
+        if exam:
+            attempts = exam_attempts_by_exam.get(exam.id, [])
+            latest = sorted(attempts, key=lambda x: x.started_at, reverse=True)[0] if attempts else None
+            exam_info = {'exists': True, 'attempts_count': len(attempts), 'max_attempts': exam.max_attempts, 'latest_attempt': latest, 'passed': any(a.passed for a in attempts), 'is_available': enrollment.is_exam_available() if enrollment else False}
+
+        cert = certifications_dict.get(cid)
+        if cert:
+            cert_status, cert_display = cert.status, cert.get_status_display()
+        else:
+            cert_status = 'eligible' if pct >= 100 else 'not_eligible'
+            cert_display = 'Eligible' if pct >= 100 else 'Not Eligible'
+
+        my_courses_data.append({
+            'course': course, 'enrollment': enrollment, 'access_record': access_record,
+            'total_lessons': total_lessons, 'completed_lessons': completed, 'progress_percentage': pct,
+            'has_any_progress': has_any, 'avg_watch_percentage': round(avg_watch, 1), 'exam_info': exam_info,
+            'certification': cert, 'cert_status': cert_status, 'cert_display': cert_display, 'is_favorited': cid in favorite_course_ids,
+        })
+
+    # Legacy enrollments not yet in my_courses_data
+    existing_ids = {cd['course'].id for cd in my_courses_data}
+    for enrollment in enrollments:
+        if enrollment.course_id in existing_ids:
+            continue
+        has_access, access_record, _ = has_course_access(user, enrollment.course)
+        if not has_access:
+            from .utils.access import grant_course_access
+            access_record = grant_course_access(user=user, course=enrollment.course, access_type='purchase', notes="Migrated from legacy enrollment")
+        cid = enrollment.course_id
+        total_lessons = course_lesson_counts.get(cid, enrollment.course.lessons.count())
+        prog = progress_by_course.get(cid, {})
+        completed = prog.get('completed_lessons', 0)
+        pct = int((completed / total_lessons * 100)) if total_lessons > 0 else 0
+        exam = exams_dict.get(cid)
+        exam_info = {'exists': False}
+        if exam:
+            attempts = exam_attempts_by_exam.get(exam.id, [])
+            exam_info = {'exists': True, 'attempts_count': len(attempts), 'max_attempts': exam.max_attempts, 'latest_attempt': attempts[0] if attempts else None, 'passed': any(a.passed for a in attempts), 'is_available': enrollment.is_exam_available()}
+        cert = certifications_dict.get(cid)
+        cert_status = cert.status if cert else ('eligible' if pct >= 100 else 'not_eligible')
+        cert_display = cert.get_status_display() if cert else ('Eligible' if pct >= 100 else 'Not Eligible')
+        my_courses_data.append({
+            'course': enrollment.course, 'enrollment': enrollment, 'access_record': access_record,
+            'total_lessons': total_lessons, 'completed_lessons': completed, 'progress_percentage': pct,
+            'has_any_progress': prog.get('has_any_progress', 0) > 0, 'avg_watch_percentage': round(prog.get('avg_watch', 0) or 0, 1),
+            'exam_info': exam_info, 'certification': cert, 'cert_status': cert_status, 'cert_display': cert_display,
+            'is_favorited': cid in favorite_course_ids,
+        })
+
+    # Available to unlock
+    available_ids = [c.id for c in available_to_unlock]
+    bundles_by_course = {}
+    if available_ids:
+        for b in Bundle.objects.filter(courses__id__in=available_ids, is_active=True).prefetch_related('courses'):
+            for c in b.courses.all():
+                if c.id in available_ids:
+                    bundles_by_course.setdefault(c.id, []).append(b)
+    available_courses_data = []
+    for c in available_to_unlock:
+        prereqs_met, missing_prereqs = check_course_prerequisites(user, c)
+        can_self_enroll = c.enrollment_method == 'open' and prereqs_met
+        available_courses_data.append({
+            'course': c,
+            'prereqs_met': prereqs_met,
+            'missing_prereqs': missing_prereqs,
+            'bundles': bundles_by_course.get(c.id, []),
+            'can_self_enroll': can_self_enroll,
+        })
+
+    # Filter/sort
+    filter_favorites = request.GET.get('favorites', '')
+    sort_by = request.GET.get('sort', 'progress')
+    if filter_favorites == 'true':
+        my_courses_data = [c for c in my_courses_data if c.get('is_favorited', False)]
+    if sort_by == 'favorites':
+        my_courses_data.sort(key=lambda x: (not x.get('is_favorited', False), -x['progress_percentage']))
+    elif sort_by == 'name':
+        my_courses_data.sort(key=lambda x: x['course'].name.lower())
+    else:
+        my_courses_data.sort(key=lambda x: x['progress_percentage'], reverse=True)
+
+    # Stats
+    total_courses = len(my_courses_data)
+    completed_courses = sum(1 for c in my_courses_data if c['progress_percentage'] == 100)
+    total_lessons_all = sum(c['total_lessons'] for c in my_courses_data)
+    completed_lessons_all = sum(c['completed_lessons'] for c in my_courses_data)
+    overall_progress = int((completed_lessons_all / total_lessons_all * 100)) if total_lessons_all > 0 else 0
+
+    # Split for "Continue Learning" vs "Learn More"
+    in_progress = [c for c in my_courses_data if c['has_any_progress']]
+    not_started = [c for c in my_courses_data if not c['has_any_progress']]
+
+    return render(request, 'learning_hub.html', {
+        'my_courses': my_courses_data,
+        'in_progress_courses': in_progress,
+        'not_started_courses': not_started,
+        'courses_data': my_courses_data,
+        'available_to_unlock': available_courses_data,
+        'total_courses': total_courses,
+        'completed_courses': completed_courses,
+        'total_lessons_all': total_lessons_all,
+        'completed_lessons_all': completed_lessons_all,
+        'overall_progress': overall_progress,
+        'filter_favorites': filter_favorites,
+        'sort_by': sort_by,
+        'search_query': search_query,
+        'guest_catalog': None,
+        'is_guest_view': False,
     })
 
 
 @login_required
-def course_detail(request, course_slug):
-    """Course detail page - redirects to first lesson or course overview"""
+def enroll_course(request, course_slug):
+    """Enroll in a course (self-enrollment for open-enrollment courses) and redirect to course."""
     course = get_object_or_404(Course, slug=course_slug)
-    first_lesson = course.lessons.first()
-    
-    if first_lesson:
-        return lesson_detail(request, course_slug, first_lesson.slug)
-    
+    user = request.user
+
+    from .utils.access import has_course_access, grant_course_access, check_course_prerequisites
+
+    # Already has access? Go straight to course
+    has_access, _, _ = has_course_access(user, course)
+    if has_access:
+        return redirect('course_detail', course_slug=course_slug)
+
+    # Check if self-enrollment is allowed (open enrollment + prerequisites met)
+    prereqs_met, _ = check_course_prerequisites(user, course)
+    can_enroll = course.enrollment_method == 'open' and prereqs_met
+
+    if can_enroll:
+        grant_course_access(
+            user=user,
+            course=course,
+            access_type='manual',
+            notes='Self-enrolled via Start Course',
+        )
+        CourseEnrollment.objects.get_or_create(user=user, course=course)
+        messages.success(request, f'You have been enrolled in {course.name}.')
+        return redirect('course_detail', course_slug=course_slug)
+
+    # Cannot self-enroll - show message and go to course detail
+    if not prereqs_met:
+        messages.info(request, 'Complete the prerequisite course(s) first to unlock this course.')
+    elif course.enrollment_method == 'purchase':
+        messages.info(request, 'This course requires purchase. View bundles or contact support.')
+    else:
+        messages.info(request, 'This course requires assignment. Contact your administrator.')
+    return redirect('course_detail', course_slug=course_slug)
+
+
+@login_required
+def course_detail(request, course_slug):
+    """Course detail page - redirects to first lesson or course overview. Shows enroll option if no access."""
+    course = get_object_or_404(Course, slug=course_slug)
+    user = request.user
+
+    from .utils.access import has_course_access, check_course_prerequisites
+    has_access, _, _ = has_course_access(user, course)
+
+    if has_access:
+        first_lesson = course.lessons.first()
+        if first_lesson:
+            return lesson_detail(request, course_slug, first_lesson.slug)
+        return render(request, 'course_detail.html', {
+            'course': course,
+            'has_access': True,
+            'can_self_enroll': False,
+        })
+
+    # No access - show overview with enroll option if applicable
+    prereqs_met, missing_prereqs = check_course_prerequisites(user, course)
+    can_self_enroll = course.enrollment_method == 'open' and prereqs_met
+    from .models import Bundle
+    bundles = list(Bundle.objects.filter(courses=course, is_active=True))
     return render(request, 'course_detail.html', {
         'course': course,
+        'has_access': False,
+        'can_self_enroll': can_self_enroll,
+        'prereqs_met': prereqs_met,
+        'missing_prereqs': missing_prereqs,
+        'bundles': bundles,
     })
 
 
@@ -1197,302 +1338,11 @@ def chatbot_webhook(request):
 
 # ========== STUDENT DASHBOARD (CLIENT VIEW) ==========
 
-@login_required
 def student_dashboard(request):
-    """Student dashboard - overview with access control: My Courses, Available to Unlock, Not Available"""
-    user = request.user
-    
-    # Use access control system to organize courses
-    from .utils.access import get_courses_by_visibility, has_course_access, check_course_prerequisites, batch_has_course_access
-    
-    courses_by_visibility = get_courses_by_visibility(user)
-    my_courses = list(courses_by_visibility['my_courses'])
-    available_to_unlock = list(courses_by_visibility['available_to_unlock'])
-    not_available = list(courses_by_visibility['not_available'])
-    
-    # Also check legacy enrollments for backward compatibility
-    enrollments = CourseEnrollment.objects.filter(user=user).select_related('course')
-    if not enrollments.exists() and user.is_staff:
-        # Auto-enroll admin/staff in all active courses
-        for course in Course.objects.filter(status='active'):
-            CourseEnrollment.objects.get_or_create(user=user, course=course)
-        enrollments = CourseEnrollment.objects.filter(user=user).select_related('course')
-    
-    # Batch fetch all data for optimization
-    my_course_ids = [c.id for c in my_courses]
-    
-    # Batch fetch enrollments
-    enrollments_dict = {
-        e.course_id: e 
-        for e in CourseEnrollment.objects.filter(user=user, course_id__in=my_course_ids).select_related('course')
-    }
-    
-    # Batch fetch progress data
-    from django.db.models import Count
-    progress_data = UserProgress.objects.filter(
-        user=user,
-        lesson__course_id__in=my_course_ids
-    ).values('lesson__course_id').annotate(
-        total_lessons=Count('lesson_id', distinct=True),
-        completed_lessons=Count('lesson_id', filter=Q(completed=True), distinct=True),
-        has_any_progress=Count('id', filter=Q(completed=True) | Q(video_watch_percentage__gt=0) | Q(status__in=['in_progress', 'completed'])),
-        avg_watch=Avg('video_watch_percentage')
-    )
-    
-    progress_by_course = {
-        item['lesson__course_id']: item 
-        for item in progress_data
-    }
-    
-    # Batch fetch lesson counts
-    course_lesson_counts = {
-        course_id: count 
-        for course_id, count in Course.objects.filter(id__in=my_course_ids).annotate(
-            lesson_count=Count('lessons')
-        ).values_list('id', 'lesson_count')
-    }
-    
-    # Batch fetch exams
-    exams_dict = {
-        exam.course_id: exam 
-        for exam in Exam.objects.filter(course_id__in=my_course_ids).select_related('course')
-    }
-    
-    # Batch fetch exam attempts
-    exam_attempts_by_exam = {}
-    if exams_dict:
-        exam_ids = list(exams_dict.keys())
-        attempts = ExamAttempt.objects.filter(user=user, exam_id__in=exam_ids).select_related('exam')
-        for attempt in attempts:
-            exam_id = attempt.exam_id
-            if exam_id not in exam_attempts_by_exam:
-                exam_attempts_by_exam[exam_id] = []
-            exam_attempts_by_exam[exam_id].append(attempt)
-    
-    # Batch fetch certifications
-    certifications_dict = {
-        cert.course_id: cert 
-        for cert in Certification.objects.filter(user=user, course_id__in=my_course_ids).select_related('course')
-    }
-    
-    # Batch fetch favorites
-    from .models import FavoriteCourse
-    favorite_course_ids = set(
-        FavoriteCourse.objects.filter(user=user, course_id__in=my_course_ids).values_list('course_id', flat=True)
-    )
-    
-    # Batch fetch course access (1 query instead of N)
-    access_by_course = batch_has_course_access(user, my_course_ids)
-    
-    # Process My Courses (courses with access)
-    my_courses_data = []
-    for course in my_courses:
-        has_access, access_record, _ = access_by_course.get(course.id, (False, None, "No access found"))
-        if not has_access:
-            continue
-            
-        # Get enrollment (legacy) or create access-based data
-        enrollment = enrollments_dict.get(course.id)
-        
-        # Get progress data from batch
-        course_id = course.id
-        total_lessons = course_lesson_counts.get(course_id, 0)
-        progress_info = progress_by_course.get(course_id, {})
-        completed_lessons = progress_info.get('completed_lessons', 0)
-        has_any_progress = progress_info.get('has_any_progress', 0) > 0
-        avg_watch = progress_info.get('avg_watch', 0) or 0
-        
-        progress_percentage = int((completed_lessons / total_lessons * 100)) if total_lessons > 0 else 0
-        
-        # Get exam info from batch data
-        exam_info = None
-        exam = exams_dict.get(course_id)
-        if exam:
-            attempts = exam_attempts_by_exam.get(exam.id, [])
-            attempts_sorted = sorted(attempts, key=lambda x: x.started_at, reverse=True)
-            latest_attempt = attempts_sorted[0] if attempts_sorted else None
-            exam_info = {
-                'exists': True,
-                'attempts_count': len(attempts),
-                'max_attempts': exam.max_attempts,
-                'latest_attempt': latest_attempt,
-                'passed': any(a.passed for a in attempts),
-                'is_available': enrollment.is_exam_available() if enrollment else False,
-            }
-        else:
-            exam_info = {'exists': False}
-        
-        # Get certification status from batch data
-        certification = certifications_dict.get(course_id)
-        if certification:
-            cert_status = certification.status
-            cert_display = certification.get_status_display()
-        else:
-            cert_status = 'not_eligible' if progress_percentage < 100 else 'eligible'
-            cert_display = 'Not Eligible' if progress_percentage < 100 else 'Eligible'
-            certification = None
-        
-        # Check if course is favorited from batch data
-        is_favorited = course_id in favorite_course_ids
-        
-        my_courses_data.append({
-            'course': course,
-            'enrollment': enrollment,
-            'access_record': access_record,
-            'total_lessons': total_lessons,
-            'completed_lessons': completed_lessons,
-            'progress_percentage': progress_percentage,
-            'has_any_progress': has_any_progress,
-            'avg_watch_percentage': round(avg_watch, 1),
-            'exam_info': exam_info,
-            'certification': certification,
-            'cert_status': cert_status,
-            'cert_display': cert_display,
-            'is_favorited': is_favorited,
-        })
-    
-    # Also include legacy enrollments that might not have access records yet
-    existing_course_ids = {cd['course'].id for cd in my_courses_data}
-    for enrollment in enrollments:
-        course = enrollment.course
-        # Skip if already in my_courses_data
-        if course.id in existing_course_ids:
-            continue
-            
-        # Check if course has access
-        has_access, access_record, _ = has_course_access(user, course)
-        if not has_access:
-            # Try to create access from enrollment (migration path)
-            from .utils.access import grant_course_access
-            access_record = grant_course_access(
-                user=user,
-                course=course,
-                access_type='purchase',
-                notes="Migrated from legacy enrollment"
-            )
-        
-        # Use batch data if available, otherwise calculate
-        course_id = course.id
-        if course_id in progress_by_course:
-            progress_info = progress_by_course[course_id]
-            total_lessons = course_lesson_counts.get(course_id, 0)
-            completed_lessons = progress_info.get('completed_lessons', 0)
-            avg_watch = progress_info.get('avg_watch', 0) or 0
-        else:
-            total_lessons = course_lesson_counts.get(course_id, course.lessons.count())
-            completed_lessons = 0
-            avg_watch = 0
-        progress_percentage = int((completed_lessons / total_lessons * 100)) if total_lessons > 0 else 0
-        
-        # Get exam info from batch data
-        exam_info = None
-        exam = exams_dict.get(course_id)
-        if exam:
-            attempts = exam_attempts_by_exam.get(exam.id, [])
-            attempts_sorted = sorted(attempts, key=lambda x: x.started_at, reverse=True)
-            latest_attempt = attempts_sorted[0] if attempts_sorted else None
-            exam_info = {
-                'exists': True,
-                'attempts_count': len(attempts),
-                'max_attempts': exam.max_attempts,
-                'latest_attempt': latest_attempt,
-                'passed': any(a.passed for a in attempts),
-                'is_available': enrollment.is_exam_available(),
-            }
-        else:
-            exam_info = {'exists': False}
-        
-        # Get certification from batch data
-        certification = certifications_dict.get(course_id)
-        if certification:
-            cert_status = certification.status
-            cert_display = certification.get_status_display()
-        else:
-            cert_status = 'not_eligible' if progress_percentage < 100 else 'eligible'
-            cert_display = 'Not Eligible' if progress_percentage < 100 else 'Eligible'
-            certification = None
-        
-        my_courses_data.append({
-            'course': course,
-            'enrollment': enrollment,
-            'access_record': access_record,
-            'total_lessons': total_lessons,
-            'completed_lessons': completed_lessons,
-            'progress_percentage': progress_percentage,
-            'avg_watch_percentage': round(avg_watch, 1),
-            'exam_info': exam_info,
-            'certification': certification,
-            'cert_status': cert_status,
-            'cert_display': cert_display,
-        })
-    
-    # Batch fetch bundles for available_to_unlock (1 query instead of N)
-    from .models import Bundle
-    available_course_ids = [c.id for c in available_to_unlock]
-    available_course_ids_set = set(available_course_ids)
-    bundles_by_course = {}
-    if available_course_ids:
-        for bundle in Bundle.objects.filter(courses__id__in=available_course_ids, is_active=True).prefetch_related('courses'):
-            for c in bundle.courses.all():
-                if c.id in available_course_ids_set:
-                    bundles_by_course.setdefault(c.id, []).append(bundle)
-    
-    # Process Available to Unlock courses
-    available_courses_data = []
-    for course in available_to_unlock:
-        prereqs_met, missing_prereqs = check_course_prerequisites(user, course)
-        available_courses_data.append({
-            'course': course,
-            'prereqs_met': prereqs_met,
-            'missing_prereqs': missing_prereqs,
-            'bundles': bundles_by_course.get(course.id, []),
-        })
-    
-    # Process Not Available courses
-    not_available_data = []
-    for course in not_available:
-        not_available_data.append({
-            'course': course,
-            'reason': course.get_visibility_display(),
-        })
-    
-    # Get filter/sort parameters
-    filter_favorites = request.GET.get('favorites', '')
-    sort_by = request.GET.get('sort', 'progress')  # progress, favorites, name
-    
-    # Filter by favorites if requested
-    if filter_favorites == 'true':
-        my_courses_data = [c for c in my_courses_data if c.get('is_favorited', False)]
-    
-    # Sort courses
-    if sort_by == 'favorites':
-        # Favorites first, then by progress
-        my_courses_data.sort(key=lambda x: (not x.get('is_favorited', False), -x['progress_percentage']))
-    elif sort_by == 'name':
-        my_courses_data.sort(key=lambda x: x['course'].name.lower())
-    else:  # default: progress
-        my_courses_data.sort(key=lambda x: x['progress_percentage'], reverse=True)
-    
-    # Overall stats
-    total_courses = len(my_courses_data)
-    completed_courses = sum(1 for c in my_courses_data if c['progress_percentage'] == 100)
-    total_lessons_all = sum(c['total_lessons'] for c in my_courses_data)
-    completed_lessons_all = sum(c['completed_lessons'] for c in my_courses_data)
-    overall_progress = int((completed_lessons_all / total_lessons_all * 100)) if total_lessons_all > 0 else 0
-    
-    return render(request, 'student/dashboard.html', {
-        'course_data': my_courses_data,  # Renamed for backward compatibility
-        'my_courses': my_courses_data,
-        'available_to_unlock': available_courses_data,
-        'not_available': not_available_data,
-        'total_courses': total_courses,
-        'completed_courses': completed_courses,
-        'total_lessons_all': total_lessons_all,
-        'completed_lessons_all': completed_lessons_all,
-        'overall_progress': overall_progress,
-        'filter_favorites': filter_favorites,
-        'sort_by': sort_by,
-    })
+    """Redirect to unified courses hub (same content as /courses/ for logged-in users)."""
+    if request.user.is_authenticated:
+        return redirect('courses')
+    return redirect('login')
 
 
 @login_required
@@ -1500,12 +1350,15 @@ def student_course_progress(request, course_slug):
     """Detailed progress view for a specific course"""
     course = get_object_or_404(Course, slug=course_slug)
     user = request.user
-    
-    # Check enrollment
+
+    # Check access (CourseAccess or legacy CourseEnrollment)
+    from .utils.access import has_course_access
+    has_access, access_record, _ = has_course_access(user, course)
+    if not has_access:
+        messages.error(request, 'You do not have access to this course.')
+        return redirect('courses')
+
     enrollment = CourseEnrollment.objects.filter(user=user, course=course).select_related('course').first()
-    if not enrollment:
-        messages.error(request, 'You are not enrolled in this course.')
-        return redirect('student_dashboard')
     
     # Get all lessons (single query)
     lessons = list(course.lessons.select_related('module').order_by('order', 'id'))
@@ -1565,7 +1418,7 @@ def student_course_progress(request, course_slug):
         'exam': exam,
         'exam_attempts': exam_attempts,
         'certification': certification,
-        'is_exam_available': enrollment.is_exam_available(),
+        'is_exam_available': enrollment.is_exam_available() if enrollment else False,
         'course_resources': course_resources,
     })
 
