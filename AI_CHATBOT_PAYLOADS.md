@@ -39,7 +39,7 @@ Sends the lesson transcript to train the AI chatbot for a specific lesson.
 
 ```json
 {
-  "transcript": "03:27 and have more time off. That's completely up to you and will be in completely in your hands, but using these strategies, you will allow yourself a little more freedom. You can feel proud of the effort and the progress you're making whilst continuing to produce these results and reaching your goals. 03:47 So we're gonna dive right in with the first technique from Brian Tracy in the next video. Welcome to Time Management Mastery. And again, thank you for being a part of the S.O.P Master community. See you in the next lesson.",
+  "transcript": "03:27 and have more time off. That's completely up to you and will be in completely in your hands, but using these strategies, you will allow yourself a little more freedom. You can feel proud of the effort and the progress you're making whilst continuing to produce these results and reaching your goals. 03:47 So we're gonna dive right in with the first technique from Brian Tracy in the next video. Welcome to Time Management Mastery. And again, thank you for being a part of the Line Training community. See you in the next lesson.",
   "lesson_id": 11,
   "lesson_title": "Introduction to Time Management",
   "course_name": "Time Management Mastery",

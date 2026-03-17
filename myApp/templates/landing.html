@@ -1,853 +1,715 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>SOP Master — Train Smarter. Scale Faster.</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
-  <link href="https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,400;0,600;0,700;0,800;0,900;1,800&family=Barlow+Condensed:wght@700;800;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
-  <style>
-    :root {
-      --purple: #7B3FE4;
-      --pink:   #E4177E;
-      --yellow: #F5A800;
-      --blue:   #1A6BFF;
-      --navy:   #0A1628;
-      --navy2:  #0D1F3C;
-      --white:  #FFFFFF;
-      --gray:   #94A3B8;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brian Moses — Courses & Training</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --blue: #2F67E8;
+    --blue-light: #5E8FFF;
+    --blue-dim: rgba(47,103,232,0.15);
+    --blue-border: rgba(47,103,232,0.28);
+    --white: #EEF2FF;
+    --off-white: #B8C8EE;
+    --dark: #05080F;
+    --dark-2: #07091A;
+    --dark-3: #0A0E1E;
+    --mid: #101628;
+    --mid-2: #161D36;
+    --text-muted: #4A5A80;
+    --border: rgba(255,255,255,0.06);
+  }
 
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
 
-    body {
-      font-family: 'DM Sans', sans-serif;
-      background: var(--navy);
-      color: var(--white);
-      overflow-x: hidden;
-    }
+  body {
+    background: var(--dark);
+    color: var(--white);
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    overflow-x: hidden;
+  }
 
-    h1, h2, h3, .display {
-      font-family: 'Barlow', sans-serif;
-      font-weight: 900;
-    }
+  /* UTILS */
+  .tag {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 11px; font-weight: 600; letter-spacing: 0.3em; text-transform: uppercase;
+    color: var(--blue-light);
+  }
+  .tag::before { content: ''; width: 20px; height: 1px; background: var(--blue-light); }
+  .display {
+    font-family: 'Bebas Neue', sans-serif;
+    line-height: 0.95; letter-spacing: 0.02em;
+    color: var(--white);
+  }
+  .display span { color: var(--blue-light); }
+  .btn {
+    display: inline-block;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 13px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase;
+    text-decoration: none; padding: 14px 32px;
+    transition: all 0.2s;
+  }
+  .btn-solid { background: var(--blue); color: #fff; }
+  .btn-solid:hover { background: var(--blue-light); transform: translateY(-2px); }
+  .btn-outline { border: 1px solid var(--blue-border); color: var(--off-white); }
+  .btn-outline:hover { border-color: var(--blue); color: var(--blue-light); transform: translateY(-2px); }
 
-    .condensed {
-      font-family: 'Barlow Condensed', sans-serif;
-      font-weight: 900;
-    }
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 60px;
+    background: rgba(5,8,15,0.94);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--border);
+  }
+  nav .logo img { height: 42px; }
+  nav .links { display: flex; gap: 32px; align-items: center; }
+  nav .links a {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 13px; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--off-white); text-decoration: none; opacity: 0.7;
+    transition: opacity 0.2s, color 0.2s;
+  }
+  nav .links a:hover { opacity: 1; color: var(--blue-light); }
+  nav .nav-cta {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 12px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase;
+    color: #fff; background: var(--blue);
+    padding: 9px 22px; text-decoration: none;
+    transition: background 0.2s;
+  }
+  nav .nav-cta:hover { background: var(--blue-light); }
 
-    /* ─── NAV ─── */
-    nav {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-      padding: 20px 48px;
-      display: flex; align-items: center; justify-content: space-between;
-      background: rgba(10,22,40,0.85);
-      backdrop-filter: blur(14px);
-      border-bottom: 1px solid rgba(255,255,255,0.06);
-    }
-    .nav-logo {
-      font-family: 'Barlow Condensed', sans-serif;
-      font-size: 28px; font-weight: 900; letter-spacing: 1px;
-      color: var(--white);
-    }
-    .nav-logo span { color: var(--pink); }
-    .nav-links { display: flex; gap: 36px; align-items: center; }
-    .nav-links a {
-      font-size: 14px; font-weight: 600; letter-spacing: 0.5px;
-      color: rgba(255,255,255,0.7); text-decoration: none;
-      transition: color 0.2s;
-    }
-    .nav-links a:hover { color: var(--white); }
-    .nav-cta {
-      background: var(--pink);
-      color: var(--white); font-weight: 700; font-size: 14px;
-      padding: 11px 26px; border-radius: 6px; text-decoration: none;
-      letter-spacing: 0.5px; transition: opacity 0.2s;
-    }
-    .nav-cta:hover { opacity: 0.88; }
+  /* HERO */
+  .hero {
+    position: relative; min-height: 100vh;
+    display: grid; grid-template-columns: 1fr 1fr;
+    align-items: center; padding: 0 60px;
+    overflow: hidden;
+  }
+  .hero-bg {
+    position: absolute; inset: 0;
+    background-image: url('https://res.cloudinary.com/dcuswyfur/image/upload/v1773768370/Frame_1707482087_bcq65g.png');
+    background-size: cover; background-position: center top; z-index: 0;
+  }
+  .hero-bg::after {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(105deg, rgba(5,8,15,0.97) 45%, rgba(5,8,15,0.55) 100%);
+  }
+  .hero-left { position: relative; z-index: 1; padding-top: 80px; }
+  .hero-right { position: relative; z-index: 1; display: flex; justify-content: flex-end; }
 
-    /* ─── HERO ─── */
-    .hero {
-      min-height: 100vh;
-      position: relative;
-      display: flex; align-items: center;
-      overflow: hidden;
-    }
-    .hero-bg {
-      position: absolute; inset: 0;
-      background-image: url('https://katalyst-crm.com/wp-content/uploads/2024/10/Katalyst-Project-2.1.png');
-      background-size: cover; background-position: center top;
-      filter: brightness(0.35) saturate(1.2);
-    }
-    .hero-overlay {
-      position: absolute; inset: 0;
-      background: linear-gradient(105deg, rgba(10,22,40,0.97) 42%, rgba(10,22,40,0.55) 70%, transparent 100%);
-    }
-    .hero-gradient-accent {
-      position: absolute; inset: 0;
-      background: radial-gradient(ellipse at 15% 60%, rgba(123,63,228,0.22) 0%, transparent 55%),
-                  radial-gradient(ellipse at 80% 20%, rgba(26,107,255,0.15) 0%, transparent 50%);
-    }
-    .hero-content {
-      position: relative; z-index: 2;
-      max-width: 780px;
-      padding: 0 48px;
-      margin-top: 80px;
-    }
-    .hero-badge {
-      display: inline-flex; align-items: center; gap: 8px;
-      background: rgba(228,23,126,0.15);
-      border: 1px solid rgba(228,23,126,0.4);
-      color: #ff6eb8; font-size: 12px; font-weight: 700;
-      letter-spacing: 2px; text-transform: uppercase;
-      padding: 7px 16px; border-radius: 100px;
-      margin-bottom: 28px;
-    }
-    .hero-badge .dot {
-      width: 7px; height: 7px; border-radius: 50%;
-      background: var(--pink);
-      animation: pulse 2s infinite;
-    }
-    @keyframes pulse {
-      0%,100%{ opacity:1; transform:scale(1); }
-      50%{ opacity:0.5; transform:scale(1.4); }
-    }
-    .hero h1 {
-      font-size: clamp(58px, 7vw, 96px);
-      line-height: 0.95;
-      letter-spacing: -2px;
-      margin-bottom: 24px;
-    }
-    .hero h1 .line-accent { color: var(--pink); display: block; }
-    .hero h1 .line-yellow { color: var(--yellow); }
-    .hero-sub {
-      font-size: 19px; line-height: 1.65;
-      color: rgba(255,255,255,0.72);
-      max-width: 560px; margin-bottom: 44px;
-      font-weight: 400;
-    }
-    .hero-ctas { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
-    .btn-primary {
-      background: var(--pink);
-      color: #fff; font-weight: 700; font-size: 15px;
-      padding: 16px 36px; border-radius: 8px; text-decoration: none;
-      display: inline-flex; align-items: center; gap: 10px;
-      transition: transform 0.2s, box-shadow 0.2s;
-      box-shadow: 0 0 32px rgba(228,23,126,0.4);
-      letter-spacing: 0.3px;
-    }
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 40px rgba(228,23,126,0.55);
-    }
-    .btn-secondary {
-      color: rgba(255,255,255,0.85); font-weight: 600; font-size: 15px;
-      text-decoration: none; display: inline-flex; align-items: center; gap: 10px;
-      border: 1.5px solid rgba(255,255,255,0.2);
-      padding: 15px 30px; border-radius: 8px;
-      transition: border-color 0.2s, color 0.2s;
-    }
-    .btn-secondary:hover { border-color: rgba(255,255,255,0.5); color: #fff; }
-    .hero-stats {
-      position: relative; z-index: 2;
-      display: flex; gap: 0;
-      padding: 0 48px;
-      margin-top: 60px;
-      border-top: 1px solid rgba(255,255,255,0.08);
-    }
-    .stat-item {
-      padding: 32px 48px 32px 0;
-      margin-right: 48px;
-      border-right: 1px solid rgba(255,255,255,0.1);
-    }
-    .stat-item:last-child { border-right: none; }
-    .stat-num {
-      font-family: 'Barlow Condensed', sans-serif;
-      font-size: 52px; font-weight: 900;
-      line-height: 1; color: var(--white);
-    }
-    .stat-num span { color: var(--pink); }
-    .stat-label { font-size: 13px; color: var(--gray); font-weight: 500; margin-top: 4px; letter-spacing: 0.3px; }
+  .hero-eyebrow { margin-bottom: 22px; animation: fadeUp 0.7s 0s ease both; }
+  .hero h1 {
+    font-size: clamp(68px, 9vw, 116px);
+    margin-bottom: 24px;
+    animation: fadeUp 0.7s 0.1s ease both;
+  }
+  .hero-sub {
+    font-size: 16px; line-height: 1.8; color: var(--off-white);
+    opacity: 0.8; max-width: 500px; margin-bottom: 40px;
+    animation: fadeUp 0.7s 0.2s ease both;
+  }
+  .hero-actions { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 56px; animation: fadeUp 0.7s 0.3s ease both; }
+  .hero-pills { display: flex; flex-wrap: wrap; gap: 10px; animation: fadeUp 0.7s 0.4s ease both; }
+  .pill {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--off-white); opacity: 0.6;
+    padding: 6px 14px; border: 1px solid var(--border);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .pill b { color: var(--blue-light); opacity: 1; font-weight: 700; }
 
-    /* ─── SECTION SHARED ─── */
-    section { padding: 100px 48px; }
-    .section-label {
-      font-size: 11px; font-weight: 700; letter-spacing: 3px;
-      text-transform: uppercase; color: var(--pink);
-      margin-bottom: 16px; display: block;
-    }
-    .section-title {
-      font-size: clamp(38px, 4.5vw, 62px);
-      line-height: 1.0; letter-spacing: -1.5px;
-      margin-bottom: 20px;
-    }
-    .section-sub {
-      font-size: 18px; color: rgba(255,255,255,0.6);
-      line-height: 1.65; max-width: 600px;
-    }
-    .max-w { max-width: 1280px; margin: 0 auto; }
+  /* Hero course card */
+  .hero-card {
+    background: var(--mid); border: 1px solid var(--blue-border);
+    padding: 36px; width: 400px; position: relative;
+    animation: fadeUp 0.7s 0.25s ease both;
+  }
+  .hero-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(to right, var(--blue), var(--blue-light));
+  }
+  .hc-label {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 10px; font-weight: 700; letter-spacing: 0.3em; text-transform: uppercase;
+    color: var(--blue-light); margin-bottom: 18px;
+  }
+  .hc-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 30px; letter-spacing: 0.03em; color: var(--white); margin-bottom: 4px;
+  }
+  .hc-sub { font-size: 12px; color: var(--text-muted); margin-bottom: 22px; }
+  .course-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .ci {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 13px 15px; background: var(--dark-3); border: 1px solid var(--border);
+    transition: border-color 0.2s; cursor: pointer;
+  }
+  .ci:hover { border-color: var(--blue-border); }
+  .ci-left { display: flex; align-items: center; gap: 13px; }
+  .ci-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px; color: var(--blue); letter-spacing: 0.05em; width: 26px;
+  }
+  .ci-cat {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 9px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--text-muted); margin-bottom: 2px;
+  }
+  .ci-name { font-size: 13px; font-weight: 500; color: var(--white); }
+  .ci-badge {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 9px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--blue-light); background: var(--blue-dim); padding: 4px 10px;
+  }
+  .hc-stats {
+    display: grid; grid-template-columns: 1fr 1fr 1fr;
+    gap: 1px; background: var(--border); margin-top: 22px;
+  }
+  .hcs { background: var(--dark-3); padding: 13px 10px; text-align: center; }
+  .hcs-val {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px; color: var(--blue-light); letter-spacing: 0.05em; display: block;
+  }
+  .hcs-key {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 9px; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--text-muted);
+  }
 
-    /* ─── MARQUEE ─── */
-    .marquee-wrap {
-      background: var(--pink);
-      padding: 16px 0; overflow: hidden;
-      border-top: 1px solid rgba(255,255,255,0.1);
-      border-bottom: 1px solid rgba(255,255,255,0.1);
-    }
-    .marquee-track {
-      display: flex; gap: 0;
-      animation: marquee 22s linear infinite;
-      white-space: nowrap;
-    }
-    .marquee-item {
-      display: inline-flex; align-items: center; gap: 14px;
-      padding: 0 32px;
-      font-family: 'Barlow Condensed', sans-serif;
-      font-size: 20px; font-weight: 700; letter-spacing: 1px;
-      color: #fff; text-transform: uppercase;
-    }
-    .marquee-dot { font-size: 10px; opacity: 0.6; }
-    @keyframes marquee {
-      from { transform: translateX(0); }
-      to { transform: translateX(-50%); }
-    }
+  /* STATS BAR */
+  .stats-bar {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    background: var(--mid); border-top: 1px solid var(--blue-border); border-bottom: 1px solid var(--border);
+  }
+  .sb-item {
+    padding: 36px 20px; text-align: center; border-right: 1px solid var(--border);
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+  }
+  .sb-item:last-child { border-right: none; }
+  .sb-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 48px; color: var(--blue-light); letter-spacing: 0.02em; line-height: 1;
+  }
+  .sb-label {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 11px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--text-muted);
+  }
 
-    /* ─── FEATURES ─── */
-    .features-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 2px;
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.06);
-      border-radius: 20px;
-      overflow: hidden;
-      margin-top: 64px;
-    }
-    .feature-card {
-      background: rgba(13,31,60,0.8);
-      padding: 40px 36px;
-      position: relative; overflow: hidden;
-      transition: background 0.3s;
-    }
-    .feature-card::before {
-      content: '';
-      position: absolute; top: 0; left: 0; right: 0;
-      height: 3px;
-      background: transparent;
-      transition: background 0.3s;
-    }
-    .feature-card:hover { background: rgba(20,40,75,0.9); }
-    .feature-card:hover::before { background: var(--pink); }
-    .feature-icon-wrap {
-      width: 52px; height: 52px; border-radius: 12px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 20px; margin-bottom: 24px;
-      flex-shrink: 0;
-    }
-    .ic-purple { background: rgba(123,63,228,0.18); color: #a97cff; }
-    .ic-pink   { background: rgba(228,23,126,0.18); color: #ff6eb8; }
-    .ic-yellow { background: rgba(245,168,0,0.18);  color: #ffc94d; }
-    .ic-blue   { background: rgba(26,107,255,0.18); color: #5b9eff; }
-    .ic-teal   { background: rgba(0,200,170,0.15);  color: #00c8aa; }
-    .ic-red    { background: rgba(255,60,60,0.15);  color: #ff7070; }
-    .feature-tag {
-      font-size: 10px; font-weight: 700; letter-spacing: 2px;
-      text-transform: uppercase; color: var(--gray);
-      margin-bottom: 10px; display: block;
-    }
-    .feature-title {
-      font-size: 20px; font-weight: 800; margin-bottom: 12px;
-      line-height: 1.2; letter-spacing: -0.3px;
-    }
-    .feature-quote {
-      font-size: 13px; font-weight: 600; color: var(--pink);
-      margin-bottom: 14px; font-style: italic; line-height: 1.4;
-    }
-    .feature-desc {
-      font-size: 14px; color: rgba(255,255,255,0.55);
-      line-height: 1.7; font-weight: 400;
-    }
-    .feature-num {
-      position: absolute; bottom: 24px; right: 28px;
-      font-family: 'Barlow Condensed', sans-serif;
-      font-size: 72px; font-weight: 900;
-      color: rgba(255,255,255,0.04); line-height: 1;
-      pointer-events: none;
-    }
+  /* SECTION */
+  .section { padding: 100px 60px; }
+  .sec-header { margin-bottom: 60px; }
+  .sec-header p { font-size: 15px; line-height: 1.8; color: var(--text-muted); max-width: 500px; margin-top: 16px; }
 
-    /* ─── HOW IT WORKS ─── */
-    .hiw-section { background: rgba(13,31,60,0.5); }
-    .steps-row {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 0;
-      margin-top: 64px;
-      position: relative;
-    }
-    .steps-row::before {
-      content: '';
-      position: absolute; top: 36px; left: 12.5%; right: 12.5%;
-      height: 2px;
-      background: linear-gradient(90deg, var(--purple), var(--pink), var(--yellow), var(--blue));
-      opacity: 0.4;
-    }
-    .step-item { text-align: center; padding: 0 24px; }
-    .step-circle {
-      width: 72px; height: 72px; border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      margin: 0 auto 28px;
-      font-family: 'Barlow Condensed', sans-serif;
-      font-size: 28px; font-weight: 900;
-      position: relative; z-index: 2;
-    }
-    .sc1 { background: var(--purple); box-shadow: 0 0 30px rgba(123,63,228,0.5); }
-    .sc2 { background: var(--pink);   box-shadow: 0 0 30px rgba(228,23,126,0.5); }
-    .sc3 { background: var(--yellow); color: #000; box-shadow: 0 0 30px rgba(245,168,0,0.5); }
-    .sc4 { background: var(--blue);   box-shadow: 0 0 30px rgba(26,107,255,0.5); }
-    .step-title {
-      font-size: 19px; font-weight: 800; margin-bottom: 12px; letter-spacing: -0.2px;
-    }
-    .step-desc { font-size: 14px; color: rgba(255,255,255,0.55); line-height: 1.65; }
+  /* COURSES */
+  .courses-section { background: var(--dark-2); }
+  .courses-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; }
+  .cc {
+    background: var(--dark-3); border: 1px solid var(--border);
+    padding: 52px 44px; position: relative; overflow: hidden;
+    transition: border-color 0.3s;
+  }
+  .cc:hover { border-color: var(--blue-border); }
+  .cc.featured { background: var(--mid); border-color: var(--blue-border); }
+  .cc::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(to right, var(--blue), transparent);
+    opacity: 0; transition: opacity 0.3s;
+  }
+  .cc:hover::before, .cc.featured::before { opacity: 1; }
+  .cc-bg-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 130px; color: rgba(47,103,232,0.06);
+    position: absolute; top: -15px; right: 16px;
+    line-height: 1; pointer-events: none; letter-spacing: 0.02em;
+  }
+  .cc-cat {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 10px; font-weight: 700; letter-spacing: 0.3em; text-transform: uppercase;
+    color: var(--blue-light); margin-bottom: 16px; display: block;
+  }
+  .cc-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 52px; letter-spacing: 0.02em;
+    color: var(--white); line-height: 1; margin-bottom: 20px;
+  }
+  .cc-quote {
+    font-size: 14px; line-height: 1.7; color: var(--blue-light);
+    border-left: 2px solid var(--blue); padding-left: 16px; margin-bottom: 28px;
+  }
+  .cc-desc { font-size: 14px; line-height: 1.8; color: var(--text-muted); margin-bottom: 32px; }
+  .cc-feats { list-style: none; margin-bottom: 32px; display: flex; flex-direction: column; gap: 10px; }
+  .cc-feats li {
+    font-size: 13px; color: var(--off-white); opacity: 0.75;
+    display: flex; align-items: flex-start; gap: 12px; line-height: 1.5;
+  }
+  .cc-feats li::before { content: '→'; color: var(--blue); flex-shrink: 0; font-weight: 600; }
+  .cc-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 32px; }
+  .cc-meta span {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 10px; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--text-muted); padding: 5px 12px; border: 1px solid var(--border);
+  }
 
-    /* ─── BIG CTA ─── */
-    .cta-section {
-      position: relative; overflow: hidden;
-      background: linear-gradient(135deg, #0e1e3f 0%, #150a30 50%, #0e1e3f 100%);
-      text-align: center;
-    }
-    .cta-section::before {
-      content: '';
-      position: absolute; inset: 0;
-      background: radial-gradient(ellipse at 50% 0%, rgba(228,23,126,0.25) 0%, transparent 65%),
-                  radial-gradient(ellipse at 80% 100%, rgba(26,107,255,0.2) 0%, transparent 55%);
-    }
-    .cta-section .max-w { position: relative; z-index: 2; }
-    .cta-eyebrow {
-      display: inline-block;
-      font-size: 11px; font-weight: 700; letter-spacing: 3px;
-      text-transform: uppercase; color: var(--yellow);
-      margin-bottom: 20px;
-    }
-    .cta-title {
-      font-size: clamp(44px, 6vw, 80px);
-      line-height: 0.95; letter-spacing: -2px;
-      margin-bottom: 24px;
-    }
-    .cta-sub {
-      font-size: 18px; color: rgba(255,255,255,0.6);
-      max-width: 520px; margin: 0 auto 48px; line-height: 1.65;
-    }
-    .cta-buttons { display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; }
+  /* HOW IT WORKS */
+  .how-section { background: var(--dark-3); }
+  .steps-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; }
+  .step {
+    background: var(--dark-2); border: 1px solid var(--border);
+    padding: 44px 32px; position: relative;
+    transition: border-color 0.3s, background 0.3s;
+  }
+  .step:hover { border-color: var(--blue-border); background: var(--mid); }
+  .step-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 60px; color: var(--blue);
+    letter-spacing: 0.02em; line-height: 1; margin-bottom: 20px; display: block;
+  }
+  .step h3 {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 16px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--white); margin-bottom: 12px;
+  }
+  .step p { font-size: 13px; line-height: 1.8; color: var(--text-muted); }
 
-    /* ─── TESTIMONIALS ─── */
-    .testi-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 24px;
-      margin-top: 64px;
-    }
-    .testi-card {
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.07);
-      border-radius: 16px; padding: 36px 32px;
-      position: relative;
-    }
-    .testi-stars { color: var(--yellow); font-size: 14px; margin-bottom: 20px; letter-spacing: 2px; }
-    .testi-quote { font-size: 15px; line-height: 1.75; color: rgba(255,255,255,0.75); margin-bottom: 28px; }
-    .testi-author { display: flex; align-items: center; gap: 14px; }
-    .testi-avatar {
-      width: 44px; height: 44px; border-radius: 50%;
-      background: linear-gradient(135deg, var(--purple), var(--pink));
-      display: flex; align-items: center; justify-content: center;
-      font-weight: 800; font-size: 16px;
-    }
-    .testi-name { font-weight: 700; font-size: 15px; }
-    .testi-role { font-size: 12px; color: var(--gray); margin-top: 2px; }
-    .testi-icon {
-      position: absolute; top: 28px; right: 28px;
-      font-size: 36px; color: rgba(255,255,255,0.05);
-      font-family: Georgia, serif;
-    }
+  /* FEATURES */
+  .features-section { background: var(--dark-2); }
+  .features-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+  .feat-img { position: relative; overflow: hidden; aspect-ratio: 4/5; }
+  .feat-img img { width: 100%; height: 100%; object-fit: cover; object-position: left top; filter: grayscale(10%); transition: transform 0.5s; }
+  .feat-img:hover img { transform: scale(1.03); }
+  .feat-img::before { content: ''; position: absolute; inset: 0; z-index: 1; background: linear-gradient(135deg, var(--blue-dim), transparent 60%); }
+  .feat-img .frame { position: absolute; top: 16px; left: 16px; right: -16px; bottom: -16px; border: 1px solid var(--blue-border); z-index: -1; }
+  .feats-list { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; margin-top: 36px; }
+  .feat-item {
+    padding: 18px 16px; background: var(--dark-3); border: 1px solid var(--border);
+    display: flex; align-items: center; gap: 12px;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 13px; font-weight: 600; letter-spacing: 0.04em;
+    color: var(--off-white); opacity: 0.75;
+    transition: opacity 0.2s, border-color 0.2s;
+  }
+  .feat-item:hover { opacity: 1; border-color: var(--blue-border); }
+  .feat-item::before { content: '◆'; color: var(--blue); font-size: 7px; flex-shrink: 0; }
 
-    /* ─── FOOTER ─── */
-    footer {
-      border-top: 1px solid rgba(255,255,255,0.07);
-      padding: 48px 48px 40px;
-    }
-    .footer-inner { display: flex; justify-content: space-between; align-items: center; max-width: 1280px; margin: 0 auto; }
-    .footer-logo { font-family: 'Barlow Condensed', sans-serif; font-size: 28px; font-weight: 900; }
-    .footer-logo span { color: var(--pink); }
-    .footer-tagline { font-size: 13px; color: var(--gray); margin-top: 4px; }
-    .footer-links { display: flex; gap: 28px; }
-    .footer-links a { font-size: 13px; color: var(--gray); text-decoration: none; transition: color 0.2s; }
-    .footer-links a:hover { color: var(--white); }
-    .footer-copy { font-size: 12px; color: rgba(255,255,255,0.25); text-align: center; margin-top: 32px; max-width: 1280px; margin-left: auto; margin-right: auto; }
+  /* QUOTE BANNER */
+  .quote-banner { position: relative; height: 660px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+  .qb-bg { position: absolute; inset: -40px; background-image: url('https://res.cloudinary.com/dcuswyfur/image/upload/v1773768367/Frame_1000007769_r4mues.png'); background-size: cover; background-position: center 20%; }
+  .qb-bg::after { content: ''; position: absolute; inset: 0; background: rgba(5,8,15,0.8); }
+  .qb-inner { position: relative; z-index: 1; text-align: center; max-width: 780px; padding: 0 40px; }
+  .qb-inner blockquote {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(34px, 5vw, 62px);
+    letter-spacing: 0.03em; color: var(--white); line-height: 1.05; margin-bottom: 20px;
+  }
+  .qb-inner blockquote span { color: var(--blue-light); }
+  .qb-inner cite {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 12px; font-weight: 600; letter-spacing: 0.28em; text-transform: uppercase;
+    color: var(--blue-light); font-style: normal;
+  }
 
-    /* ─── DIVIDER ─── */
-    .color-bar {
-      height: 4px;
-      background: linear-gradient(90deg, var(--purple) 0%, var(--pink) 33%, var(--yellow) 66%, var(--blue) 100%);
-    }
+  /* IMAGE STRIP */
+  .img-strip { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 2px; height: 300px; }
+  .isc { overflow: hidden; position: relative; }
+  .isc img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s; }
+  .isc:hover img { transform: scale(1.04); }
+  .isc::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, rgba(5,8,15,0.5) 0%, transparent 50%); }
 
-    /* ─── HIGHLIGHT BAR ─── */
-    .highlight { color: var(--pink); }
-    .highlight-y { color: var(--yellow); }
-    .highlight-b { color: #5b9eff; }
+  /* TESTIMONIALS */
+  .testi-section { background: var(--dark); }
+  .testi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
+  .tc {
+    background: var(--dark-3); border: 1px solid var(--border);
+    padding: 36px 30px; transition: border-color 0.3s, transform 0.2s;
+  }
+  .tc:hover { border-color: var(--blue-border); transform: translateY(-3px); }
+  .tc-stars { font-size: 11px; letter-spacing: 3px; color: var(--blue-light); margin-bottom: 18px; }
+  .tc-text { font-size: 14px; line-height: 1.85; color: var(--off-white); opacity: 0.8; margin-bottom: 24px; }
+  .tc-div { height: 1px; background: var(--border); margin-bottom: 20px; }
+  .tc-author { display: flex; align-items: center; gap: 12px; }
+  .tc-av {
+    width: 38px; height: 38px;
+    background: var(--mid-2); border: 1px solid var(--blue-border);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Bebas Neue', sans-serif; font-size: 16px; color: var(--blue-light); flex-shrink: 0;
+  }
+  .tc-name { font-family: 'Rajdhani', sans-serif; font-size: 14px; font-weight: 700; letter-spacing: 0.05em; color: var(--white); }
+  .tc-role { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
 
-    /* ─── TRUSTED BY ─── */
-    .logos-row {
-      display: flex; align-items: center; justify-content: center;
-      gap: 48px; flex-wrap: wrap;
-      margin-top: 56px;
-      opacity: 0.45;
-    }
-    .logo-pill {
-      font-family: 'Barlow Condensed', sans-serif;
-      font-size: 18px; font-weight: 700; letter-spacing: 2px;
-      text-transform: uppercase; color: #fff;
-    }
+  /* CTA */
+  .cta-section {
+    background: var(--mid); text-align: center; padding: 110px 60px;
+    position: relative; overflow: hidden;
+    background-image: url('https://www.brianmoses.com/_next/image?url=%2Fimages%2Fimage%20(32)%201.png&w=1920&q=75');
+    background-size: cover; background-position: center;
+  }
+  .cta-section::before { display: none; }
+  .cta-tag { display: flex; justify-content: center; margin-bottom: 20px; }
+  .cta-tag .tag::before { display: none; }
+  .cta-section .display { font-size: clamp(50px, 7vw, 88px); max-width: 680px; margin: 0 auto 20px; }
+  .cta-section p { font-size: 15px; line-height: 1.8; color: #fff; max-width: 480px; margin: 0 auto 40px; }
+  .cta-actions { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; margin-bottom: 22px; }
+  .cta-note {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 11px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase;
+    color: #fff;
+  }
+  .cta-note span { margin: 0 10px; opacity: 0.4; }
 
-    /* ─── BANNER ─── */
-    .benefit-banner {
-      background: linear-gradient(90deg, var(--purple) 0%, var(--pink) 100%);
-      border-radius: 20px; padding: 56px 64px;
-      display: flex; align-items: center; justify-content: space-between;
-      gap: 32px; margin-top: 80px;
-    }
-    .banner-text h3 {
-      font-size: 38px; letter-spacing: -1px; line-height: 1.1; margin-bottom: 12px;
-    }
-    .banner-text p { font-size: 16px; color: rgba(255,255,255,0.78); max-width: 420px; line-height: 1.6; }
-    .banner-icons { display: flex; gap: 20px; }
-    .banner-icon-item {
-      background: rgba(255,255,255,0.15);
-      border-radius: 12px; padding: 20px;
-      font-size: 28px; text-align: center;
-    }
+  /* FOOTER */
+  footer {
+    background: var(--dark); border-top: 1px solid var(--blue-border);
+    padding: 64px 60px 36px;
+  }
+  .footer-top {
+    display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 60px;
+    padding-bottom: 48px; border-bottom: 1px solid var(--border); margin-bottom: 28px;
+  }
+  .footer-brand img { height: 38px; margin-bottom: 18px; display: block; }
+  .footer-brand p { font-size: 13px; line-height: 1.8; color: var(--text-muted); max-width: 260px; }
+  .footer-col h4 {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.25em; text-transform: uppercase;
+    color: var(--blue-light); margin-bottom: 18px;
+  }
+  .footer-col a { display: block; font-size: 13px; color: var(--text-muted); text-decoration: none; margin-bottom: 10px; transition: color 0.2s; }
+  .footer-col a:hover { color: var(--off-white); }
+  .footer-bottom {
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 12px; color: var(--text-muted);
+    font-family: 'Rajdhani', sans-serif; letter-spacing: 0.05em;
+  }
+  .fbl { display: flex; gap: 24px; }
+  .fbl a { color: var(--text-muted); text-decoration: none; transition: color 0.2s; }
+  .fbl a:hover { color: var(--off-white); }
 
-    /* Scroll animations */
-    .fade-up {
-      opacity: 0; transform: translateY(32px);
-      transition: opacity 0.7s ease, transform 0.7s ease;
-    }
-    .fade-up.visible { opacity: 1; transform: translateY(0); }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
 
-    @media (max-width: 1024px) {
-      .features-grid { grid-template-columns: repeat(2, 1fr); }
-      .steps-row { grid-template-columns: repeat(2, 1fr); gap: 48px; }
-      .steps-row::before { display: none; }
-      .testi-grid { grid-template-columns: 1fr 1fr; }
-      nav { padding: 16px 24px; }
-      section { padding: 80px 24px; }
-      .hero-content { padding: 0 24px; }
-      .hero-stats { padding: 0 24px; }
-    }
-    @media (max-width: 640px) {
-      .features-grid { grid-template-columns: 1fr; }
-      .testi-grid { grid-template-columns: 1fr; }
-      .steps-row { grid-template-columns: 1fr; }
-      .nav-links { display: none; }
-      .benefit-banner { flex-direction: column; padding: 40px 28px; }
-      .footer-inner { flex-direction: column; gap: 24px; text-align: center; }
-      .footer-links { flex-wrap: wrap; justify-content: center; }
-    }
-  </style>
+  /* RESPONSIVE */
+  @media (max-width: 1100px) {
+    nav { padding: 16px 32px; }
+    .section { padding: 80px 32px; }
+    .hero { padding: 0 32px; grid-template-columns: 1fr; }
+    .hero-right { display: none; }
+    .courses-grid, .features-layout { grid-template-columns: 1fr; }
+    .steps-grid { grid-template-columns: 1fr 1fr; }
+    .feat-img { aspect-ratio: 16/7; }
+    .testi-grid { grid-template-columns: 1fr 1fr; }
+    .footer-top { grid-template-columns: 1fr 1fr; }
+    .img-strip { grid-template-columns: 1fr 1fr; }
+    .img-strip .isc:last-child { display: none; }
+    .stats-bar { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 720px) {
+    nav .links { display: none; }
+    nav { padding: 14px 20px; }
+    .section { padding: 60px 20px; }
+    .hero { padding: 0 20px; }
+    .steps-grid { grid-template-columns: 1fr; }
+    .feats-list { grid-template-columns: 1fr; }
+    .testi-grid { grid-template-columns: 1fr; }
+    .footer-top { grid-template-columns: 1fr; gap: 32px; }
+    .footer-bottom { flex-direction: column; gap: 12px; text-align: center; }
+    .img-strip { grid-template-columns: 1fr; height: 220px; }
+    .img-strip .isc:not(:first-child) { display: none; }
+    .cta-section { padding: 72px 20px; }
+  }
+</style>
 </head>
 <body>
 
 <!-- NAV -->
 <nav>
-  <div class="nav-logo">SOP<span>Master</span></div>
-  <div class="nav-links">
-    <a href="#features">Features</a>
+  <div class="logo"><img src="https://www.brianmoses.com/_next/image?url=%2Fimages%2Fmain%20logo-coaching-white.png&w=256&q=75" alt="Brian Moses"></div>
+  <div class="links">
+    <a href="#courses">Courses</a>
     <a href="#how">How It Works</a>
-    <a href="#testimonials">Testimonials</a>
-    {% if user.is_authenticated %}
-    <a href="{% url 'student_dashboard' %}" class="nav-cta">Dashboard</a>
-    {% else %}
-    <a href="{% url 'login' %}" class="nav-cta">Login</a>
-    {% endif %}
+    <a href="#testimonials">Results</a>
+    <a href="#cta">Get Started</a>
   </div>
+  <a href="{% if user.is_authenticated %}{% url 'student_dashboard' %}{% else %}{% url 'login' %}{% endif %}" class="nav-cta">{% if user.is_authenticated %}Dashboard →{% else %}Login →{% endif %}</a>
 </nav>
 
-<!-- COLOR BAR -->
-<div class="color-bar" style="margin-top:0;"></div>
-
 <!-- HERO -->
-<section class="hero" style="padding:0;">
+<section class="hero">
   <div class="hero-bg"></div>
-  <div class="hero-overlay"></div>
-  <div class="hero-gradient-accent"></div>
-
-  <div style="width:100%; display:flex; flex-direction:column;">
-    <div class="hero-content">
-      <div class="hero-badge">
-        <span class="dot"></span>
-        The #1 Employee Training Platform
-      </div>
-      <h1>
-        Train Smarter.<br/>
-        <span class="line-accent">Scale Faster.</span>
-        <span style="color:rgba(255,255,255,0.9);">Deliver</span> <span class="line-yellow">Results.</span>
-      </h1>
-      <p class="hero-sub">
-        SOP Master transforms your company's standard operating procedures into powerful, trackable learning experiences — so every employee is aligned, certified, and performing at the highest level.
-      </p>
-      <div class="hero-ctas">
-        <a href="{% if user.is_authenticated %}{% url 'student_dashboard' %}{% else %}{% url 'login' %}{% endif %}" class="btn-primary">
-          <i class="fas fa-play-circle"></i> {% if user.is_authenticated %}Dashboard{% else %}Login{% endif %}
-        </a>
-        <a href="#features" class="btn-secondary">
-          <i class="fas fa-layer-group"></i> Explore Features
-        </a>
-      </div>
+  <div class="hero-left">
+    <div class="hero-eyebrow tag">Real Estate Training Platform</div>
+    <h1 class="display">Master<br>Your<br><span>System.</span></h1>
+    <p class="hero-sub">Two powerful programs built from 3,500+ homes sold. Develop the mindset, the skillset, and the direct-response mastery to lead with confidence — without the burnout.</p>
+    <div class="hero-actions">
+      <a href="#courses" class="btn btn-solid">Explore Courses</a>
+      <a href="#how" class="btn btn-outline">How It Works</a>
     </div>
-
-    <div class="hero-stats" style="flex-wrap:wrap;">
-      <div class="stat-item">
-        <div class="stat-num">11<span>+</span></div>
-        <div class="stat-label">Powerful Features</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-num">100<span>%</span></div>
-        <div class="stat-label">Progress Tracked Automatically</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-num">0</div>
-        <div class="stat-label">Dev Team Required</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-num">AI<span>↑</span></div>
-        <div class="stat-label">Powered Inside Every Lesson</div>
+    <div class="hero-pills">
+      <div class="pill"><b>2+</b> Expert Courses</div>
+      <div class="pill"><b>100%</b> Progress Tracked</div>
+      <div class="pill"><b>AI</b> Powered Support</div>
+      <div class="pill"><b>✓</b> Certifications</div>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="hero-card">
+      <div class="hc-label">Available Now</div>
+      <div class="hc-title">Brian Moses Training</div>
+      <div class="hc-sub">Self-paced · AI-powered · Certified</div>
+      <ul class="course-list">
+        <li class="ci">
+          <div class="ci-left">
+            <div class="ci-num">01</div>
+            <div>
+              <div class="ci-cat">Mindset & EQ</div>
+              <div class="ci-name">Emotional Mastery</div>
+            </div>
+          </div>
+          <div class="ci-badge">Available</div>
+        </li>
+        <li class="ci">
+          <div class="ci-left">
+            <div class="ci-num">02</div>
+            <div>
+              <div class="ci-cat">Marketing & Copywriting</div>
+              <div class="ci-name">Intro to Direct Response</div>
+            </div>
+          </div>
+          <div class="ci-badge">Available</div>
+        </li>
+      </ul>
+      <div class="hc-stats">
+        <div class="hcs"><span class="hcs-val">3.5K+</span><span class="hcs-key">Homes Sold</span></div>
+        <div class="hcs"><span class="hcs-val">50K+</span><span class="hcs-key">Trained</span></div>
+        <div class="hcs"><span class="hcs-val">30yr</span><span class="hcs-key">Experience</span></div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- MARQUEE -->
-<div class="marquee-wrap">
-  <div class="marquee-track">
-    <span class="marquee-item"><i class="fas fa-check-circle marquee-dot"></i> Course Catalogs</span>
-    <span class="marquee-item"><i class="fas fa-circle marquee-dot" style="font-size:6px;"></i></span>
-    <span class="marquee-item"><i class="fas fa-check-circle marquee-dot"></i> Progress Tracking</span>
-    <span class="marquee-item"><i class="fas fa-circle marquee-dot" style="font-size:6px;"></i></span>
-    <span class="marquee-item"><i class="fas fa-check-circle marquee-dot"></i> AI Chatbot</span>
-    <span class="marquee-item"><i class="fas fa-circle marquee-dot" style="font-size:6px;"></i></span>
-    <span class="marquee-item"><i class="fas fa-check-circle marquee-dot"></i> Final Exams</span>
-    <span class="marquee-item"><i class="fas fa-circle marquee-dot" style="font-size:6px;"></i></span>
-    <span class="marquee-item"><i class="fas fa-check-circle marquee-dot"></i> Certifications</span>
-    <span class="marquee-item"><i class="fas fa-circle marquee-dot" style="font-size:6px;"></i></span>
-    <span class="marquee-item"><i class="fas fa-check-circle marquee-dot"></i> Bulk Access Control</span>
-    <span class="marquee-item"><i class="fas fa-circle marquee-dot" style="font-size:6px;"></i></span>
-    <span class="marquee-item"><i class="fas fa-check-circle marquee-dot"></i> Analytics Dashboard</span>
-    <span class="marquee-item"><i class="fas fa-circle marquee-dot" style="font-size:6px;"></i></span>
-    <span class="marquee-item"><i class="fas fa-check-circle marquee-dot"></i> Learning Paths</span>
-    <span class="marquee-item"><i class="fas fa-circle marquee-dot" style="font-size:6px;"></i></span>
-    <!-- Repeat for seamless loop -->
-    <span class="marquee-item"><i class="fas fa-check-circle marquee-dot"></i> Course Catalogs</span>
-    <span class="marquee-item"><i class="fas fa-circle marquee-dot" style="font-size:6px;"></i></span>
-    <span class="marquee-item"><i class="fas fa-check-circle marquee-dot"></i> Progress Tracking</span>
-    <span class="marquee-item"><i class="fas fa-circle marquee-dot" style="font-size:6px;"></i></span>
-    <span class="marquee-item"><i class="fas fa-check-circle marquee-dot"></i> AI Chatbot</span>
-    <span class="marquee-item"><i class="fas fa-circle marquee-dot" style="font-size:6px;"></i></span>
-    <span class="marquee-item"><i class="fas fa-check-circle marquee-dot"></i> Final Exams</span>
-    <span class="marquee-item"><i class="fas fa-circle marquee-dot" style="font-size:6px;"></i></span>
-    <span class="marquee-item"><i class="fas fa-check-circle marquee-dot"></i> Certifications</span>
-    <span class="marquee-item"><i class="fas fa-circle marquee-dot" style="font-size:6px;"></i></span>
-    <span class="marquee-item"><i class="fas fa-check-circle marquee-dot"></i> Bulk Access Control</span>
-    <span class="marquee-item"><i class="fas fa-circle marquee-dot" style="font-size:6px;"></i></span>
-    <span class="marquee-item"><i class="fas fa-check-circle marquee-dot"></i> Analytics Dashboard</span>
-    <span class="marquee-item"><i class="fas fa-circle marquee-dot" style="font-size:6px;"></i></span>
-    <span class="marquee-item"><i class="fas fa-check-circle marquee-dot"></i> Learning Paths</span>
-  </div>
+<!-- STATS -->
+<div class="stats-bar">
+  <div class="sb-item"><span class="sb-num">3,500+</span><span class="sb-label">Homes Sold</span></div>
+  <div class="sb-item"><span class="sb-num">50K+</span><span class="sb-label">Agents Trained</span></div>
+  <div class="sb-item"><span class="sb-num">30+</span><span class="sb-label">Years Experience</span></div>
+  <div class="sb-item"><span class="sb-num">$1M+</span><span class="sb-label">Avg. Client Income</span></div>
 </div>
 
-<!-- FEATURES -->
-<section id="features">
-  <div class="max-w">
-    <span class="section-label">Everything You Need</span>
-    <h2 class="section-title">11 Features Built to <span class="highlight">Elevate</span><br/>Every Employee.</h2>
-    <p class="section-sub">From onboarding to advanced certification — SOP Master gives your team one unified learning hub that runs itself.</p>
-
-    <div class="features-grid fade-up">
-
-      <div class="feature-card">
-        <div class="feature-icon-wrap ic-blue"><i class="fas fa-th-large"></i></div>
-        <span class="feature-tag">Foundation</span>
-        <div class="feature-title">Course Catalog + Student Dashboard</div>
-        <div class="feature-quote">"Students always know what to take next."</div>
-        <p class="feature-desc">A clean, organized learning space where students can see all available programs, track their progress, and instantly continue where they left off. No confusion. No overwhelm. Just clarity.</p>
-        <span class="feature-num">01</span>
+<!-- COURSES -->
+<section class="section courses-section" id="courses">
+  <div class="sec-header">
+    <div class="tag">The Programs</div>
+    <h2 class="display" style="font-size:clamp(44px,5.5vw,72px);margin-top:16px;">Two Courses.<br><span>One Transformation.</span></h2>
+    <p>Each course is built for depth, not surface-level theory. Real frameworks from 30+ years of proven success. Real results.</p>
+  </div>
+  <div class="courses-grid">
+    <div class="cc">
+      <div class="cc-bg-num">01</div>
+      <span class="cc-cat">Mindset & Emotional Intelligence</span>
+      <div class="cc-title">Emotional<br>Mastery</div>
+      <div class="cc-quote">"The ability to lead others starts with mastering yourself."</div>
+      <p class="cc-desc">Develop the emotional intelligence to handle pressure, communicate with empathy, and lead from clarity. This course rewires how you respond to the world — not just how you react to it.</p>
+      <ul class="cc-feats">
+        <li>Understand and regulate your emotional responses under pressure</li>
+        <li>Build deeper connections through empathetic communication</li>
+        <li>Develop resilience frameworks that hold up in real life</li>
+        <li>Rewire limiting patterns through structured self-awareness</li>
+      </ul>
+      <div class="cc-meta">
+        <span>Video Lessons</span><span>AI Support</span><span>Self-Paced</span><span>Certificate</span>
       </div>
-
-      <div class="feature-card">
-        <div class="feature-icon-wrap ic-purple"><i class="fas fa-play"></i></div>
-        <span class="feature-tag">Core Learning</span>
-        <div class="feature-title">Video Lessons + Progress Tracking</div>
-        <div class="feature-quote">"Pick up exactly where you left off—no manual tracking."</div>
-        <p class="feature-desc">Lessons automatically remember progress. If a student stops halfway through, they return to the exact moment they left. Completion updates happen seamlessly in the background.</p>
-        <span class="feature-num">02</span>
-      </div>
-
-      <div class="feature-card">
-        <div class="feature-icon-wrap ic-pink"><i class="fas fa-question-circle"></i></div>
-        <span class="feature-tag">Knowledge Checks</span>
-        <div class="feature-title">Lesson Quizzes</div>
-        <div class="feature-quote">"Knowledge checks that can be built fast or generated instantly."</div>
-        <p class="feature-desc">Add quizzes to reinforce learning and ensure understanding. Create them manually, upload them, or generate them using AI. Quizzes can be optional or required before moving forward.</p>
-        <span class="feature-num">03</span>
-      </div>
-
-      <div class="feature-card">
-        <div class="feature-icon-wrap ic-yellow"><i class="fas fa-clipboard-check"></i></div>
-        <span class="feature-tag">Validation</span>
-        <div class="feature-title">Final Exams</div>
-        <div class="feature-quote">"Real certification-level control and integrity."</div>
-        <p class="feature-desc">Add structured exams at the end of a course with scoring rules, attempt limits, and optional time limits. Perfect for programs that require higher standards or formal validation.</p>
-        <span class="feature-num">04</span>
-      </div>
-
-      <div class="feature-card">
-        <div class="feature-icon-wrap ic-teal"><i class="fas fa-medal"></i></div>
-        <span class="feature-tag">Motivation</span>
-        <div class="feature-title">Certifications + Trophy Tiers</div>
-        <div class="feature-quote">"Motivation + proof of completion."</div>
-        <p class="feature-desc">Students earn certificates when they complete programs and pass exams. Achievement tiers unlock as they earn more certifications, creating motivation and visible progress milestones.</p>
-        <span class="feature-num">05</span>
-      </div>
-
-      <div class="feature-card">
-        <div class="feature-icon-wrap ic-blue"><i class="fas fa-heart"></i></div>
-        <span class="feature-tag">Engagement</span>
-        <div class="feature-title">Favorites + "Continue Learning"</div>
-        <div class="feature-quote">"Higher completion rates through better UX."</div>
-        <p class="feature-desc">Students can favorite courses and instantly resume their most recent lesson. The system guides them forward instead of making them search for where they stopped.</p>
-        <span class="feature-num">06</span>
-      </div>
-
-      <div class="feature-card">
-        <div class="feature-icon-wrap ic-purple"><i class="fas fa-tachometer-alt"></i></div>
-        <span class="feature-tag">Management</span>
-        <div class="feature-title">Admin Dashboard</div>
-        <div class="feature-quote">"Manage content and learners without dev help."</div>
-        <p class="feature-desc">Create courses, upload lessons, manage quizzes, view students, and monitor performance — all from a central dashboard. No technical team required for daily operations.</p>
-        <span class="feature-num">07</span>
-      </div>
-
-      <div class="feature-card">
-        <div class="feature-icon-wrap ic-red"><i class="fas fa-shield-alt"></i></div>
-        <span class="feature-tag">Enterprise Control</span>
-        <div class="feature-title">Bulk Access Management + Full Audit Trail</div>
-        <div class="feature-quote">"Enterprise-grade control over who can access what, and why."</div>
-        <p class="feature-desc">Grant or revoke access individually or in bulk. Every access is tracked — who granted it, when it was granted, and why — giving you full visibility and control.</p>
-        <span class="feature-num">08</span>
-      </div>
-
-      <div class="feature-card">
-        <div class="feature-icon-wrap ic-pink"><i class="fas fa-route"></i></div>
-        <span class="feature-tag">Structured Journeys</span>
-        <div class="feature-title">Bundles, Cohorts & Learning Paths</div>
-        <div class="feature-quote">"Sell packages, run groups, and guide structured journeys."</div>
-        <p class="feature-desc">Bundle multiple programs together, create private groups, or design step-by-step learning journeys. Ideal for launches, corporate programs, or structured certifications.</p>
-        <span class="feature-num">09</span>
-      </div>
-
-      <div class="feature-card">
-        <div class="feature-icon-wrap ic-yellow"><i class="fas fa-chart-bar"></i></div>
-        <span class="feature-tag">Intelligence</span>
-        <div class="feature-title">Analytics Dashboard + Activity Feed</div>
-        <div class="feature-quote">"See what's working, who's stuck, and where drop-off happens."</div>
-        <p class="feature-desc">Track enrollments, completions, certifications, and student engagement. Quickly identify your top-performing programs and where students may need additional support.</p>
-        <span class="feature-num">10</span>
-      </div>
-
-      <div class="feature-card" style="grid-column: span 2; background: linear-gradient(135deg, rgba(123,63,228,0.18) 0%, rgba(228,23,126,0.12) 100%); border: 1px solid rgba(228,23,126,0.2);">
-        <div style="display:flex; align-items:flex-start; gap:28px;">
-          <div class="feature-icon-wrap ic-teal" style="flex-shrink:0; width:60px; height:60px; font-size:24px;"><i class="fas fa-robot"></i></div>
-          <div>
-            <span class="feature-tag" style="color:#00c8aa;">AI-Powered</span>
-            <div class="feature-title" style="font-size:24px;">AI Chatbot Inside Lessons</div>
-            <div class="feature-quote">"In-lesson support that reduces support load and increases learning speed."</div>
-            <p class="feature-desc" style="max-width:680px;">Students can ask questions directly inside a lesson and get AI-powered assistance. Generate summaries, content ideas, or clarifications — without leaving the learning environment. Less support tickets. Faster mastery.</p>
-          </div>
-        </div>
-        <span class="feature-num" style="right:36px; bottom:16px;">11</span>
-      </div>
-
+      <a href="{% if user.is_authenticated %}{% url 'student_dashboard' %}{% else %}{% url 'login' %}{% endif %}" class="btn btn-outline">Start Course →</a>
     </div>
-
-    <!-- Benefit Banner -->
-    <div class="benefit-banner fade-up">
-      <div class="banner-text">
-        <h3>One platform.<br/>Zero training chaos.</h3>
-        <p>Everything your team needs to learn, grow, and get certified — without scattered docs, outdated PDFs, or constant hand-holding from managers.</p>
+    <div class="cc featured">
+      <div class="cc-bg-num">02</div>
+      <span class="cc-cat">Marketing & Copywriting</span>
+      <div class="cc-title">Intro to<br>Direct Response</div>
+      <div class="cc-quote">"The right words to the right person at the right time — that's the business."</div>
+      <p class="cc-desc">Learn the foundational principles of direct-response marketing that drive real action. From headlines that hook to offers that convert — this is how persuasion actually works in real estate.</p>
+      <ul class="cc-feats">
+        <li>The psychology behind why people buy and how to write to it</li>
+        <li>Craft headlines, hooks, and offers that stop the scroll</li>
+        <li>Build campaigns with measurable, trackable responses</li>
+        <li>Apply proven frameworks to emails, ads, and landing pages</li>
+      </ul>
+      <div class="cc-meta">
+        <span>Video Lessons</span><span>AI Support</span><span>Self-Paced</span><span>Certificate</span>
       </div>
-      <div style="display:flex; flex-direction:column; gap:16px; min-width:280px;">
-        <div style="display:flex; align-items:center; gap:14px;">
-          <div style="width:40px;height:40px;border-radius:8px;background:rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;"><i class="fas fa-bolt"></i></div>
-          <div>
-            <div style="font-size:15px;font-weight:700;">Instant Setup</div>
-            <div style="font-size:13px;color:rgba(255,255,255,0.65);">Live in hours, not months</div>
-          </div>
-        </div>
-        <div style="display:flex; align-items:center; gap:14px;">
-          <div style="width:40px;height:40px;border-radius:8px;background:rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;"><i class="fas fa-users"></i></div>
-          <div>
-            <div style="font-size:15px;font-weight:700;">Scale With You</div>
-            <div style="font-size:13px;color:rgba(255,255,255,0.65);">5 employees or 5,000</div>
-          </div>
-        </div>
-        <div style="display:flex; align-items:center; gap:14px;">
-          <div style="width:40px;height:40px;border-radius:8px;background:rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;"><i class="fas fa-lock"></i></div>
-          <div>
-            <div style="font-size:15px;font-weight:700;">Enterprise Security</div>
-            <div style="font-size:13px;color:rgba(255,255,255,0.65);">Full audit trail & access control</div>
-          </div>
-        </div>
-      </div>
+      <a href="{% if user.is_authenticated %}{% url 'student_dashboard' %}{% else %}{% url 'login' %}{% endif %}" class="btn btn-solid">Start Course →</a>
     </div>
   </div>
 </section>
 
 <!-- HOW IT WORKS -->
-<section class="hiw-section" id="how">
-  <div class="max-w">
-    <span class="section-label">The Process</span>
-    <h2 class="section-title">From Zero to <span class="highlight">Certified</span><br/>in 4 Simple Steps.</h2>
-    <p class="section-sub">SOP Master is designed to be plug-and-play. Get your training system live faster than you think.</p>
+<section class="section how-section" id="how">
+  <div class="sec-header">
+    <div class="tag">The Process</div>
+    <h2 class="display" style="font-size:clamp(44px,5.5vw,72px);margin-top:16px;">From Enrolled<br><span>to Certified.</span></h2>
+  </div>
+  <div class="steps-grid">
+    <div class="step">
+      <span class="step-num">01</span>
+      <h3>Login & Access</h3>
+      <p>Once enrolled, your dashboard gives you instant access to all assigned programs. No confusion. Your journey is laid out clearly from day one.</p>
+    </div>
+    <div class="step">
+      <span class="step-num">02</span>
+      <h3>Learn at Your Pace</h3>
+      <p>Work through video lessons on your schedule. Progress is tracked automatically — resume right where you left off, every time.</p>
+    </div>
+    <div class="step">
+      <span class="step-num">03</span>
+      <h3>Test Your Knowledge</h3>
+      <p>Quizzes and final exams validate your understanding. Get AI-powered help directly inside lessons when you need clarity — no need to search elsewhere.</p>
+    </div>
+    <div class="step">
+      <span class="step-num">04</span>
+      <h3>Earn Certification</h3>
+      <p>Complete the program, pass the exam, and earn a verifiable certificate that proves your mastery — a real milestone worth celebrating.</p>
+    </div>
+  </div>
+</section>
 
-    <div class="steps-row fade-up">
-      <div class="step-item">
-        <div class="step-circle sc1">1</div>
-        <div class="step-title">Build Your Courses</div>
-        <p class="step-desc">Upload your SOPs, record or embed video lessons, and organize them into structured programs. No coding. No designers needed.</p>
-      </div>
-      <div class="step-item">
-        <div class="step-circle sc2">2</div>
-        <div class="step-title">Enroll Your Team</div>
-        <p class="step-desc">Add employees individually or in bulk. Assign specific programs, set access levels, and track every learner from day one.</p>
-      </div>
-      <div class="step-item">
-        <div class="step-circle sc3">3</div>
-        <div class="step-title">Learn & Get Tested</div>
-        <p class="step-desc">Employees complete lessons at their own pace, take quizzes, pass final exams, and earn certifications — all tracked automatically.</p>
-      </div>
-      <div class="step-item">
-        <div class="step-circle sc4">4</div>
-        <div class="step-title">Analyze & Improve</div>
-        <p class="step-desc">Use the analytics dashboard to see who's thriving, who needs support, and which content drives the highest completion rates.</p>
+<!-- FEATURES -->
+<section class="section features-section">
+  <div class="features-layout">
+    <div class="feat-img">
+      <img src="https://res.cloudinary.com/dcuswyfur/image/upload/v1773768365/Untitled_x8ehol.png" alt="Brian Moses">
+      <div class="frame"></div>
+    </div>
+    <div>
+      <div class="tag">Everything You Need</div>
+      <h2 class="display" style="font-size:clamp(40px,5vw,66px);margin-top:16px;margin-bottom:16px;">Built for<br><span>Results.</span></h2>
+      <p style="font-size:15px;line-height:1.8;color:var(--text-muted);">Everything you need, nothing you don't. Brian's platform keeps you moving forward — from first lesson to final exam and beyond.</p>
+      <div class="feats-list">
+        <div class="feat-item">Self-Paced Video Lessons</div>
+        <div class="feat-item">AI Chatbot in Every Lesson</div>
+        <div class="feat-item">Lesson Quizzes & Checks</div>
+        <div class="feat-item">Automatic Progress Tracking</div>
+        <div class="feat-item">Final Exams with Scoring</div>
+        <div class="feat-item">Certificates & Tiers</div>
+        <div class="feat-item">Favorites & Continue Learning</div>
+        <div class="feat-item">Analytics & Activity Feed</div>
       </div>
     </div>
   </div>
 </section>
+
+<!-- QUOTE BANNER -->
+<div class="quote-banner">
+  <div class="qb-bg"></div>
+  <div class="qb-inner">
+    <blockquote>"Don't hunt & chase business. <span>Become the one your market can't ignore.</span>"</blockquote>
+    <cite>— Brian Moses</cite>
+  </div>
+</div>
+
+
 
 <!-- TESTIMONIALS -->
-<section id="testimonials">
-  <div class="max-w">
-    <span class="section-label">Social Proof</span>
-    <h2 class="section-title">Teams That <span class="highlight">Trust</span><br/>SOP Master.</h2>
-
-    <div class="testi-grid fade-up">
-      <div class="testi-card">
-        <div class="testi-icon">"</div>
-        <div class="testi-stars">★★★★★</div>
-        <p class="testi-quote">We went from a Google Drive folder of PDFs to a fully certified team in under 3 weeks. The AI chatbot inside lessons alone cut our manager Q&A time by 60%.</p>
-        <div class="testi-author">
-          <div class="testi-avatar">MR</div>
-          <div>
-            <div class="testi-name">Marcus R.</div>
-            <div class="testi-role">Head of Operations, TechFlow Inc.</div>
-          </div>
-        </div>
-      </div>
-      <div class="testi-card">
-        <div class="testi-icon">"</div>
-        <div class="testi-stars">★★★★★</div>
-        <p class="testi-quote">The audit trail feature is a game-changer for us in compliance. I can see exactly who completed what and when — no spreadsheets, no guessing. Pure clarity.</p>
-        <div class="testi-author">
-          <div class="testi-avatar" style="background:linear-gradient(135deg,var(--yellow),var(--pink));">SL</div>
-          <div>
-            <div class="testi-name">Sandra L.</div>
-            <div class="testi-role">VP of People, Meridian Group</div>
-          </div>
-        </div>
-      </div>
-      <div class="testi-card">
-        <div class="testi-icon">"</div>
-        <div class="testi-stars">★★★★★</div>
-        <p class="testi-quote">Our onboarding used to take 2 weeks of back-and-forth. Now new hires complete the whole program on day one and come in already certified. It's incredible.</p>
-        <div class="testi-author">
-          <div class="testi-avatar" style="background:linear-gradient(135deg,var(--blue),var(--purple));">JK</div>
-          <div>
-            <div class="testi-name">Jordan K.</div>
-            <div class="testi-role">CEO, Apex Franchise Network</div>
-          </div>
-        </div>
-      </div>
+<section class="section testi-section" id="testimonials">
+  <div class="sec-header">
+    <div class="tag">What Learners Say</div>
+    <h2 class="display" style="font-size:clamp(44px,5.5vw,72px);margin-top:16px;">Real People.<br><span>Real Results.</span></h2>
+  </div>
+  <div class="testi-grid">
+    <div class="tc">
+      <div class="tc-stars">★★★★★</div>
+      <p class="tc-text">"I doubled my production in year one and tripled it the next. Brian's system gave me a framework I could actually follow and scale. Forever grateful."</p>
+      <div class="tc-div"></div>
+      <div class="tc-author"><div class="tc-av">AL</div><div><div class="tc-name">Anthony Lamacchia</div><div class="tc-role">Real Estate Broker</div></div></div>
+    </div>
+    <div class="tc">
+      <div class="tc-stars">★★★★★</div>
+      <p class="tc-text">"We generated 100 leads in 24 hours and 8 appointments booked. All of our team is so excited — Brian's methods deliver results fast."</p>
+      <div class="tc-div"></div>
+      <div class="tc-author"><div class="tc-av">AR</div><div><div class="tc-name">Andy Richardson</div><div class="tc-role">Team Leader</div></div></div>
+    </div>
+    <div class="tc">
+      <div class="tc-stars">★★★★★</div>
+      <p class="tc-text">"Brian was instrumental in helping me go from 40 deals a year to over 400. World-class coach. The system he teaches is the real deal."</p>
+      <div class="tc-div"></div>
+      <div class="tc-author"><div class="tc-av">BG</div><div><div class="tc-name">Brent Gove</div><div class="tc-role">Top-Producing Agent</div></div></div>
+    </div>
+    <div class="tc">
+      <div class="tc-stars">★★★★★</div>
+      <p class="tc-text">"Our team closed $700K in GCI last month. The frameworks Brian teaches translate directly into results. Can't recommend this enough."</p>
+      <div class="tc-div"></div>
+      <div class="tc-author"><div class="tc-av">NM</div><div><div class="tc-name">Nick McLean</div><div class="tc-role">Team Leader</div></div></div>
+    </div>
+    <div class="tc">
+      <div class="tc-stars">★★★★★</div>
+      <p class="tc-text">"I've been a student of Brian's for over 10 years. He's helped me grow my business and team exponentially. I'm forever grateful for his guidance."</p>
+      <div class="tc-div"></div>
+      <div class="tc-author"><div class="tc-av">JM</div><div><div class="tc-name">Jeremy Mellick</div><div class="tc-role">Agent & Team Builder</div></div></div>
+    </div>
+    <div class="tc">
+      <div class="tc-stars">★★★★★</div>
+      <p class="tc-text">"Over 20 years I've watched Brian consistently produce results for top agents across the country. If you want impact, Brian won't disappoint."</p>
+      <div class="tc-div"></div>
+      <div class="tc-author"><div class="tc-av">MW</div><div><div class="tc-name">Matt Wagner</div><div class="tc-role">RATE Mastermind Organizer</div></div></div>
     </div>
   </div>
 </section>
 
-<!-- BIG CTA -->
+<!-- CTA -->
 <section class="cta-section" id="cta">
-  <div class="max-w" style="padding: 20px 0;">
-    <span class="cta-eyebrow">Ready to Transform Training?</span>
-    <h2 class="cta-title">
-      Stop Losing Money<br/>
-      to <span class="highlight">Undertrained</span> Teams.
-    </h2>
-    <p class="cta-sub">Every day without a structured training system is money left on the table. SOP Master fixes that — fast.</p>
-    <div class="cta-buttons">
-      <a href="{% if user.is_authenticated %}{% url 'student_dashboard' %}{% else %}{% url 'login' %}{% endif %}" class="btn-primary" style="font-size:17px; padding:18px 44px; box-shadow:0 0 50px rgba(228,23,126,0.5);">
-        <i class="fas fa-rocket"></i> {% if user.is_authenticated %}Dashboard{% else %}Login{% endif %}
-      </a>
-      <a href="https://l.katalyst-crm.com/widget/booking/ERmZ1PwevEVlGjdq1eUm" class="btn-secondary" style="font-size:17px; padding:18px 36px;" target="_blank" rel="noopener noreferrer">
-        <i class="fas fa-calendar-alt"></i> Book a Demo
-      </a>
-    </div>
-    <p style="font-size:13px; color:rgba(255,255,255,0.35); margin-top:24px; letter-spacing:0.3px;">No credit card required &nbsp;·&nbsp; Setup in under an hour &nbsp;·&nbsp; Cancel anytime</p>
+  <div class="cta-tag"><div class="tag">Ready to Begin?</div></div>
+  <h2 class="display">Your Growth<br><span>Starts Here.</span></h2>
+  <p>Two courses. Unlimited potential. Start learning today and earn your certification at your own pace.</p>
+  <div class="cta-actions">
+    <a href="{% if user.is_authenticated %}{% url 'student_dashboard' %}{% else %}{% url 'login' %}{% endif %}" class="btn btn-solid">{% if user.is_authenticated %}Go to Dashboard{% else %}Login to Start{% endif %}</a>
+    <a href="mailto:Brian@BrianMoses.com" class="btn btn-outline">Book a Demo</a>
   </div>
+  <div class="cta-note">No credit card required <span>·</span> Self-paced <span>·</span> Cancel anytime</div>
 </section>
 
 <!-- FOOTER -->
-<div class="color-bar"></div>
 <footer>
-  <div class="footer-inner">
-    <div>
-      <div class="footer-logo">SOP<span>Master</span></div>
-      <div class="footer-tagline">Train Smarter. Scale Faster. Deliver Results.</div>
+  <div class="footer-top">
+    <div class="footer-brand">
+      <img src="https://www.brianmoses.com/_next/image?url=%2Fimages%2Fmain%20logo-coaching-white.png&w=256&q=75" alt="Brian Moses">
+      <p>Clarity. Mastery. Results. Brian Moses Training helps real estate professionals build predictable, profitable businesses through proven systems and mindset mastery.</p>
     </div>
-    <div class="footer-links">
-      <a href="#">Features</a>
-      <a href="#">How It Works</a>
+    <div class="footer-col">
+      <h4>Courses</h4>
+      <a href="#">Emotional Mastery</a>
+      <a href="#">Intro to Direct Response</a>
+      <a href="#">All Programs</a>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <a href="#">About Brian</a>
       <a href="#">Testimonials</a>
-      <a href="#">Privacy Policy</a>
-      <a href="#">Terms of Service</a>
+      <a href="#">Speaking</a>
+      <a href="#">1-on-1 Coaching</a>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <a href="mailto:Brian@BrianMoses.com">Brian@BrianMoses.com</a>
+      <a href="tel:+16038601104">+1 (603) 860-1104</a>
     </div>
   </div>
-  <div class="footer-copy">© 2025 SOP Master. All rights reserved. Built to elevate teams everywhere.</div>
+  <div class="footer-bottom">
+    <span>© 2026 Brian Moses Coaching & Speaking. All rights reserved.</span>
+    <div class="fbl">
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms of Service</a>
+      <a href="#">Earnings Disclaimer</a>
+    </div>
+  </div>
 </footer>
 
-<script>
-  // Scroll fade-in
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-      if (e.isIntersecting) {
-        e.target.classList.add('visible');
-      }
-    });
-  }, { threshold: 0.1 });
-
-  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
-
-  // Staggered feature cards
-  document.querySelectorAll('.feature-card').forEach((card, i) => {
-    card.style.transitionDelay = `${i * 60}ms`;
-    card.classList.add('fade-up');
-    observer.observe(card);
-  });
-</script>
 </body>
 </html>

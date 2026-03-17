@@ -1,4 +1,4 @@
-// Main JavaScript for S.O.P Master
+// Main JavaScript for Line Training
 
 // Smooth scrolling
 document.addEventListener('DOMContentLoaded', function() {
