@@ -4,630 +4,896 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login — Brian Moses Training</title>
+    <title>Login — BrightPath Ventures</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;500;600;700;800;900&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
 
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
         :root {
-            --blue:       #2F67E8;
-            --blue-light: #5E8FFF;
-            --blue-dim:   rgba(47,103,232,0.15);
-            --blue-border:rgba(47,103,232,0.28);
-            --white:      #EEF2FF;
-            --off-white:  #B8C8EE;
-            --dark:       #05080F;
-            --dark-2:     #07091A;
-            --dark-3:     #0A0E1E;
-            --mid:        #101628;
-            --mid-2:      #161D36;
-            --text-muted: #4A5A80;
-            --border:     rgba(255,255,255,0.06);
-            --danger:     #FF3B5C;
+            --aqua:      #0D8D9F;
+            --aqua-hi:   #12B5CA;
+            --aqua-dim:  rgba(13,141,159,0.10);
+            --aqua-glow: rgba(13,141,159,0.30);
+            --teal:      #004F68;
+            --gold:      #C4762A;
+            --gold-hi:   #E8901F;
+            --ink:       #03050C;
+            --ink-2:     #05080F;
+            --ink-3:     #060A14;
+            --panel:     #04111A;
+            --cream:     #F0EDE7;
+            --muted:     rgba(255,255,255,0.22);
+            --dimmer:    rgba(255,255,255,0.10);
+            --border:    rgba(255,255,255,0.055);
+            --serif:     'DM Serif Display', Georgia, serif;
+            --sans:      'Outfit', sans-serif;
         }
+
+        html, body { height: 100%; }
 
         body {
-            font-family: 'Inter', sans-serif;
-            background: var(--dark);
-            min-height: 100vh;
-            overflow: hidden;
+            font-family: var(--sans);
+            background: var(--ink);
             color: #fff;
+            overflow: hidden;
+            cursor: none;
         }
 
-        /* ── LAYOUT ── */
+        /* ── GRAIN ── */
+        body::before {
+            content: '';
+            position: fixed; inset: 0; z-index: 9001;
+            pointer-events: none;
+            opacity: 0.55;
+            mix-blend-mode: soft-light;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23g)' opacity='0.08'/%3E%3C/svg%3E");
+        }
+
+        /* ── CURSOR ── */
+        #c-dot {
+            position: fixed; z-index: 9999; pointer-events: none;
+            width: 7px; height: 7px; border-radius: 50%;
+            background: var(--aqua-hi);
+            transform: translate(-50%,-50%);
+            transition: width .2s, height .2s, background .3s;
+            mix-blend-mode: screen;
+        }
+        #c-ring {
+            position: fixed; z-index: 9998; pointer-events: none;
+            width: 36px; height: 36px; border-radius: 50%;
+            border: 1px solid rgba(13,141,159,0.35);
+            transform: translate(-50%,-50%);
+            transition: width .4s cubic-bezier(.16,1,.3,1), height .4s cubic-bezier(.16,1,.3,1), border-color .3s;
+        }
+        .hov #c-dot  { width: 14px; height: 14px; background: var(--gold-hi); }
+        .hov #c-ring { width: 60px; height: 60px; border-color: rgba(196,118,42,0.3); }
+
+        /* ══════════════════════════════════
+           PAGE GRID
+        ══════════════════════════════════ */
         .page {
             display: grid;
-            grid-template-columns: 1.2fr 1fr;
-            min-height: 100vh;
+            grid-template-columns: 55% 45%;
+            height: 100vh;
         }
 
-        /* ── LEFT PANEL ── */
-        .left-panel {
+        /* ══════════════════════════════════
+           LEFT — IMMERSIVE BRAND PANEL
+        ══════════════════════════════════ */
+        .L {
             position: relative;
             overflow: hidden;
-            background: var(--dark-2);
+            background: var(--ink-2);
         }
 
-        .left-bg {
+        /* Photo */
+        .L-photo {
             position: absolute; inset: 0;
-            background-image: url('https://res.cloudinary.com/dcuswyfur/image/upload/v1773768367/Frame_1000007769_r4mues.png');
-            background-size: cover;
-            background-position: 70% center;
-            filter: brightness(0.55) contrast(1.1) saturate(0.8);
+            background: url('{% static "images/hero-bg.jpg" %}') center/cover no-repeat;
+            filter: brightness(.38) saturate(.6) contrast(1.1);
+            transform: scale(1.06);
+            transition: transform 16s ease-out;
+            will-change: transform;
+        }
+        .L-photo.on { transform: scale(1); }
+
+        /* Rich layered vignette */
+        .L-vignette {
+            position: absolute; inset: 0;
+            background:
+                linear-gradient(100deg,  rgba(3,5,12,1)    0%,
+                                         rgba(3,5,12,.82)  30%,
+                                         rgba(3,5,12,.35)  65%,
+                                         rgba(3,5,12,.05) 100%),
+                linear-gradient(to bottom,rgba(3,5,12,.7) 0%, transparent 25%, rgba(3,5,12,.88) 100%);
         }
 
-        /* Blue overlay tint to tie into brand */
-        .left-tint {
-            position: absolute; inset: 0;
-            background: linear-gradient(
-                135deg,
-                rgba(5,8,15,0.82) 0%,
-                rgba(47,103,232,0.08) 60%,
-                rgba(5,8,15,0.75) 100%
+        /* Subtle horizontal scan lines */
+        .L-scan {
+            position: absolute; inset: 0; pointer-events: none;
+            background: repeating-linear-gradient(
+                180deg,
+                transparent 0px, transparent 2px,
+                rgba(255,255,255,.006) 2px, rgba(255,255,255,.006) 3px
             );
         }
 
-        /* Vertical blue accent line */
-        .left-accent-line {
-            position: absolute;
-            top: 0; bottom: 0; left: 0;
-            width: 3px;
-            background: linear-gradient(to bottom, transparent, var(--blue), transparent);
-            opacity: 0.7;
+        /* Teal mesh only on right half of left panel */
+        .L-mesh {
+            position: absolute; inset: 0; pointer-events: none;
+            background-image:
+                linear-gradient(rgba(13,141,159,.035) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(13,141,159,.035) 1px, transparent 1px);
+            background-size: 64px 64px;
+            -webkit-mask-image: radial-gradient(ellipse 55% 90% at 90% 50%, black 0%, transparent 70%);
+            mask-image:         radial-gradient(ellipse 55% 90% at 90% 50%, black 0%, transparent 70%);
         }
 
-        .left-content {
-            position: relative; z-index: 2;
+        /* Left border accent — glowing rail */
+        .L-rail {
+            position: absolute; top: 0; bottom: 0; left: 0;
+            width: 1px;
+            background: linear-gradient(180deg,
+                transparent 0%, var(--aqua) 30%, var(--aqua-hi) 55%, var(--aqua) 80%, transparent 100%);
+            opacity: .5;
+        }
+
+        /* Ambient orbs */
+        .L-orb {
+            position: absolute; border-radius: 50%; pointer-events: none;
+        }
+        .orb-1 {
+            width: 600px; height: 600px;
+            bottom: -160px; left: -160px;
+            background: radial-gradient(circle, rgba(13,141,159,.14) 0%, transparent 62%);
+            animation: breathe 12s ease-in-out infinite;
+        }
+        .orb-2 {
+            width: 380px; height: 380px;
+            top: -80px; right: -40px;
+            background: radial-gradient(circle, rgba(0,79,104,.12) 0%, transparent 65%);
+            animation: breathe 18s ease-in-out infinite reverse 4s;
+        }
+        .orb-3 {
+            width: 200px; height: 200px;
+            top: 42%; left: 52%;
+            background: radial-gradient(circle, rgba(196,118,42,.06) 0%, transparent 65%);
+            animation: breathe 9s ease-in-out infinite 2s;
+        }
+        @keyframes breathe {
+            0%,100% { transform: scale(1);   opacity: .7; }
+            50%      { transform: scale(1.1); opacity: 1;  }
+        }
+
+        /* ── LEFT CONTENT ── */
+        .L-inner {
+            position: relative; z-index: 4;
             height: 100%;
             display: flex; flex-direction: column;
             justify-content: space-between;
-            padding: 52px 60px;
+            padding: 52px 60px 48px;
         }
 
-        /* Top bar */
-        .top-rule {
-            height: 2px; width: 48px;
-            background: var(--blue);
-            margin-bottom: 20px;
+        /* Logo */
+        .brand-link {
+            display: inline-flex; align-items: center; gap: 12px;
+            text-decoration: none;
+        }
+        .brand-mark { width: 38px; height: 38px; flex-shrink: 0; }
+        .brand-name {
+            font-family: var(--sans);
+            font-size: 18px; font-weight: 700;
+            letter-spacing: -.02em;
+            color: #fff;
+        }
+        .brand-name em { font-style: normal; color: var(--aqua-hi); }
+
+        /* Rule + kicker */
+        .kicker-wrap { margin-bottom: 32px; }
+        .kicker-rule {
+            width: 32px; height: 1px;
+            background: var(--aqua); margin-bottom: 20px;
             position: relative; overflow: hidden;
         }
-        .top-rule::after {
+        .kicker-rule::after {
             content: '';
-            position: absolute; top: 0; left: -100%;
-            width: 100%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
-            animation: shimmer 3s ease-in-out infinite;
+            position: absolute; inset: 0;
+            background: linear-gradient(90deg, transparent, #fff, transparent);
+            animation: sweep 3.5s ease-in-out infinite;
         }
-        @keyframes shimmer {
-            0% { left: -100%; }
-            50%, 100% { left: 100%; }
-        }
+        @keyframes sweep { 0%{left:-100%} 60%,100%{left:200%} }
 
-        .left-logo {
+        .kicker {
+            font-size: 10px; font-weight: 700;
+            letter-spacing: .32em; text-transform: uppercase;
+            color: var(--aqua-hi);
             display: flex; align-items: center; gap: 12px;
         }
-        .left-logo img { height: 38px; }
+        .kicker::before {
+            content: '';
+            display: block; width: 22px; height: 1px;
+            background: var(--aqua-hi); flex-shrink: 0;
+        }
 
         /* Main headline */
-        .left-headline {
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: clamp(52px, 5.5vw, 80px);
-            letter-spacing: 0.02em;
-            line-height: 0.95;
-            color: var(--white);
-            margin-bottom: 20px;
-        }
-        .left-headline span { color: var(--blue-light); }
-
-        .left-sub {
-            font-size: 15px;
-            color: rgba(255,255,255,0.55);
-            line-height: 1.75;
-            max-width: 380px;
-            margin-bottom: 48px;
+        .L-headline {
+            font-family: var(--serif);
+            font-size: clamp(44px, 4.8vw, 76px);
+            line-height: .93;
+            letter-spacing: -.025em;
             font-weight: 400;
+            color: #fff;
+            margin-bottom: 22px;
+        }
+        .L-headline .ghost {
+            display: block;
+            color: transparent;
+            -webkit-text-stroke: 1px rgba(255,255,255,.2);
+            font-style: italic;
+        }
+        .L-headline .vivid { display: block; color: var(--aqua-hi); }
+
+        .L-sub {
+            font-size: 14px; font-weight: 300;
+            color: rgba(255,255,255,.36);
+            line-height: 1.85; max-width: 340px;
+            margin-bottom: 48px;
         }
 
         /* Feature cards */
-        .feature-grid {
-            display: grid;
-            gap: 10px;
-        }
+        .features { display: flex; flex-direction: column; gap: 1px; }
 
-        .feature-card {
-            display: flex;
-            align-items: flex-start;
-            gap: 16px;
-            background: rgba(255,255,255,0.02);
-            border: 1px solid var(--border);
-            padding: 18px 20px;
-            transition: border-color 0.3s, transform 0.2s;
+        .feat {
+            display: flex; align-items: flex-start; gap: 18px;
+            padding: 18px 22px;
+            background: rgba(255,255,255,.016);
+            border-left: 2px solid transparent;
+            position: relative; overflow: hidden;
+            transition: background .3s, border-color .3s, transform .25s;
         }
-
-        .feature-card:hover {
-            border-color: var(--blue-border);
-            transform: translateX(4px);
+        .feat::after {
+            content: '';
+            position: absolute; inset: 0;
+            background: linear-gradient(90deg, rgba(13,141,159,.07) 0%, transparent 55%);
+            opacity: 0; transition: opacity .3s;
         }
+        .feat:hover {
+            background: rgba(13,141,159,.045);
+            border-left-color: var(--aqua);
+            transform: translateX(5px);
+        }
+        .feat:hover::after { opacity: 1; }
 
-        .feature-icon {
-            width: 38px; height: 38px;
+        .feat-ico {
+            width: 38px; height: 38px; flex-shrink: 0;
             display: flex; align-items: center; justify-content: center;
-            font-size: 15px;
-            flex-shrink: 0;
-            background: var(--blue-dim);
-            color: var(--blue-light);
+            font-size: 14px;
+            background: var(--aqua-dim);
+            color: var(--aqua-hi);
+            box-shadow: inset 0 0 0 1px rgba(13,141,159,.18);
         }
-
-        .feature-title {
-            font-family: 'Rajdhani', sans-serif;
-            font-size: 14px; font-weight: 700;
-            letter-spacing: 0.06em; text-transform: uppercase;
-            color: rgba(255,255,255,0.85);
+        .feat-title {
+            font-size: 12px; font-weight: 700;
+            letter-spacing: .08em; text-transform: uppercase;
+            color: rgba(255,255,255,.78);
             margin-bottom: 3px;
         }
-
-        .feature-desc {
-            font-size: 12px;
-            color: var(--text-muted);
-            font-weight: 400;
+        .feat-desc {
+            font-size: 12px; font-weight: 300;
+            color: rgba(255,255,255,.25);
             line-height: 1.5;
         }
 
-        .left-footer {
-            font-family: 'Rajdhani', sans-serif;
-            font-size: 11px;
-            font-weight: 600;
-            letter-spacing: 0.2em;
-            text-transform: uppercase;
-            color: rgba(255,255,255,0.2);
+        /* Stats */
+        .stats {
+            display: flex; gap: 0;
+            margin-top: 40px;
+            border-top: 1px solid rgba(255,255,255,.05);
+            padding-top: 28px;
         }
-
-        /* ── RIGHT PANEL ── */
-        .right-panel {
-            background: var(--dark-3);
-            display: flex; align-items: center; justify-content: center;
-            padding: 56px 72px;
-            position: relative;
-            overflow: hidden;
-            border-left: 1px solid var(--border);
+        .stat {
+            flex: 1;
+            padding-right: 24px;
+            border-right: 1px solid rgba(255,255,255,.06);
+            margin-right: 24px;
         }
-
-        .right-panel::before {
-            content: '';
-            position: absolute;
-            top: -120px; right: -120px;
-            width: 360px; height: 360px;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(47,103,232,0.07) 0%, transparent 70%);
-            animation: float 20s ease-in-out infinite;
+        .stat:last-child { border-right: none; margin-right: 0; padding-right: 0; }
+        .stat-n {
+            font-family: var(--serif);
+            font-size: 34px; font-weight: 400;
+            color: #fff; letter-spacing: -.03em; line-height: 1;
         }
-
-        .right-panel::after {
-            content: '';
-            position: absolute;
-            bottom: -80px; left: -80px;
-            width: 260px; height: 260px;
-            background: radial-gradient(circle, rgba(94,143,255,0.05) 0%, transparent 70%);
-            border-radius: 50%;
-            animation: float 28s ease-in-out infinite reverse;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
-        }
-
-        .right-inner {
-            width: 100%;
-            max-width: 420px;
-            position: relative; z-index: 2;
-            animation: slideInUp 0.7s cubic-bezier(0.4, 0, 0.2, 1) both;
-        }
-
-        @keyframes slideInUp {
-            from { opacity: 0; transform: translateY(28px); }
-            to   { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Right header */
-        .right-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 52px;
-        }
-
-        .session-label {
-            font-family: 'Rajdhani', sans-serif;
-            font-size: 11px; font-weight: 600;
-            letter-spacing: 0.25em; text-transform: uppercase;
-            color: var(--text-muted);
-        }
-
-        .progress-dots { display: flex; gap: 8px; }
-        .progress-dot {
-            width: 28px; height: 2px;
-            background: var(--border);
-            transition: all 0.3s;
-        }
-        .progress-dot.active {
-            background: var(--blue);
-            box-shadow: 0 0 10px rgba(47,103,232,0.5);
-        }
-
-        /* Form heading */
-        .form-title {
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 54px;
-            letter-spacing: 0.02em;
-            line-height: 0.95;
-            color: var(--white);
-            margin-bottom: 10px;
-        }
-        .form-title span { color: var(--blue-light); }
-
-        .form-subtitle {
-            font-size: 14px;
-            color: var(--text-muted);
-            margin-bottom: 44px;
-            line-height: 1.6;
-            max-width: 340px;
-        }
-
-        /* Fields */
-        .field-group { margin-bottom: 22px; }
-
-        .field-label {
-            font-family: 'Rajdhani', sans-serif;
-            font-size: 11px; font-weight: 700;
-            letter-spacing: 0.22em; text-transform: uppercase;
-            color: rgba(255,255,255,0.4);
-            margin-bottom: 10px; display: block;
-        }
-
-        .field-container { position: relative; }
-
-        .field-icon {
-            position: absolute; left: 18px; top: 50%;
-            transform: translateY(-50%);
-            font-size: 14px; color: var(--text-muted);
-            transition: color 0.3s;
-            pointer-events: none;
-        }
-
-        .field-input {
-            width: 100%;
-            padding: 16px 18px 16px 48px;
-            background: rgba(255,255,255,0.02);
-            border: 1px solid var(--border);
-            color: var(--white);
-            font-size: 15px;
-            font-family: 'Inter', sans-serif;
-            outline: none;
-            transition: all 0.25s;
-        }
-
-        .field-input::placeholder { color: var(--text-muted); }
-
-        .field-input:focus {
-            border-color: var(--blue-border);
-            background: rgba(47,103,232,0.03);
-            box-shadow: 0 0 0 3px rgba(47,103,232,0.08);
-        }
-
-        .field-container:focus-within .field-icon { color: var(--blue-light); }
-
-        .toggle-visibility {
-            position: absolute; right: 16px; top: 50%;
-            transform: translateY(-50%);
-            background: none; border: none; cursor: pointer;
-            color: var(--text-muted); font-size: 14px;
-            transition: color 0.2s; padding: 6px;
-        }
-        .toggle-visibility:hover { color: var(--off-white); }
-
-        /* Options */
-        .form-options {
-            display: flex; align-items: center; justify-content: space-between;
-            margin-bottom: 32px;
-        }
-
-        .remember-option {
-            display: flex; align-items: center; gap: 10px; cursor: pointer;
-        }
-        .remember-option input[type="checkbox"] {
-            width: 16px; height: 16px;
-            accent-color: var(--blue); cursor: pointer;
-        }
-        .remember-option span {
-            font-size: 13px; color: var(--text-muted);
-        }
-
-        .forgot-password {
-            font-size: 13px; font-weight: 500;
-            color: var(--text-muted); text-decoration: none;
-            transition: color 0.2s;
-        }
-        .forgot-password:hover { color: var(--blue-light); }
-
-        /* Submit */
-        .submit-btn {
-            width: 100%;
-            padding: 18px;
-            background: var(--blue);
-            color: #fff;
-            font-family: 'Rajdhani', sans-serif;
-            font-size: 14px; font-weight: 700;
-            letter-spacing: 0.22em; text-transform: uppercase;
-            border: none; cursor: pointer;
-            display: flex; align-items: center; justify-content: center; gap: 12px;
-            transition: all 0.25s;
-            box-shadow: 0 6px 28px rgba(47,103,232,0.28);
-            position: relative; overflow: hidden;
-        }
-
-        .submit-btn::before {
-            content: '';
-            position: absolute; inset: 0;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent);
-            transform: translateX(-100%);
-            transition: transform 0.5s ease;
-        }
-
-        .submit-btn:hover {
-            background: var(--blue-light);
-            transform: translateY(-2px);
-            box-shadow: 0 10px 36px rgba(47,103,232,0.38);
-        }
-        .submit-btn:hover::before { transform: translateX(100%); }
-        .submit-btn:active { transform: translateY(0); }
-
-        /* Error */
-        .error-alert {
-            background: rgba(255,59,92,0.07);
-            border: 1px solid rgba(255,59,92,0.2);
-            padding: 14px 18px;
-            display: flex; align-items: center; gap: 12px;
-            color: #ff8fa3; font-size: 13px;
-            margin-bottom: 24px;
-        }
-
-        /* Divider */
-        .section-divider {
-            display: flex; align-items: center; gap: 16px;
-            margin: 28px 0;
-        }
-        .divider-line { flex: 1; height: 1px; background: var(--border); }
-        .divider-text {
-            font-family: 'Rajdhani', sans-serif;
-            font-size: 11px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase;
-            color: var(--text-muted); white-space: nowrap;
+        .stat-n sup { font-size: 16px; color: var(--aqua-hi); vertical-align: super; }
+        .stat-l {
+            font-size: 9px; font-weight: 600;
+            letter-spacing: .22em; text-transform: uppercase;
+            color: rgba(255,255,255,.22);
+            margin-top: 5px;
         }
 
         /* Footer */
-        .form-footer {
+        .L-foot {
+            font-size: 9px; font-weight: 500;
+            letter-spacing: .22em; text-transform: uppercase;
+            color: rgba(255,255,255,.12);
+        }
+
+        /* Animate in */
+        .L-center { animation: riseUp .9s .25s cubic-bezier(.16,1,.3,1) both; }
+        .stats     { animation: riseUp  1s .45s cubic-bezier(.16,1,.3,1) both; }
+        @keyframes riseUp {
+            from { opacity:0; transform:translateY(28px); }
+            to   { opacity:1; transform:translateY(0); }
+        }
+
+        /* ══════════════════════════════════
+           RIGHT — LOGIN FORM
+        ══════════════════════════════════ */
+        .R {
+            position: relative;
+            background: linear-gradient(160deg, #04131F 0%, #04111A 50%, #050E18 100%);
+            display: flex; align-items: center; justify-content: center;
+            padding: 48px 64px;
+            overflow: hidden;
+            border-left: 1px solid rgba(13,141,159,0.1);
+        }
+
+        /* Soft orb glows */
+        .R::before {
+            content: '';
+            position: absolute; top: -180px; right: -180px;
+            width: 460px; height: 460px; border-radius: 50%;
+            background: radial-gradient(circle, rgba(13,141,159,.13) 0%, transparent 65%);
+            animation: drift 26s ease-in-out infinite;
+            pointer-events: none;
+        }
+        .R::after {
+            content: '';
+            position: absolute; bottom: -120px; left: -80px;
+            width: 340px; height: 340px; border-radius: 50%;
+            background: radial-gradient(circle, rgba(0,79,104,.12) 0%, transparent 65%);
+            animation: drift 34s ease-in-out infinite reverse;
+            pointer-events: none;
+        }
+        @keyframes drift {
+            0%,100% { transform: translate(0,0) scale(1);    }
+            50%      { transform: translate(-16px,14px) scale(1.04); }
+        }
+
+        /* Top gradient line */
+        .R-topline {
+            position: absolute; top: 0; left: 10%; right: 10%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(13,141,159,.5), transparent);
+        }
+
+        .R-inner {
+            width: 100%; max-width: 380px;
+            position: relative; z-index: 2;
+            animation: riseUp .85s .1s cubic-bezier(.16,1,.3,1) both;
+        }
+
+        /* ── TOP BAR ── */
+        .R-bar {
+            display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 56px;
+        }
+        .secure-pill {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: rgba(13,141,159,.08);
+            border: 1px solid rgba(13,141,159,.15);
+            padding: 7px 14px;
+            font-size: 9px; font-weight: 700;
+            letter-spacing: .28em; text-transform: uppercase;
+            color: var(--aqua-hi);
+        }
+        .secure-pip {
+            width: 5px; height: 5px; border-radius: 50%;
+            background: var(--aqua-hi);
+            animation: pip 2.4s ease-in-out infinite;
+        }
+        @keyframes pip { 0%,100%{opacity:1} 50%{opacity:.18} }
+
+        .pips { display: flex; gap: 5px; }
+        .pip {
+            width: 22px; height: 2px;
+            background: rgba(255,255,255,.08);
+            transition: all .3s;
+        }
+        .pip.lit {
+            background: var(--aqua);
+            box-shadow: 0 0 6px var(--aqua-glow);
+        }
+
+        /* ── HEADING ── */
+        .form-head {
+            font-family: var(--serif);
+            font-size: 68px; font-weight: 400;
+            line-height: .88; letter-spacing: -.025em;
+            color: #fff;
+            margin-bottom: 14px;
+        }
+        .form-head .accent { color: var(--aqua-hi); font-style: italic; }
+
+        .form-tagline {
+            font-size: 14px; font-weight: 300;
+            color: rgba(255,255,255,.3);
+            line-height: 1.75; max-width: 300px;
+            margin-bottom: 44px;
+        }
+
+        /* ── ERRORS ── */
+        .err-box {
+            display: flex; align-items: flex-start; gap: 12px;
+            background: rgba(255,59,92,.055);
+            border: 1px solid rgba(255,59,92,.18);
+            padding: 14px 16px;
+            margin-bottom: 24px;
+            font-size: 13px; font-weight: 300;
+            color: #ff8fa3; line-height: 1.5;
+        }
+        .err-box i { flex-shrink: 0; margin-top: 1px; font-size: 12px; }
+
+        /* ── FIELDS ── */
+        .fld { margin-bottom: 20px; }
+
+        .fld-label {
+            display: block;
+            font-size: 9px; font-weight: 700;
+            letter-spacing: .32em; text-transform: uppercase;
+            color: rgba(255,255,255,.25);
+            margin-bottom: 9px;
+        }
+
+        .fld-wrap { position: relative; }
+
+        .fld-ico {
+            position: absolute; left: 16px; top: 50%;
+            transform: translateY(-50%);
+            font-size: 12px; color: rgba(255,255,255,.18);
+            pointer-events: none;
+            transition: color .25s;
+        }
+
+        .fld-input {
+            width: 100%;
+            padding: 16px 16px 16px 44px;
+            background: rgba(255,255,255,.028);
+            border: 1px solid rgba(255,255,255,.07);
+            color: #fff;
+            font-family: var(--sans);
+            font-size: 15px; font-weight: 300;
+            letter-spacing: .01em;
+            outline: none;
+            border-radius: 0;
+            transition: background .25s, border-color .25s, box-shadow .25s;
+        }
+        .fld-input::placeholder { color: rgba(255,255,255,.14); }
+        .fld-input:focus {
+            background: rgba(13,141,159,.04);
+            border-color: rgba(13,141,159,.42);
+            box-shadow:
+                0 0 0 3px rgba(13,141,159,.07),
+                inset 0 0 0 1px rgba(13,141,159,.08);
+        }
+        .fld-wrap:focus-within .fld-ico { color: var(--aqua-hi); }
+
+        /* Underline sweep */
+        .fld-line {
+            height: 1px; margin-top: -1px;
+            background: linear-gradient(90deg, var(--aqua), var(--aqua-hi));
+            transform: scaleX(0); transform-origin: left;
+            transition: transform .4s cubic-bezier(.16,1,.3,1);
+        }
+        .fld-wrap:focus-within ~ .fld-line { transform: scaleX(1); }
+
+        .eye-btn {
+            position: absolute; right: 12px; top: 50%;
+            transform: translateY(-50%);
+            background: none; border: none; cursor: none;
+            color: rgba(255,255,255,.2); font-size: 12px;
+            padding: 6px; transition: color .2s;
+        }
+        .eye-btn:hover { color: rgba(255,255,255,.6); }
+
+        /* ── OPTIONS ── */
+        .opts {
+            display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 32px;
+        }
+        .rem {
+            display: flex; align-items: center; gap: 9px;
+            cursor: none;
+        }
+        .rem input { width: 13px; height: 13px; accent-color: var(--aqua); cursor: pointer; }
+        .rem span { font-size: 12px; font-weight: 300; color: rgba(255,255,255,.28); }
+
+        .forgot-link {
+            font-size: 12px; font-weight: 400;
+            color: rgba(255,255,255,.22);
+            text-decoration: none;
+            transition: color .2s;
+        }
+        .forgot-link:hover { color: var(--aqua-hi); }
+
+        /* ── SUBMIT ── */
+        .go-btn {
+            width: 100%; padding: 18px 24px;
+            background: var(--aqua);
+            color: var(--ink);
+            font-family: var(--sans);
+            font-size: 12px; font-weight: 800;
+            letter-spacing: .28em; text-transform: uppercase;
+            border: none; cursor: none;
+            display: flex; align-items: center; justify-content: center; gap: 14px;
+            position: relative; overflow: hidden;
+            transition: background .25s, box-shadow .3s, transform .3s cubic-bezier(.16,1,.3,1);
+        }
+        /* Shimmer */
+        .go-btn::before {
+            content: '';
+            position: absolute; inset: 0;
+            background: linear-gradient(105deg, transparent 25%, rgba(255,255,255,.18) 50%, transparent 75%);
+            transform: translateX(-130%);
+            transition: transform .7s ease;
+        }
+        .go-btn:hover {
+            background: var(--aqua-hi);
+            box-shadow: 0 12px 48px rgba(13,141,159,.45), 0 0 0 1px rgba(18,181,202,.18);
+            transform: translateY(-3px);
+        }
+        .go-btn:hover::before { transform: translateX(130%); }
+        .go-btn:active { transform: translateY(0); box-shadow: none; }
+
+        /* ── DIVIDER ── */
+        .divider {
+            display: flex; align-items: center; gap: 14px;
+            margin: 28px 0;
+        }
+        .div-line { flex: 1; height: 1px; background: rgba(255,255,255,.05); }
+        .div-txt {
+            font-size: 9px; font-weight: 700;
+            letter-spacing: .28em; text-transform: uppercase;
+            color: rgba(255,255,255,.14); white-space: nowrap;
+        }
+
+        /* ── FORM FOOTER ── */
+        .form-foot {
             text-align: center;
-            font-size: 13px; color: var(--text-muted);
+            font-size: 13px; font-weight: 300;
+            color: rgba(255,255,255,.2);
         }
-        .form-footer a {
-            color: var(--off-white); font-weight: 500;
-            text-decoration: none; transition: color 0.2s;
+        .form-foot a {
+            color: rgba(255,255,255,.4);
+            text-decoration: none; font-weight: 400;
+            transition: color .2s;
         }
-        .form-footer a:hover { color: var(--blue-light); }
+        .form-foot a:hover { color: var(--aqua-hi); }
 
-        .security-badge {
-            display: flex; align-items: center; justify-content: center; gap: 8px;
-            margin-top: 28px;
-            font-family: 'Rajdhani', sans-serif;
-            font-size: 11px; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase;
-            color: rgba(255,255,255,0.18);
+        /* ── SECURITY ── */
+        .sec-row {
+            display: flex; align-items: center; justify-content: center; gap: 7px;
+            margin-top: 24px;
+            font-size: 9px; font-weight: 600;
+            letter-spacing: .2em; text-transform: uppercase;
+            color: rgba(255,255,255,.1);
         }
-        .security-badge i { color: var(--blue); font-size: 10px; }
+        .sec-row i { font-size: 9px; color: var(--aqua); }
+        .sec-dot { color: rgba(255,255,255,.1); }
 
-        /* Responsive */
-        @media (max-width: 1024px) {
+        /* ══════════════════════════════════
+           RESPONSIVE
+        ══════════════════════════════════ */
+        @media (max-width: 1060px) {
             .page { grid-template-columns: 1fr; }
-            .left-panel { display: none; }
-            .right-panel { padding: 48px 32px; }
+            .L { display: none; }
+            .R { padding: 48px 32px; }
+        }
+        @media (max-width: 480px) {
+            .R { padding: 36px 20px; }
         }
     </style>
 </head>
 <body>
+
+<div id="c-dot"></div>
+<div id="c-ring"></div>
+
 <div class="page">
 
-    <!-- ── LEFT PANEL ── -->
-    <div class="left-panel">
-        <div class="left-bg"></div>
-        <div class="left-tint"></div>
-        <div class="left-accent-line"></div>
+    <!-- ══════════════════════════════════════
+         L E F T   P A N E L
+    ══════════════════════════════════════ -->
+    <div class="L">
+        <div class="L-photo" id="lPhoto"></div>
+        <div class="L-vignette"></div>
+        <div class="L-scan"></div>
+        <div class="L-mesh"></div>
+        <div class="L-rail"></div>
+        <div class="L-orb orb-1"></div>
+        <div class="L-orb orb-2"></div>
+        <div class="L-orb orb-3"></div>
 
-        <div class="left-content">
+        <div class="L-inner">
 
-            <!-- Logo -->
-            <div>
-                <div class="top-rule"></div>
-                <div class="left-logo">
-                    <img src="https://www.brianmoses.com/_next/image?url=%2Fimages%2Fmain%20logo-coaching-white.png&w=256&q=75" alt="Brian Moses">
+            <!-- LOGO -->
+            <a href="/" class="brand-link">
+                <svg class="brand-mark" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="19" cy="19" r="18" fill="rgba(13,141,159,0.14)" stroke="rgba(13,141,159,0.28)" stroke-width="1"/>
+                    <path d="M10.5 26.5 L19 9.5 L27.5 26.5" stroke="#12B5CA" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                    <path d="M13.5 21.5 L19 13 L24.5 21.5" stroke="rgba(240,237,231,0.4)" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                    <circle cx="19" cy="30.5" r="2" fill="#C4762A"/>
+                </svg>
+                <div class="brand-name">Bright<em>Path</em></div>
+            </a>
+
+            <!-- CENTRE BLOCK -->
+            <div class="L-center">
+                <div class="kicker-wrap">
+                    <div class="kicker-rule"></div>
+                    <div class="kicker">ActioNCD International · TK Winston</div>
                 </div>
-            </div>
 
-            <!-- Headline -->
-            <div>
-                <h2 class="left-headline">
-                    Attract.<br>
-                    Don't <span>Chase.</span><br>
-                    Master the System.
+                <h2 class="L-headline">
+                    Lead the<br>
+                    <span class="ghost">world's most</span>
+                    <span class="vivid">urgent mission.</span>
                 </h2>
-                <p class="left-sub">
-                    Brian's complete training platform — built from 3,500+ homes sold and 30 years at the top. Develop the mindset and direct-response mastery to close more deals without the burnout.
+
+                <p class="L-sub">
+                    The world's most practical NCD training — built for public health professionals who are ready to stop being overwhelmed and start making real impact.
                 </p>
 
-                <div class="feature-grid">
-                    <div class="feature-card">
-                        <div class="feature-icon">
-                            <i class="fas fa-chart-line"></i>
-                        </div>
+                <div class="features">
+                    <div class="feat">
+                        <div class="feat-ico"><i class="fas fa-chart-line"></i></div>
                         <div>
-                            <div class="feature-title">Progress Tracking</div>
-                            <div class="feature-desc">Resume exactly where you left off, every time.</div>
+                            <div class="feat-title">Progress Tracking</div>
+                            <div class="feat-desc">Resume exactly where you left off across every course.</div>
                         </div>
                     </div>
-                    <div class="feature-card">
-                        <div class="feature-icon">
-                            <i class="fas fa-medal"></i>
-                        </div>
+                    <div class="feat">
+                        <div class="feat-ico"><i class="fas fa-medal"></i></div>
                         <div>
-                            <div class="feature-title">Verified Certifications</div>
-                            <div class="feature-desc">Proof of mastery that means something in the industry.</div>
+                            <div class="feat-title">Verified Certificates</div>
+                            <div class="feat-desc">Accredited proof of mastery with BrightPath branding.</div>
                         </div>
                     </div>
-                    <div class="feature-card">
-                        <div class="feature-icon">
-                            <i class="fas fa-robot"></i>
-                        </div>
+                    <div class="feat">
+                        <div class="feat-ico"><i class="fas fa-robot"></i></div>
                         <div>
-                            <div class="feature-title">AI Learning Assistant</div>
-                            <div class="feature-desc">In-lesson support built around Brian's proven frameworks.</div>
+                            <div class="feat-title">AI Learning Assistant</div>
+                            <div class="feat-desc">In-lesson AI support built on TK's proven frameworks.</div>
                         </div>
+                    </div>
+                    <div class="feat">
+                        <div class="feat-ico"><i class="fas fa-globe"></i></div>
+                        <div>
+                            <div class="feat-title">50+ Country Network</div>
+                            <div class="feat-desc">Join a global community of NCD practitioners.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stats">
+                    <div class="stat">
+                        <div class="stat-n">5<sup>K+</sup></div>
+                        <div class="stat-l">Professionals</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-n">50<sup>+</sup></div>
+                        <div class="stat-l">Countries</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-n">7</div>
+                        <div class="stat-l">Courses</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-n">20<sup>+</sup></div>
+                        <div class="stat-l">Yrs Expertise</div>
                     </div>
                 </div>
             </div>
 
-            <div class="left-footer">© 2026 Brian Moses Coaching & Speaking — All rights reserved</div>
+            <div class="L-foot">© 2025 BrightPath Ventures Sarl · ActioNCD International</div>
         </div>
     </div>
 
-    <!-- ── RIGHT PANEL ── -->
-    <div class="right-panel">
-        <div class="right-inner">
+    <!-- ══════════════════════════════════════
+         R I G H T   P A N E L
+    ══════════════════════════════════════ -->
+    <div class="R">
+        <div class="R-topline"></div>
 
-            <div class="right-header">
-                <div class="session-label">Secure Session</div>
-                <div class="progress-dots">
-                    <div class="progress-dot active"></div>
-                    <div class="progress-dot"></div>
-                    <div class="progress-dot"></div>
+        <div class="R-inner">
+
+            <!-- BAR -->
+            <div class="R-bar">
+                <div class="secure-pill">
+                    <div class="secure-pip"></div>
+                    Secure Session
+                </div>
+                <div class="pips">
+                    <div class="pip lit"></div>
+                    <div class="pip"></div>
+                    <div class="pip"></div>
                 </div>
             </div>
 
-            <h1 class="form-title">Sign <span>In</span></h1>
-            <p class="form-subtitle">Access your training dashboard and continue building the business and life you deserve.</p>
+            <!-- HEADING -->
+            <h1 class="form-head">Sign <span class="accent">In</span></h1>
+            <p class="form-tagline">Access your dashboard and continue building the impact the world urgently needs.</p>
 
-            <!-- Error placeholder (Django template tags stripped for static preview) -->
-            <!-- {% if messages %}...{% endif %} -->
+            <!-- DJANGO MESSAGES -->
+            {% if messages %}
+                {% for message in messages %}
+                <div class="err-box">
+                    <i class="fas fa-circle-exclamation"></i>
+                    <span>{{ message }}</span>
+                </div>
+                {% endfor %}
+            {% endif %}
 
+            <!-- FORM -->
             <form method="POST" action="{% url 'login' %}" id="loginForm">
                 {% csrf_token %}
                 <input type="hidden" name="next" value="{{ request.GET.next|default:'dashboard' }}">
 
                 <!-- Username -->
-                <div class="field-group">
-                    <label class="field-label" for="username">Username</label>
-                    <div class="field-container">
-                        <i class="fas fa-user field-icon"></i>
+                <div class="fld">
+                    <label class="fld-label" for="username">Username</label>
+                    <div class="fld-wrap">
+                        <i class="fas fa-user fld-ico"></i>
                         <input
                             type="text"
                             id="username"
                             name="username"
-                            class="field-input"
+                            class="fld-input"
                             placeholder="Enter your username"
-                            required
-                            autofocus
+                            value="{{ form.username.value|default:'' }}"
+                            required autofocus
                         >
                     </div>
+                    <div class="fld-line"></div>
                 </div>
 
                 <!-- Password -->
-                <div class="field-group">
-                    <label class="field-label" for="password">Password</label>
-                    <div class="field-container">
-                        <i class="fas fa-lock field-icon"></i>
+                <div class="fld">
+                    <label class="fld-label" for="password">Password</label>
+                    <div class="fld-wrap">
+                        <i class="fas fa-lock fld-ico"></i>
                         <input
                             type="password"
                             id="password"
                             name="password"
-                            class="field-input"
+                            class="fld-input"
                             placeholder="Enter your password"
+                            style="padding-right: 44px;"
                             required
-                            style="padding-right: 48px;"
                         >
-                        <button type="button" class="toggle-visibility" id="togglePassword" tabindex="-1">
-                            <i class="fas fa-eye" id="passwordIcon"></i>
+                        <button type="button" class="eye-btn" id="eyeToggle" tabindex="-1">
+                            <i class="fas fa-eye" id="eyeIco"></i>
                         </button>
                     </div>
+                    <div class="fld-line"></div>
                 </div>
 
                 <!-- Options -->
-                <div class="form-options">
-                    <label class="remember-option">
+                <div class="opts">
+                    <label class="rem">
                         <input type="checkbox" name="remember">
                         <span>Keep me signed in</span>
                     </label>
-                    <a href="#" class="forgot-password">Reset password</a>
+                    <a href="mailto:connect@actioncd.org?subject=Password%20Reset%20Request" class="forgot-link">Forgot password?</a>
                 </div>
 
                 <!-- Submit -->
-                <button type="submit" class="submit-btn" id="submitButton">
-                    <span id="buttonText">Access Platform</span>
-                    <i class="fas fa-arrow-right" id="buttonIcon"></i>
+                <button type="submit" class="go-btn" id="goBtn">
+                    <span id="goTxt">Access Platform</span>
+                    <i class="fas fa-arrow-right" id="goIco"></i>
                 </button>
+
             </form>
 
-            <div class="section-divider">
-                <div class="divider-line"></div>
-                <span class="divider-text">Need access?</span>
-                <div class="divider-line"></div>
+            <div class="divider">
+                <div class="div-line"></div>
+                <div class="div-txt">Need access?</div>
+                <div class="div-line"></div>
             </div>
 
-            <div class="form-footer">
-                <a href="mailto:Brian@BrianMoses.com">Request access from your administrator</a>
+            <div class="form-foot">
+                <a href="mailto:connect@actioncd.org">Request access from your administrator</a>
             </div>
 
-            <div class="security-badge">
-                <i class="fas fa-shield-alt"></i>
-                AES-256 Encryption &nbsp;·&nbsp; Enterprise-Grade Security
+            <div class="sec-row">
+                <i class="fas fa-shield-halved"></i>
+                AES-256 Encrypted
+                <span class="sec-dot">·</span>
+                Enterprise-Grade
+                <span class="sec-dot">·</span>
+                Zero Retention
             </div>
 
         </div>
     </div>
 
-</div>
+</div><!-- .page -->
 
 <script>
-    // Password toggle
-    const passwordToggle = document.getElementById('togglePassword');
-    const passwordField  = document.getElementById('password');
-    const passwordIcon   = document.getElementById('passwordIcon');
+/* ── CURSOR ──────────────────────────── */
+const dot  = document.getElementById('c-dot');
+const ring = document.getElementById('c-ring');
+let mx=0, my=0, rx=0, ry=0;
 
-    passwordToggle.addEventListener('click', () => {
-        const isVisible = passwordField.type === 'text';
-        passwordField.type = isVisible ? 'password' : 'text';
-        passwordIcon.className = isVisible ? 'fas fa-eye' : 'fas fa-eye-slash';
+document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    dot.style.left = mx + 'px';
+    dot.style.top  = my + 'px';
+});
+
+document.querySelectorAll('a,button,input,label,.feat').forEach(el => {
+    el.addEventListener('mouseenter', () => document.body.classList.add('hov'));
+    el.addEventListener('mouseleave', () => document.body.classList.remove('hov'));
+});
+
+(function loop() {
+    rx += (mx - rx) * 0.11;
+    ry += (my - ry) * 0.11;
+    ring.style.left = rx + 'px';
+    ring.style.top  = ry + 'px';
+    requestAnimationFrame(loop);
+})();
+
+/* ── PHOTO PARALLAX / LOAD ────────────── */
+const photo = document.getElementById('lPhoto');
+window.addEventListener('load', () => photo && photo.classList.add('on'));
+
+document.addEventListener('mousemove', e => {
+    if (!photo) return;
+    const px = (e.clientX / window.innerWidth  - 0.5) * 6;
+    const py = (e.clientY / window.innerHeight - 0.5) * 4;
+    photo.style.transform = `scale(1) translate(${px}px, ${py}px)`;
+});
+
+/* ── PASSWORD TOGGLE ─────────────────── */
+const pwInput = document.getElementById('password');
+const eyeIco  = document.getElementById('eyeIco');
+document.getElementById('eyeToggle').addEventListener('click', () => {
+    const show = pwInput.type === 'password';
+    pwInput.type = show ? 'text' : 'password';
+    eyeIco.className = show ? 'fas fa-eye-slash' : 'fas fa-eye';
+});
+
+/* ── SUBMIT STATE ────────────────────── */
+document.getElementById('loginForm').addEventListener('submit', () => {
+    const btn = document.getElementById('goBtn');
+    document.getElementById('goTxt').textContent = 'Authenticating…';
+    document.getElementById('goIco').className   = 'fas fa-spinner fa-spin';
+    btn.disabled = true;
+    btn.style.opacity = '.6';
+});
+
+/* ── FIELD PERSISTENCE GLOW ──────────── */
+document.querySelectorAll('.fld-input').forEach(inp => {
+    inp.addEventListener('blur', function() {
+        if (this.value.trim()) this.style.borderColor = 'rgba(13,141,159,.32)';
     });
-
-    // Submit loading state
-    document.getElementById('loginForm').addEventListener('submit', function() {
-        const button = document.getElementById('submitButton');
-        const text   = document.getElementById('buttonText');
-        const icon   = document.getElementById('buttonIcon');
-
-        text.textContent = 'Authenticating...';
-        icon.className = 'fas fa-spinner fa-spin';
-        button.disabled = true;
-        button.style.opacity = '0.75';
-        button.style.cursor = 'not-allowed';
+    inp.addEventListener('focus', function() {
+        this.style.borderColor = '';
     });
+});
 
-    // Field validation glow
-    document.querySelectorAll('.field-input').forEach(input => {
-        input.addEventListener('blur', function() {
-            if (this.value.trim()) {
-                this.style.borderColor = 'rgba(47,103,232,0.4)';
-            }
-        });
-    });
+/* ── MAGNETIC SUBMIT ─────────────────── */
+const goBtn = document.getElementById('goBtn');
+goBtn.addEventListener('mousemove', e => {
+    const r = goBtn.getBoundingClientRect();
+    const x = (e.clientX - r.left  - r.width  / 2) * 0.13;
+    const y = (e.clientY - r.top   - r.height / 2) * 0.13;
+    goBtn.style.transform = `translate(${x}px,${y}px) translateY(-3px)`;
+});
+goBtn.addEventListener('mouseleave', () => { goBtn.style.transform = ''; });
 </script>
 </body>
 </html>

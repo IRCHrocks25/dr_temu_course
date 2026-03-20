@@ -3,714 +3,1612 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Brian Moses — Courses & Training</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<title>BrightPath Ventures — NCD Leadership for the World's Health Professionals</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100;200;300;400;500;600;700;800;900&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --blue: #2F67E8;
-    --blue-light: #5E8FFF;
-    --blue-dim: rgba(47,103,232,0.15);
-    --blue-border: rgba(47,103,232,0.28);
-    --white: #EEF2FF;
-    --off-white: #B8C8EE;
-    --dark: #05080F;
-    --dark-2: #07091A;
-    --dark-3: #0A0E1E;
-    --mid: #101628;
-    --mid-2: #161D36;
-    --text-muted: #4A5A80;
-    --border: rgba(255,255,255,0.06);
-  }
 
-  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-  html { scroll-behavior: smooth; }
+/* ════════════════════════════════════════
+   ROOT & RESET
+════════════════════════════════════════ */
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
 
-  body {
-    background: var(--dark);
-    color: var(--white);
-    font-family: 'Inter', sans-serif;
-    font-weight: 400;
-    overflow-x: hidden;
-  }
+:root {
+  --ink:      #0A0E13;
+  --ink-soft: #111820;
+  --teal:     #004F68;
+  --aqua:     #0D8D9F;
+  --aqua-hi:  #12B5CA;
+  --gold:     #C4762A;
+  --gold-hi:  #E8901F;
+  --cream:    #F7F4EF;
+  --cream2:   #EDE9E2;
+  --white:    #FFFFFF;
+  --fog:      rgba(255,255,255,0.05);
+  --fog2:     rgba(255,255,255,0.08);
+  --fog3:     rgba(255,255,255,0.12);
+  --aqua-dim: rgba(13,141,159,0.18);
+  --gold-dim: rgba(196,118,42,0.15);
+  --serif:    'DM Serif Display', Georgia, serif;
+  --sans:     'Outfit', sans-serif;
+}
 
-  /* UTILS */
-  .tag {
-    display: inline-flex; align-items: center; gap: 10px;
-    font-family: 'Rajdhani', sans-serif;
-    font-size: 11px; font-weight: 600; letter-spacing: 0.3em; text-transform: uppercase;
-    color: var(--blue-light);
-  }
-  .tag::before { content: ''; width: 20px; height: 1px; background: var(--blue-light); }
-  .display {
-    font-family: 'Bebas Neue', sans-serif;
-    line-height: 0.95; letter-spacing: 0.02em;
-    color: var(--white);
-  }
-  .display span { color: var(--blue-light); }
-  .btn {
-    display: inline-block;
-    font-family: 'Rajdhani', sans-serif;
-    font-size: 13px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase;
-    text-decoration: none; padding: 14px 32px;
-    transition: all 0.2s;
-  }
-  .btn-solid { background: var(--blue); color: #fff; }
-  .btn-solid:hover { background: var(--blue-light); transform: translateY(-2px); }
-  .btn-outline { border: 1px solid var(--blue-border); color: var(--off-white); }
-  .btn-outline:hover { border-color: var(--blue); color: var(--blue-light); transform: translateY(-2px); }
+html { scroll-behavior: smooth; font-size: 16px; }
 
-  /* NAV */
-  nav {
-    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 18px 60px;
-    background: rgba(5,8,15,0.94);
-    backdrop-filter: blur(14px);
-    border-bottom: 1px solid var(--border);
-  }
-  nav .logo img { height: 42px; }
-  nav .links { display: flex; gap: 32px; align-items: center; }
-  nav .links a {
-    font-family: 'Rajdhani', sans-serif;
-    font-size: 13px; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase;
-    color: var(--off-white); text-decoration: none; opacity: 0.7;
-    transition: opacity 0.2s, color 0.2s;
-  }
-  nav .links a:hover { opacity: 1; color: var(--blue-light); }
-  nav .nav-cta {
-    font-family: 'Rajdhani', sans-serif;
-    font-size: 12px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase;
-    color: #fff; background: var(--blue);
-    padding: 9px 22px; text-decoration: none;
-    transition: background 0.2s;
-  }
-  nav .nav-cta:hover { background: var(--blue-light); }
+body {
+  font-family: var(--sans);
+  background: var(--ink);
+  color: var(--white);
+  overflow-x: hidden;
+  cursor: none;
+}
 
-  /* HERO */
-  .hero {
-    position: relative; min-height: 100vh;
-    display: grid; grid-template-columns: minmax(0, 640px) minmax(0, 460px);
-    gap: 48px; justify-content: center;
-    align-items: center; padding: 0 60px;
-    overflow: hidden;
-  }
-  .hero-bg {
-    position: absolute; inset: 0;
-    background-image: url('https://res.cloudinary.com/dcuswyfur/image/upload/v1773768370/Frame_1707482087_bcq65g.png');
-    background-size: cover; background-position: center top; z-index: 0;
-  }
-  .hero-bg::after {
-    content: ''; position: absolute; inset: 0;
-    background: linear-gradient(105deg, rgba(5,8,15,0.97) 45%, rgba(5,8,15,0.55) 100%);
-  }
-  .hero-left { position: relative; z-index: 1; padding-top: 80px; }
-  .hero-right { position: relative; z-index: 1; display: flex; justify-content: center; }
+/* ════════════════════════════════════════
+   NOISE TEXTURE OVERLAY
+════════════════════════════════════════ */
+body::after {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9000;
+  opacity: 0.4;
+  mix-blend-mode: overlay;
+}
 
-  .hero-eyebrow { margin-bottom: 22px; animation: fadeUp 0.7s 0s ease both; }
-  .hero h1 {
-    font-size: clamp(56px, 7vw, 92px);
-    margin-bottom: 24px;
-    animation: fadeUp 0.7s 0.1s ease both;
-  }
-  .hero-sub {
-    font-size: 16px; line-height: 1.8; color: var(--off-white);
-    opacity: 0.8; max-width: 500px; margin-bottom: 40px;
-    animation: fadeUp 0.7s 0.2s ease both;
-  }
-  .hero-actions { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 56px; animation: fadeUp 0.7s 0.3s ease both; }
-  .hero-pills { display: flex; flex-wrap: wrap; gap: 10px; animation: fadeUp 0.7s 0.4s ease both; }
-  .pill {
-    font-family: 'Rajdhani', sans-serif;
-    font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase;
-    color: var(--off-white); opacity: 0.6;
-    padding: 6px 14px; border: 1px solid var(--border);
-    display: flex; align-items: center; gap: 8px;
-  }
-  .pill b { color: var(--blue-light); opacity: 1; font-weight: 700; }
+/* ════════════════════════════════════════
+   CURSOR
+════════════════════════════════════════ */
+#cur-dot {
+  position: fixed; z-index: 9999;
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--aqua-hi);
+  pointer-events: none;
+  transform: translate(-50%,-50%);
+  transition: width .25s, height .25s, background .25s;
+  mix-blend-mode: screen;
+}
+#cur-ring {
+  position: fixed; z-index: 9998;
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  border: 1px solid rgba(13,141,159,0.5);
+  pointer-events: none;
+  transform: translate(-50%,-50%);
+  transition: width .35s cubic-bezier(.16,1,.3,1),
+              height .35s cubic-bezier(.16,1,.3,1),
+              border-color .35s, background .35s;
+}
+.cur-hover #cur-dot { width:14px; height:14px; background: var(--gold-hi); }
+.cur-hover #cur-ring { width: 64px; height: 64px; border-color: rgba(196,118,42,0.4); background: rgba(196,118,42,0.04); }
 
-  /* Hero course card */
-  .hero-card {
-    background: var(--mid); border: 1px solid var(--blue-border);
-    padding: 36px; width: 100%; max-width: 430px; position: relative;
-    animation: fadeUp 0.7s 0.25s ease both;
-  }
-  .hero-card::before {
-    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
-    background: linear-gradient(to right, var(--blue), var(--blue-light));
-  }
-  .hc-label {
-    font-family: 'Rajdhani', sans-serif;
-    font-size: 10px; font-weight: 700; letter-spacing: 0.3em; text-transform: uppercase;
-    color: var(--blue-light); margin-bottom: 18px;
-  }
-  .hc-title {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 30px; letter-spacing: 0.03em; color: var(--white); margin-bottom: 4px;
-  }
-  .hc-sub { font-size: 12px; color: var(--text-muted); margin-bottom: 22px; }
-  .course-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
-  .ci {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 13px 15px; background: var(--dark-3); border: 1px solid var(--border);
-    transition: border-color 0.2s; cursor: pointer;
-  }
-  .ci:hover { border-color: var(--blue-border); }
-  .ci-left { display: flex; align-items: center; gap: 13px; }
-  .ci-num {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 22px; color: var(--blue); letter-spacing: 0.05em; width: 26px;
-  }
-  .ci-cat {
-    font-family: 'Rajdhani', sans-serif;
-    font-size: 9px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase;
-    color: var(--text-muted); margin-bottom: 2px;
-  }
-  .ci-name { font-size: 13px; font-weight: 500; color: var(--white); }
-  .ci-badge {
-    font-family: 'Rajdhani', sans-serif;
-    font-size: 9px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase;
-    color: var(--blue-light); background: var(--blue-dim); padding: 4px 10px;
-  }
-  .hc-stats {
-    display: grid; grid-template-columns: 1fr 1fr 1fr;
-    gap: 1px; background: var(--border); margin-top: 22px;
-  }
-  .hcs { background: var(--dark-3); padding: 13px 10px; text-align: center; }
-  .hcs-val {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 22px; color: var(--blue-light); letter-spacing: 0.05em; display: block;
-  }
-  .hcs-key {
-    font-family: 'Rajdhani', sans-serif;
-    font-size: 9px; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase;
-    color: var(--text-muted);
-  }
+/* ════════════════════════════════════════
+   NAVBAR
+════════════════════════════════════════ */
+nav {
+  position: fixed; top:0; left:0; right:0; z-index: 500;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 64px;
+  height: 76px;
+  transition: all .5s ease;
+}
+nav.solid {
+  background: rgba(10,14,19,0.85);
+  backdrop-filter: blur(24px) saturate(1.8);
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.logo {
+  display: flex; align-items: center; gap: 14px;
+  text-decoration: none;
+}
+.logo-mark {
+  width: 38px; height: 38px;
+  position: relative;
+}
+.logo-word {
+  font-family: var(--sans);
+  font-size: 18px; font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--white);
+}
+.logo-word em { font-style: normal; color: var(--aqua-hi); }
 
-  /* STATS BAR */
-  .stats-bar {
-    display: grid; grid-template-columns: repeat(4, 1fr);
-    background: var(--mid); border-top: 1px solid var(--blue-border); border-bottom: 1px solid var(--border);
-  }
-  .sb-item {
-    padding: 36px 20px; text-align: center; border-right: 1px solid var(--border);
-    display: flex; flex-direction: column; align-items: center; gap: 6px;
-  }
-  .sb-item:last-child { border-right: none; }
-  .sb-num {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 48px; color: var(--blue-light); letter-spacing: 0.02em; line-height: 1;
-  }
-  .sb-label {
-    font-family: 'Rajdhani', sans-serif;
-    font-size: 11px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase;
-    color: var(--text-muted);
-  }
+.nav-links {
+  display: flex; align-items: center; gap: 36px;
+  list-style: none;
+}
+.nav-links a {
+  font-size: 13px; font-weight: 400;
+  color: rgba(255,255,255,0.5);
+  text-decoration: none;
+  letter-spacing: 0.02em;
+  transition: color .2s;
+}
+.nav-links a:hover { color: var(--white); }
 
-  /* SECTION */
-  .section { padding: 100px 60px; }
-  .sec-header { margin-bottom: 60px; }
-  .sec-header p { font-size: 15px; line-height: 1.8; color: var(--text-muted); max-width: 500px; margin-top: 16px; }
+.nav-btn {
+  font-size: 13px; font-weight: 600;
+  color: var(--ink) !important;
+  background: var(--aqua-hi);
+  padding: 10px 26px;
+  border-radius: 100px;
+  letter-spacing: 0.01em;
+  transition: background .2s, transform .2s !important;
+}
+.nav-btn:hover { background: var(--white) !important; transform: translateY(-1px); }
 
-  /* COURSES */
-  .courses-section { background: var(--dark-2); }
-  .courses-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; }
-  .cc {
-    background: var(--dark-3); border: 1px solid var(--border);
-    padding: 52px 44px; position: relative; overflow: hidden;
-    transition: border-color 0.3s;
-  }
-  .cc:hover { border-color: var(--blue-border); }
-  .cc.featured { background: var(--mid); border-color: var(--blue-border); }
-  .cc::before {
-    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
-    background: linear-gradient(to right, var(--blue), transparent);
-    opacity: 0; transition: opacity 0.3s;
-  }
-  .cc:hover::before, .cc.featured::before { opacity: 1; }
-  .cc-bg-num {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 130px; color: rgba(47,103,232,0.06);
-    position: absolute; top: -15px; right: 16px;
-    line-height: 1; pointer-events: none; letter-spacing: 0.02em;
-  }
-  .cc-cat {
-    font-family: 'Rajdhani', sans-serif;
-    font-size: 10px; font-weight: 700; letter-spacing: 0.3em; text-transform: uppercase;
-    color: var(--blue-light); margin-bottom: 16px; display: block;
-  }
-  .cc-title {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 52px; letter-spacing: 0.02em;
-    color: var(--white); line-height: 1; margin-bottom: 20px;
-  }
-  .cc-quote {
-    font-size: 14px; line-height: 1.7; color: var(--blue-light);
-    border-left: 2px solid var(--blue); padding-left: 16px; margin-bottom: 28px;
-  }
-  .cc-desc { font-size: 14px; line-height: 1.8; color: var(--text-muted); margin-bottom: 32px; }
-  .cc-feats { list-style: none; margin-bottom: 32px; display: flex; flex-direction: column; gap: 10px; }
-  .cc-feats li {
-    font-size: 13px; color: var(--off-white); opacity: 0.75;
-    display: flex; align-items: flex-start; gap: 12px; line-height: 1.5;
-  }
-  .cc-feats li::before { content: '→'; color: var(--blue); flex-shrink: 0; font-weight: 600; }
-  .cc-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 32px; }
-  .cc-meta span {
-    font-family: 'Rajdhani', sans-serif;
-    font-size: 10px; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase;
-    color: var(--text-muted); padding: 5px 12px; border: 1px solid var(--border);
-  }
+/* ════════════════════════════════════════
+   HERO — CINEMATIC FULL BLEED
+════════════════════════════════════════ */
+.hero {
+  min-height: 100vh;
+  display: grid;
+  grid-template-rows: 1fr auto;
+  position: relative;
+  overflow: hidden;
+  padding: 0 80px;
+}
 
-  /* HOW IT WORKS */
-  .how-section { background: var(--dark-3); }
-  .steps-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; }
-  .step {
-    background: var(--dark-2); border: 1px solid var(--border);
-    padding: 44px 32px; position: relative;
-    transition: border-color 0.3s, background 0.3s;
-  }
-  .step:hover { border-color: var(--blue-border); background: var(--mid); }
-  .step-num {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 60px; color: var(--blue);
-    letter-spacing: 0.02em; line-height: 1; margin-bottom: 20px; display: block;
-  }
-  .step h3 {
-    font-family: 'Rajdhani', sans-serif;
-    font-size: 16px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
-    color: var(--white); margin-bottom: 12px;
-  }
-  .step p { font-size: 13px; line-height: 1.8; color: var(--text-muted); }
+/* Layered gradient background */
+.hero-bg {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 70% 20%, rgba(13,141,159,0.22) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 80% at 10% 80%, rgba(0,79,104,0.3) 0%, transparent 55%),
+    radial-gradient(ellipse 40% 40% at 85% 75%, rgba(196,118,42,0.08) 0%, transparent 50%),
+    linear-gradient(170deg, #0D1A22 0%, #0A0E13 50%, #060C10 100%);
+}
 
-  /* FEATURES */
-  .features-section { background: var(--dark-2); }
-  .features-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
-  .feat-img { position: relative; overflow: hidden; aspect-ratio: 4/5; }
-  .feat-img img { width: 100%; height: 100%; object-fit: cover; object-position: left top; filter: grayscale(10%); transition: transform 0.5s; }
-  .feat-img:hover img { transform: scale(1.03); }
-  .feat-img::before { content: ''; position: absolute; inset: 0; z-index: 1; background: linear-gradient(135deg, var(--blue-dim), transparent 60%); }
-  .feat-img .frame { position: absolute; top: 16px; left: 16px; right: -16px; bottom: -16px; border: 1px solid var(--blue-border); z-index: -1; }
-  .feats-list { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; margin-top: 36px; }
-  .feat-item {
-    padding: 18px 16px; background: var(--dark-3); border: 1px solid var(--border);
-    display: flex; align-items: center; gap: 12px;
-    font-family: 'Rajdhani', sans-serif;
-    font-size: 13px; font-weight: 600; letter-spacing: 0.04em;
-    color: var(--off-white); opacity: 0.75;
-    transition: opacity 0.2s, border-color 0.2s;
-  }
-  .feat-item:hover { opacity: 1; border-color: var(--blue-border); }
-  .feat-item::before { content: '◆'; color: var(--blue); font-size: 7px; flex-shrink: 0; }
+/* Animated mesh lines */
+.hero-mesh {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(13,141,159,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(13,141,159,0.04) 1px, transparent 1px);
+  background-size: 80px 80px;
+  mask-image: radial-gradient(ellipse 70% 70% at 50% 50%, black 30%, transparent 80%);
+}
 
-  /* QUOTE BANNER */
-  .quote-banner { position: relative; height: 660px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
-  .qb-bg { position: absolute; inset: -40px; background-image: url('https://res.cloudinary.com/dcuswyfur/image/upload/v1773768367/Frame_1000007769_r4mues.png'); background-size: cover; background-position: center 20%; }
-  .qb-bg::after { content: ''; position: absolute; inset: 0; background: rgba(5,8,15,0.8); }
-  .qb-inner { position: relative; z-index: 1; text-align: center; max-width: 780px; padding: 0 40px; }
-  .qb-inner blockquote {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(34px, 5vw, 62px);
-    letter-spacing: 0.03em; color: var(--white); line-height: 1.05; margin-bottom: 20px;
-  }
-  .qb-inner blockquote span { color: var(--blue-light); }
-  .qb-inner cite {
-    font-family: 'Rajdhani', sans-serif;
-    font-size: 12px; font-weight: 600; letter-spacing: 0.28em; text-transform: uppercase;
-    color: var(--blue-light); font-style: normal;
-  }
+/* Horizontal scan lines */
+.hero-scan {
+  position: absolute; inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 3px,
+    rgba(255,255,255,0.005) 3px,
+    rgba(255,255,255,0.005) 4px
+  );
+  pointer-events: none;
+}
 
-  /* IMAGE STRIP */
-  .img-strip { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 2px; height: 300px; }
-  .isc { overflow: hidden; position: relative; }
-  .isc img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s; }
-  .isc:hover img { transform: scale(1.04); }
-  .isc::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, rgba(5,8,15,0.5) 0%, transparent 50%); }
+/* Floating light orbs */
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(1px);
+}
+.orb-a {
+  width: 500px; height: 500px;
+  top: -80px; right: 5%;
+  background: radial-gradient(circle, rgba(13,141,159,0.25) 0%, transparent 65%);
+  animation: drift 20s ease-in-out infinite;
+}
+.orb-b {
+  width: 700px; height: 700px;
+  bottom: -200px; left: -100px;
+  background: radial-gradient(circle, rgba(0,79,104,0.2) 0%, transparent 60%);
+  animation: drift 28s ease-in-out infinite reverse;
+}
+.orb-c {
+  width: 250px; height: 250px;
+  top: 45%; right: 20%;
+  background: radial-gradient(circle, rgba(196,118,42,0.12) 0%, transparent 65%);
+  animation: drift 15s ease-in-out infinite 5s;
+}
+@keyframes drift {
+  0%,100% { transform: translate(0,0) scale(1); }
+  33%      { transform: translate(-30px,20px) scale(1.05); }
+  66%      { transform: translate(20px,-15px) scale(0.97); }
+}
 
-  /* TESTIMONIALS */
-  .testi-section { background: var(--dark); }
-  .testi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
-  .tc {
-    background: var(--dark-3); border: 1px solid var(--border);
-    padding: 36px 30px; transition: border-color 0.3s, transform 0.2s;
-  }
-  .tc:hover { border-color: var(--blue-border); transform: translateY(-3px); }
-  .tc-stars { font-size: 11px; letter-spacing: 3px; color: var(--blue-light); margin-bottom: 18px; }
-  .tc-text { font-size: 14px; line-height: 1.85; color: var(--off-white); opacity: 0.8; margin-bottom: 24px; }
-  .tc-div { height: 1px; background: var(--border); margin-bottom: 20px; }
-  .tc-author { display: flex; align-items: center; gap: 12px; }
-  .tc-av {
-    width: 38px; height: 38px;
-    background: var(--mid-2); border: 1px solid var(--blue-border);
-    display: flex; align-items: center; justify-content: center;
-    font-family: 'Bebas Neue', sans-serif; font-size: 16px; color: var(--blue-light); flex-shrink: 0;
-  }
-  .tc-name { font-family: 'Rajdhani', sans-serif; font-size: 14px; font-weight: 700; letter-spacing: 0.05em; color: var(--white); }
-  .tc-role { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+/* Hero content */
+.hero-inner {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding-bottom: 100px;
+  padding-top: 120px;
+  position: relative; z-index: 2;
+}
 
-  /* CTA */
-  .cta-section {
-    background: var(--mid); text-align: center; padding: 110px 60px;
-    position: relative; overflow: hidden;
-    background-image: url('https://www.brianmoses.com/_next/image?url=%2Fimages%2Fimage%20(32)%201.png&w=1920&q=75');
-    background-size: cover; background-position: center;
-  }
-  .cta-section::before { display: none; }
-  .cta-tag { display: flex; justify-content: center; margin-bottom: 20px; }
-  .cta-tag .tag::before { display: none; }
-  .cta-section .display { font-size: clamp(50px, 7vw, 88px); max-width: 680px; margin: 0 auto 20px; }
-  .cta-section p { font-size: 15px; line-height: 1.8; color: #fff; max-width: 480px; margin: 0 auto 40px; }
-  .cta-actions { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; margin-bottom: 22px; }
-  .cta-note {
-    font-family: 'Rajdhani', sans-serif;
-    font-size: 11px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase;
-    color: #fff;
-  }
-  .cta-note span { margin: 0 10px; opacity: 0.4; }
+.hero-kicker {
+  display: inline-flex; align-items: center; gap: 12px;
+  margin-bottom: 48px;
+  opacity: 0;
+  animation: slideUp .9s .2s cubic-bezier(.16,1,.3,1) forwards;
+}
+.kicker-line { width: 40px; height: 1px; background: var(--aqua); }
+.kicker-text {
+  font-size: 11px; font-weight: 600;
+  letter-spacing: 0.3em; text-transform: uppercase;
+  color: var(--aqua);
+}
 
-  /* FOOTER */
-  footer {
-    background: var(--dark); border-top: 1px solid var(--blue-border);
-    padding: 64px 60px 36px;
-  }
-  .footer-top {
-    display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 60px;
-    padding-bottom: 48px; border-bottom: 1px solid var(--border); margin-bottom: 28px;
-  }
-  .footer-brand img { height: 38px; margin-bottom: 18px; display: block; }
-  .footer-brand p { font-size: 13px; line-height: 1.8; color: var(--text-muted); max-width: 260px; }
-  .footer-col h4 {
-    font-family: 'Rajdhani', sans-serif;
-    font-size: 11px; font-weight: 700; letter-spacing: 0.25em; text-transform: uppercase;
-    color: var(--blue-light); margin-bottom: 18px;
-  }
-  .footer-col a { display: block; font-size: 13px; color: var(--text-muted); text-decoration: none; margin-bottom: 10px; transition: color 0.2s; }
-  .footer-col a:hover { color: var(--off-white); }
-  .footer-bottom {
-    display: flex; justify-content: space-between; align-items: center;
-    font-size: 12px; color: var(--text-muted);
-    font-family: 'Rajdhani', sans-serif; letter-spacing: 0.05em;
-  }
-  .fbl { display: flex; gap: 24px; }
-  .fbl a { color: var(--text-muted); text-decoration: none; transition: color 0.2s; }
-  .fbl a:hover { color: var(--off-white); }
+.hero-h1 {
+  font-family: var(--serif);
+  font-size: clamp(64px, 9vw, 140px);
+  font-weight: 400;
+  line-height: 0.92;
+  letter-spacing: -0.02em;
+  margin-bottom: 48px;
+  max-width: 900px;
+}
 
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
+.hero-h1 .line1 {
+  display: block; color: var(--white);
+  opacity: 0;
+  animation: slideUp 1s .35s cubic-bezier(.16,1,.3,1) forwards;
+}
+.hero-h1 .line2 {
+  display: block;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(255,255,255,0.25);
+  font-style: italic;
+  opacity: 0;
+  animation: slideUp 1s .5s cubic-bezier(.16,1,.3,1) forwards;
+}
+.hero-h1 .line3 {
+  display: block; color: var(--aqua-hi);
+  opacity: 0;
+  animation: slideUp 1s .65s cubic-bezier(.16,1,.3,1) forwards;
+}
 
-  /* RESPONSIVE */
-  @media (max-width: 1100px) {
-    nav { padding: 16px 32px; }
-    .section { padding: 80px 32px; }
-    .hero { padding: 0 32px; grid-template-columns: 1fr; }
-    .hero-right { display: none; }
-    .courses-grid, .features-layout { grid-template-columns: 1fr; }
-    .steps-grid { grid-template-columns: 1fr 1fr; }
-    .feat-img { aspect-ratio: 16/7; }
-    .testi-grid { grid-template-columns: 1fr 1fr; }
-    .footer-top { grid-template-columns: 1fr 1fr; }
-    .img-strip { grid-template-columns: 1fr 1fr; }
-    .img-strip .isc:last-child { display: none; }
-    .stats-bar { grid-template-columns: 1fr 1fr; }
-  }
-  @media (max-width: 720px) {
-    nav .links { display: none; }
-    nav { padding: 14px 20px; }
-    .section { padding: 60px 20px; }
-    .hero { padding: 0 20px; }
-    .steps-grid { grid-template-columns: 1fr; }
-    .feats-list { grid-template-columns: 1fr; }
-    .testi-grid { grid-template-columns: 1fr; }
-    .footer-top { grid-template-columns: 1fr; gap: 32px; }
-    .footer-bottom { flex-direction: column; gap: 12px; text-align: center; }
-    .img-strip { grid-template-columns: 1fr; height: 220px; }
-    .img-strip .isc:not(:first-child) { display: none; }
-    .cta-section { padding: 72px 20px; }
-  }
+.hero-sub {
+  font-size: 18px; font-weight: 300;
+  color: rgba(255,255,255,0.45);
+  max-width: 500px;
+  line-height: 1.75;
+  margin-bottom: 60px;
+  opacity: 0;
+  animation: slideUp 1s .8s cubic-bezier(.16,1,.3,1) forwards;
+}
+
+.hero-actions {
+  display: flex; align-items: center; gap: 24px;
+  opacity: 0;
+  animation: slideUp 1s .95s cubic-bezier(.16,1,.3,1) forwards;
+}
+
+.btn-hero {
+  display: inline-flex; align-items: center; gap: 14px;
+  background: var(--aqua-hi);
+  color: var(--ink);
+  font-size: 14px; font-weight: 700;
+  letter-spacing: 0.01em;
+  padding: 18px 38px;
+  border-radius: 100px;
+  text-decoration: none;
+  position: relative; overflow: hidden;
+  transition: transform .3s cubic-bezier(.16,1,.3,1), box-shadow .3s;
+}
+.btn-hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity .3s;
+}
+.btn-hero:hover { transform: translateY(-4px); box-shadow: 0 24px 60px rgba(13,141,159,0.4); }
+.btn-hero:hover::before { opacity: 1; }
+
+.btn-ghost {
+  display: inline-flex; align-items: center; gap: 12px;
+  color: rgba(255,255,255,0.6);
+  font-size: 14px; font-weight: 400;
+  text-decoration: none;
+  transition: color .2s;
+}
+.btn-ghost:hover { color: var(--white); }
+.btn-ghost-arrow {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.12);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+  transition: border-color .2s, transform .2s;
+}
+.btn-ghost:hover .btn-ghost-arrow { border-color: rgba(255,255,255,0.4); transform: translateX(4px); }
+
+/* Hero right stats panel */
+.hero-stats-panel {
+  position: absolute;
+  right: 80px; top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  display: flex; flex-direction: column; gap: 2px;
+  opacity: 0;
+  animation: slideLeft 1s 1.1s cubic-bezier(.16,1,.3,1) forwards;
+}
+
+.stat-block {
+  padding: 28px 32px;
+  border-left: 1px solid rgba(255,255,255,0.06);
+  position: relative;
+  transition: border-color .3s;
+}
+.stat-block:hover { border-left-color: var(--aqua); }
+.stat-block::before {
+  content: '';
+  position: absolute; left: 0; top: 0;
+  width: 1px; height: 0;
+  background: var(--aqua);
+  transition: height .4s ease;
+}
+.stat-block:hover::before { height: 100%; }
+
+.stat-n {
+  font-family: var(--serif);
+  font-size: 52px; font-weight: 400;
+  color: var(--white);
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+.stat-n sup { font-size: 24px; color: var(--aqua-hi); vertical-align: super; }
+.stat-l {
+  font-size: 11px; font-weight: 500;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  color: rgba(255,255,255,0.3);
+  margin-top: 6px;
+}
+
+/* Scroll indicator */
+.hero-scroll-indicator {
+  position: absolute; bottom: 40px; left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
+  opacity: 0;
+  animation: fadeIn 1s 1.5s ease forwards;
+}
+.scroll-track {
+  width: 1px; height: 64px;
+  background: rgba(255,255,255,0.1);
+  position: relative; overflow: hidden;
+}
+.scroll-track::after {
+  content: '';
+  position: absolute; top: -64px; left: 0;
+  width: 100%; height: 100%;
+  background: var(--aqua);
+  animation: scrollDrop 2s 1.5s ease-in-out infinite;
+}
+@keyframes scrollDrop {
+  0% { top: -64px; } 80%,100% { top: 64px; }
+}
+.scroll-track-label {
+  font-size: 10px; font-weight: 600;
+  letter-spacing: 0.3em; text-transform: uppercase;
+  color: rgba(255,255,255,0.2);
+  writing-mode: horizontal-tb;
+}
+
+@keyframes slideUp {
+  from { opacity:0; transform: translateY(40px); }
+  to   { opacity:1; transform: translateY(0); }
+}
+@keyframes slideLeft {
+  from { opacity:0; transform: translate(40px,-50%); }
+  to   { opacity:1; transform: translate(0,-50%); }
+}
+@keyframes fadeIn {
+  to { opacity:1; }
+}
+
+/* ════════════════════════════════════════
+   MARQUEE BAND
+════════════════════════════════════════ */
+.marquee-band {
+  background: var(--aqua-hi);
+  padding: 18px 0;
+  overflow: hidden;
+  position: relative;
+}
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee 25s linear infinite;
+}
+.marquee-item {
+  display: flex; align-items: center; gap: 32px;
+  padding: 0 32px;
+  font-size: 13px; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--ink);
+  white-space: nowrap;
+}
+.marquee-dot { font-size: 8px; opacity: 0.4; }
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+/* ════════════════════════════════════════
+   SECTION COMMONS
+════════════════════════════════════════ */
+.sec { padding: 160px 80px; position: relative; overflow: hidden; }
+.sec-label {
+  display: flex; align-items: center; gap: 16px;
+  margin-bottom: 24px;
+}
+.sec-label-line { width: 28px; height: 1px; background: var(--aqua); }
+.sec-label-text {
+  font-size: 11px; font-weight: 600;
+  letter-spacing: 0.35em; text-transform: uppercase;
+  color: var(--aqua);
+}
+
+.display-title {
+  font-family: var(--serif);
+  font-size: clamp(48px, 6vw, 96px);
+  font-weight: 400;
+  line-height: 1.0;
+  letter-spacing: -0.02em;
+  margin-bottom: 28px;
+}
+
+.body-lg {
+  font-size: 18px; font-weight: 300;
+  color: rgba(255,255,255,0.45);
+  line-height: 1.8;
+  max-width: 540px;
+}
+
+/* ════════════════════════════════════════
+   THE 4Cs — SPLIT EDITORIAL
+════════════════════════════════════════ */
+.fourcee {
+  background: var(--ink-soft);
+}
+.fourcee-inner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.04);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-top: 100px;
+}
+.c-tile {
+  background: var(--ink-soft);
+  padding: 72px 64px;
+  position: relative;
+  overflow: hidden;
+  transition: background .4s;
+}
+.c-tile::after {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0;
+  height: 1px;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform .6s cubic-bezier(.16,1,.3,1);
+}
+.c-tile:hover::after { transform: scaleX(1); }
+.c-tile:hover { background: #13202B; }
+
+.ct-1::after { background: var(--teal); }
+.ct-2::after { background: var(--aqua); }
+.ct-3::after { background: var(--gold); }
+.ct-4::after { background: #4A6741; }
+
+.c-tile-bg-num {
+  position: absolute; bottom: -24px; right: 16px;
+  font-family: var(--serif);
+  font-size: 180px; font-weight: 400;
+  color: rgba(255,255,255,0.02);
+  line-height: 1;
+  pointer-events: none;
+  transition: color .4s;
+}
+.c-tile:hover .c-tile-bg-num { color: rgba(255,255,255,0.04); }
+
+.c-tile-num {
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 0.3em; text-transform: uppercase;
+  margin-bottom: 32px;
+}
+.c-tile:nth-child(1) .c-tile-num { color: var(--teal); }
+.c-tile:nth-child(2) .c-tile-num { color: var(--aqua); }
+.c-tile:nth-child(3) .c-tile-num { color: var(--gold); }
+.c-tile:nth-child(4) .c-tile-num { color: #6ea86a; }
+
+.c-tile-title {
+  font-family: var(--serif);
+  font-size: 52px; font-weight: 400;
+  color: var(--white);
+  line-height: 1.0;
+  margin-bottom: 20px;
+}
+.c-tile-body {
+  font-size: 15px; font-weight: 300;
+  color: rgba(255,255,255,0.4);
+  line-height: 1.8;
+  max-width: 340px;
+}
+
+/* ════════════════════════════════════════
+   COURSES — LUXURY CARDS
+════════════════════════════════════════ */
+.courses-sec {
+  background: var(--ink);
+}
+.courses-header {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: end;
+  margin-bottom: 100px;
+}
+.courses-header .body-lg { max-width: 400px; }
+
+.courses-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: rgba(255,255,255,0.04);
+}
+
+.ccard {
+  background: var(--ink);
+  padding: 52px 44px;
+  position: relative;
+  overflow: hidden;
+  transition: background .35s;
+  cursor: none;
+}
+.ccard:hover { background: var(--ink-soft); }
+
+/* Animated corner accent */
+.ccard-corner {
+  position: absolute; top: 0; right: 0;
+  width: 0; height: 0;
+  transition: width .4s cubic-bezier(.16,1,.3,1), height .4s cubic-bezier(.16,1,.3,1);
+}
+.ccard:hover .ccard-corner {
+  width: 120px; height: 120px;
+}
+
+.ccard-launch {
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.3em; text-transform: uppercase;
+  margin-bottom: 40px;
+  display: flex; align-items: center; gap: 10px;
+}
+.launch-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  animation: blink 2s ease-in-out infinite;
+}
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+.ccard-title {
+  font-family: var(--serif);
+  font-size: 32px; font-weight: 400;
+  color: var(--white);
+  line-height: 1.15;
+  margin-bottom: 16px;
+  letter-spacing: -0.01em;
+}
+.ccard-desc {
+  font-size: 14px; font-weight: 300;
+  color: rgba(255,255,255,0.38);
+  line-height: 1.75;
+  margin-bottom: 48px;
+}
+.ccard-foot {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  border-top: 1px solid rgba(255,255,255,0.05);
+  padding-top: 28px;
+}
+.ccard-price {
+  font-family: var(--serif);
+  font-size: 44px; font-weight: 400;
+  color: var(--white);
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+.ccard-meta {
+  font-size: 11px; font-weight: 500;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: rgba(255,255,255,0.25);
+  text-align: right;
+  line-height: 1.7;
+}
+
+/* Featured card — full width bottom */
+.ccard.wide {
+  grid-column: span 3;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: center;
+  background: linear-gradient(135deg, rgba(196,118,42,0.08) 0%, rgba(13,141,159,0.06) 100%);
+  border: 1px solid rgba(196,118,42,0.12);
+}
+.ccard.wide:hover { background: linear-gradient(135deg, rgba(196,118,42,0.14) 0%, rgba(13,141,159,0.1) 100%); }
+.wide-right {
+  text-align: right;
+}
+.wide-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--gold);
+  color: var(--ink);
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  padding: 8px 20px;
+  border-radius: 100px;
+  margin-bottom: 24px;
+}
+.wide-price {
+  font-family: var(--serif);
+  font-size: 80px; font-weight: 400;
+  color: var(--white);
+  letter-spacing: -0.04em;
+  line-height: 1;
+}
+.wide-price sup { font-size: 36px; color: var(--gold); vertical-align: super; }
+
+.wide-cta {
+  display: inline-flex; align-items: center; gap: 12px;
+  background: var(--gold);
+  color: var(--ink);
+  font-size: 13px; font-weight: 700;
+  padding: 14px 32px;
+  border-radius: 100px;
+  text-decoration: none;
+  margin-top: 24px;
+  letter-spacing: 0.02em;
+  transition: background .2s, transform .25s;
+}
+.wide-cta:hover { background: var(--gold-hi); transform: translateY(-2px); }
+
+/* ════════════════════════════════════════
+   MISSION — FULL BLEED EDITORIAL
+════════════════════════════════════════ */
+.mission-sec {
+  background: var(--cream);
+  color: var(--ink);
+  padding: 160px 80px;
+  position: relative;
+  overflow: hidden;
+}
+.mission-bg-text {
+  position: absolute;
+  font-family: var(--serif);
+  font-size: clamp(160px, 22vw, 340px);
+  font-weight: 400;
+  color: rgba(0,79,104,0.06);
+  white-space: nowrap;
+  top: 50%; left: -20px;
+  transform: translateY(-50%);
+  pointer-events: none;
+  line-height: 1;
+  user-select: none;
+}
+
+.mission-inner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 120px;
+  align-items: center;
+  position: relative; z-index: 1;
+}
+.mission-inner .sec-label-text { color: var(--teal); }
+.mission-inner .sec-label-line { background: var(--teal); }
+
+.mission-num {
+  font-family: var(--serif);
+  font-size: clamp(100px, 14vw, 200px);
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: var(--teal);
+}
+.mission-num span { color: var(--aqua); }
+
+.mission-label {
+  font-size: 22px; font-weight: 300;
+  color: rgba(10,14,19,0.5);
+  margin-top: 8px;
+  line-height: 1.5;
+}
+
+.mission-display {
+  font-family: var(--serif);
+  font-size: clamp(40px, 5vw, 72px);
+  font-weight: 400;
+  line-height: 1.05;
+  color: var(--ink);
+  letter-spacing: -0.02em;
+  margin-bottom: 28px;
+}
+
+.mission-body {
+  font-size: 17px; font-weight: 300;
+  color: rgba(10,14,19,0.55);
+  line-height: 1.8;
+  max-width: 460px;
+  margin-bottom: 48px;
+}
+
+.timeline {
+  display: flex; flex-direction: column; gap: 0;
+}
+.tl-item {
+  display: flex; gap: 28px;
+  padding: 24px 0;
+  border-bottom: 1px solid rgba(0,79,104,0.08);
+  position: relative;
+}
+.tl-item:last-child { border-bottom: none; }
+.tl-year {
+  font-size: 12px; font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--aqua);
+  width: 80px; flex-shrink: 0;
+  padding-top: 2px;
+}
+.tl-text {
+  font-size: 15px; font-weight: 300;
+  color: rgba(10,14,19,0.65);
+  line-height: 1.6;
+}
+
+/* ════════════════════════════════════════
+   FRAMEWORKS
+════════════════════════════════════════ */
+.fw-sec {
+  background: var(--ink-soft);
+}
+.fw-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;
+  margin-top: 100px;
+  background: rgba(255,255,255,0.03);
+}
+.fw-tile {
+  background: var(--ink-soft);
+  padding: 80px 72px;
+  position: relative;
+  overflow: hidden;
+  transition: background .4s;
+}
+.fw-tile:hover { background: #121C24; }
+
+.fw-tile-num {
+  font-family: var(--serif);
+  font-size: 200px; font-weight: 400;
+  color: rgba(255,255,255,0.025);
+  position: absolute; right: -20px; top: -30px;
+  line-height: 1;
+  pointer-events: none;
+  transition: color .4s;
+}
+.fw-tile:hover .fw-tile-num { color: rgba(13,141,159,0.07); }
+
+.fw-tile-label {
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 0.35em; text-transform: uppercase;
+  color: var(--aqua);
+  margin-bottom: 28px;
+}
+.fw-tile-title {
+  font-family: var(--serif);
+  font-size: 42px; font-weight: 400;
+  color: var(--white);
+  line-height: 1.1;
+  margin-bottom: 20px;
+}
+.fw-tile-body {
+  font-size: 15px; font-weight: 300;
+  color: rgba(255,255,255,0.38);
+  line-height: 1.8;
+  max-width: 400px;
+  margin-bottom: 48px;
+}
+.fw-pills {
+  display: flex; flex-wrap: wrap; gap: 8px;
+}
+.fw-pill {
+  font-size: 12px; font-weight: 600;
+  letter-spacing: 0.05em;
+  color: rgba(255,255,255,0.5);
+  border: 1px solid rgba(255,255,255,0.08);
+  padding: 7px 16px;
+  border-radius: 100px;
+  transition: border-color .2s, color .2s;
+}
+.fw-pill:hover { border-color: var(--aqua); color: var(--aqua-hi); }
+
+/* ════════════════════════════════════════
+   SOCIAL PROOF
+════════════════════════════════════════ */
+.proof-sec {
+  background: var(--ink);
+  padding: 160px 80px;
+}
+.proof-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: rgba(255,255,255,0.03);
+  margin-top: 100px;
+}
+.proof-tile {
+  background: var(--ink);
+  padding: 56px 48px;
+  position: relative;
+  overflow: hidden;
+  transition: background .35s;
+}
+.proof-tile:hover { background: var(--ink-soft); }
+.proof-q {
+  font-family: var(--serif);
+  font-size: 64px; font-weight: 400;
+  color: var(--aqua);
+  opacity: 0.2;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.proof-text {
+  font-size: 16px; font-weight: 300;
+  font-style: italic;
+  color: rgba(255,255,255,0.65);
+  line-height: 1.75;
+  margin-bottom: 40px;
+}
+.proof-author {
+  display: flex; align-items: center; gap: 16px;
+}
+.proof-avatar {
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.08);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px;
+}
+.proof-name {
+  font-size: 14px; font-weight: 600;
+  color: var(--white);
+  margin-bottom: 2px;
+}
+.proof-role {
+  font-size: 12px; font-weight: 300;
+  color: rgba(255,255,255,0.35);
+}
+
+/* ════════════════════════════════════════
+   CTA — FINAL ACT
+════════════════════════════════════════ */
+.cta-sec {
+  background: var(--ink);
+  padding: 0 80px 160px;
+  position: relative;
+}
+
+.cta-box {
+  background: linear-gradient(135deg, #0A1A23 0%, #06111A 50%, #0A1820 100%);
+  border: 1px solid rgba(13,141,159,0.15);
+  border-radius: 4px;
+  padding: 120px 120px;
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+}
+.cta-box::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(13,141,159,0.18) 0%, transparent 60%);
+  pointer-events: none;
+}
+.cta-box::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 10%; right: 10%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--aqua), transparent);
+}
+
+.cta-eyebrow {
+  font-size: 11px; font-weight: 600;
+  letter-spacing: 0.35em; text-transform: uppercase;
+  color: var(--aqua);
+  margin-bottom: 32px;
+  position: relative; z-index: 1;
+}
+.cta-title {
+  font-family: var(--serif);
+  font-size: clamp(52px, 7vw, 100px);
+  font-weight: 400;
+  line-height: 1.0;
+  letter-spacing: -0.03em;
+  margin-bottom: 28px;
+  position: relative; z-index: 1;
+}
+.cta-title em { font-style: italic; color: var(--aqua-hi); }
+.cta-sub {
+  font-size: 18px; font-weight: 300;
+  color: rgba(255,255,255,0.4);
+  max-width: 500px;
+  margin: 0 auto 60px;
+  line-height: 1.75;
+  position: relative; z-index: 1;
+}
+.cta-btns {
+  display: flex; align-items: center; justify-content: center; gap: 20px;
+  position: relative; z-index: 1;
+  flex-wrap: wrap;
+}
+.btn-cta-primary {
+  display: inline-flex; align-items: center; gap: 12px;
+  background: var(--aqua-hi);
+  color: var(--ink);
+  font-size: 15px; font-weight: 700;
+  padding: 20px 48px;
+  border-radius: 100px;
+  text-decoration: none;
+  transition: background .2s, transform .3s cubic-bezier(.16,1,.3,1), box-shadow .3s;
+  letter-spacing: 0.01em;
+}
+.btn-cta-primary:hover { background: var(--white); transform: translateY(-4px); box-shadow: 0 24px 60px rgba(13,141,159,0.35); }
+.btn-cta-secondary {
+  display: inline-flex; align-items: center; gap: 10px;
+  color: rgba(255,255,255,0.45);
+  font-size: 14px; font-weight: 400;
+  text-decoration: none;
+  padding: 20px;
+  transition: color .2s;
+}
+.btn-cta-secondary:hover { color: var(--white); }
+
+/* ════════════════════════════════════════
+   FOOTER
+════════════════════════════════════════ */
+footer {
+  background: #060A0E;
+  border-top: 1px solid rgba(255,255,255,0.04);
+  padding: 80px 80px 48px;
+}
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1.8fr 1fr 1fr 1fr;
+  gap: 60px;
+  margin-bottom: 80px;
+}
+.footer-brand p {
+  font-size: 14px; font-weight: 300;
+  color: rgba(255,255,255,0.3);
+  line-height: 1.8;
+  max-width: 280px;
+  margin: 20px 0 32px;
+}
+.footer-email {
+  font-size: 13px; font-weight: 500;
+  color: var(--aqua);
+  text-decoration: none;
+  letter-spacing: 0.01em;
+  transition: color .2s;
+}
+.footer-email:hover { color: var(--aqua-hi); }
+
+.footer-col h5 {
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.3em; text-transform: uppercase;
+  color: rgba(255,255,255,0.2);
+  margin-bottom: 24px;
+}
+.footer-col ul { list-style: none; }
+.footer-col li { margin-bottom: 14px; }
+.footer-col a {
+  font-size: 14px; font-weight: 300;
+  color: rgba(255,255,255,0.45);
+  text-decoration: none;
+  transition: color .2s;
+}
+.footer-col a:hover { color: var(--white); }
+
+.footer-bottom {
+  border-top: 1px solid rgba(255,255,255,0.04);
+  padding-top: 32px;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.footer-bottom p {
+  font-size: 12px; font-weight: 300;
+  color: rgba(255,255,255,0.2);
+}
+.footer-bottom .aq { color: var(--aqua); }
+
+/* ════════════════════════════════════════
+   SCROLL REVEAL
+════════════════════════════════════════ */
+.r {
+  opacity: 0;
+  transform: translateY(36px);
+  transition: opacity .85s cubic-bezier(.16,1,.3,1), transform .85s cubic-bezier(.16,1,.3,1);
+}
+.r.in { opacity:1; transform:translateY(0); }
+.rd1 { transition-delay:.08s; }
+.rd2 { transition-delay:.16s; }
+.rd3 { transition-delay:.24s; }
+.rd4 { transition-delay:.32s; }
+.rd5 { transition-delay:.40s; }
+.rd6 { transition-delay:.48s; }
+
+/* ════════════════════════════════════════
+   RESPONSIVE
+════════════════════════════════════════ */
+@media (max-width: 1100px) {
+  .sec { padding: 100px 40px; }
+  .hero { padding: 0 40px; }
+  .hero-stats-panel { display: none; }
+  .fourcee-inner { grid-template-columns: 1fr; }
+  .courses-header { grid-template-columns: 1fr; gap: 32px; }
+  .courses-grid { grid-template-columns: 1fr 1fr; }
+  .ccard.wide { grid-column: span 2; grid-template-columns: 1fr; gap: 40px; }
+  .mission-inner { grid-template-columns: 1fr; gap: 60px; }
+  .fw-grid { grid-template-columns: 1fr; }
+  .proof-grid { grid-template-columns: 1fr; }
+  .footer-grid { grid-template-columns: 1fr 1fr; gap: 40px; }
+  .cta-box { padding: 80px 60px; }
+  .cta-sec { padding: 0 40px 100px; }
+  footer { padding: 60px 40px 40px; }
+  .footer-bottom { flex-direction: column; gap: 12px; text-align: center; }
+}
+@media (max-width: 720px) {
+  nav { padding: 0 24px; }
+  .nav-links { display: none; }
+  .hero { padding: 0 24px; }
+  .hero-inner { padding-bottom: 80px; }
+  .sec { padding: 80px 24px; }
+  .courses-grid { grid-template-columns: 1fr; }
+  .ccard.wide { grid-column: span 1; }
+  .cta-box { padding: 60px 32px; }
+  .cta-sec { padding: 0 24px 80px; }
+  footer { padding: 60px 24px 32px; }
+  .footer-grid { grid-template-columns: 1fr; }
+  .marquee-band { display: none; }
+}
 </style>
 </head>
 <body>
 
-<!-- NAV -->
-<nav>
-  <div class="logo"><img src="https://www.brianmoses.com/_next/image?url=%2Fimages%2Fmain%20logo-coaching-white.png&w=256&q=75" alt="Brian Moses"></div>
-  <div class="links">
-    <a href="#courses">Courses</a>
-    <a href="#how">How It Works</a>
-    <a href="#testimonials">Results</a>
-    <a href="#cta">Get Started</a>
-  </div>
-  <a href="{% if user.is_authenticated %}{% url 'student_dashboard' %}{% else %}{% url 'login' %}{% endif %}" class="nav-cta">{% if user.is_authenticated %}Dashboard →{% else %}Login →{% endif %}</a>
+<div id="cur-dot"></div>
+<div id="cur-ring"></div>
+
+<!-- ── NAV ── -->
+<nav id="nav">
+  <a href="#" class="logo">
+    <svg class="logo-mark" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="19" cy="19" r="18" fill="rgba(13,141,159,0.15)" stroke="rgba(13,141,159,0.3)" stroke-width="1"/>
+      <path d="M10 27 L19 9 L28 27" stroke="#12B5CA" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      <path d="M13.5 22 L19 13 L24.5 22" stroke="rgba(255,255,255,0.5)" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      <circle cx="19" cy="30" r="2" fill="#C4762A"/>
+    </svg>
+    <div class="logo-word">Bright<em>Path</em></div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#courses">Courses</a></li>
+    <li><a href="#mission">Mission</a></li>
+    <li><a href="#frameworks">Frameworks</a></li>
+    <li><a href="#proof">Testimonials</a></li>
+    <li><a href="{% url 'login' %}">Login</a></li>
+    <li><a href="{% url 'login' %}?signup=1" class="nav-btn">Sign Up</a></li>
+  </ul>
 </nav>
 
-<!-- HERO -->
+<!-- ── HERO ── -->
 <section class="hero">
   <div class="hero-bg"></div>
-  <div class="hero-left">
-    <div class="hero-eyebrow tag">Real Estate Training Platform</div>
-    <h1 class="display">Master<br>Your<br><span>System.</span></h1>
-    <p class="hero-sub">Two powerful programs built from 3,500+ homes sold. Develop the mindset, the skillset, and the direct-response mastery to lead with confidence — without the burnout.</p>
-    <div class="hero-actions">
-      <a href="#courses" class="btn btn-solid">Explore Courses</a>
-      <a href="#how" class="btn btn-outline">How It Works</a>
+  <div class="hero-mesh"></div>
+  <div class="hero-scan"></div>
+  <div class="orb orb-a"></div>
+  <div class="orb orb-b"></div>
+  <div class="orb orb-c"></div>
+
+  <div class="hero-inner">
+    <div class="hero-kicker">
+      <div class="kicker-line"></div>
+      <div class="kicker-text">ActioNCD International · TK Winston · Est. 20+ Years</div>
     </div>
-    <div class="hero-pills">
-      <div class="pill"><b>2+</b> Expert Courses</div>
-      <div class="pill"><b>100%</b> Progress Tracked</div>
-      <div class="pill"><b>AI</b> Powered Support</div>
-      <div class="pill"><b>✓</b> Certifications</div>
+
+    <h1 class="hero-h1">
+      <span class="line1">Lead the</span>
+      <span class="line2">world's most</span>
+      <span class="line3">urgent mission.</span>
+    </h1>
+
+    <p class="hero-sub">
+      The world's most practical NCD training — built for public health professionals who are done being overwhelmed and ready to make real impact.
+    </p>
+
+    <div class="hero-actions">
+      <a href="#courses" class="btn-hero">
+        Explore Courses
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M3.5 9h11M10 5l4.5 4-4.5 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+      <a href="#mission" class="btn-ghost">
+        Our Mission
+        <div class="btn-ghost-arrow">↓</div>
+      </a>
     </div>
   </div>
-  <div class="hero-right">
-    <div class="hero-card">
-      <div class="hc-label">Available Now</div>
-      <div class="hc-title">Brian Moses Training</div>
-      <div class="hc-sub">Self-paced · AI-powered · Certified</div>
-      <ul class="course-list">
-        <li class="ci">
-          <div class="ci-left">
-            <div class="ci-num">01</div>
-            <div>
-              <div class="ci-cat">Mindset & EQ</div>
-              <div class="ci-name">Emotional Mastery</div>
-            </div>
-          </div>
-          <div class="ci-badge">Available</div>
-        </li>
-        <li class="ci">
-          <div class="ci-left">
-            <div class="ci-num">02</div>
-            <div>
-              <div class="ci-cat">Marketing & Copywriting</div>
-              <div class="ci-name">Intro to Direct Response</div>
-            </div>
-          </div>
-          <div class="ci-badge">Available</div>
-        </li>
-      </ul>
-      <div class="hc-stats">
-        <div class="hcs"><span class="hcs-val">3.5K+</span><span class="hcs-key">Homes Sold</span></div>
-        <div class="hcs"><span class="hcs-val">50K+</span><span class="hcs-key">Trained</span></div>
-        <div class="hcs"><span class="hcs-val">30yr</span><span class="hcs-key">Experience</span></div>
-      </div>
+
+  <div class="hero-stats-panel">
+    <div class="stat-block">
+      <div class="stat-n">5<sup>K</sup></div>
+      <div class="stat-l">Professionals Reached</div>
     </div>
+    <div class="stat-block">
+      <div class="stat-n">50<sup>+</sup></div>
+      <div class="stat-l">Country Groups</div>
+    </div>
+    <div class="stat-block">
+      <div class="stat-n">7</div>
+      <div class="stat-l">Specialist Courses</div>
+    </div>
+    <div class="stat-block">
+      <div class="stat-n">20<sup>+</sup></div>
+      <div class="stat-l">Years of Expertise</div>
+    </div>
+  </div>
+
+  <div class="hero-scroll-indicator">
+    <div class="scroll-track"></div>
+    <div class="scroll-track-label">Scroll</div>
   </div>
 </section>
 
-<!-- STATS -->
-<div class="stats-bar">
-  <div class="sb-item"><span class="sb-num">3,500+</span><span class="sb-label">Homes Sold</span></div>
-  <div class="sb-item"><span class="sb-num">50K+</span><span class="sb-label">Agents Trained</span></div>
-  <div class="sb-item"><span class="sb-num">30+</span><span class="sb-label">Years Experience</span></div>
-  <div class="sb-item"><span class="sb-num">$1M+</span><span class="sb-label">Avg. Client Income</span></div>
+<!-- ── MARQUEE ── -->
+<div class="marquee-band" aria-hidden="true">
+  <div class="marquee-track">
+    <div class="marquee-item">Confidence <span class="marquee-dot">◆</span></div>
+    <div class="marquee-item">Clarity <span class="marquee-dot">◆</span></div>
+    <div class="marquee-item">Courage <span class="marquee-dot">◆</span></div>
+    <div class="marquee-item">Committed <span class="marquee-dot">◆</span></div>
+    <div class="marquee-item">NCD Compass <span class="marquee-dot">◆</span></div>
+    <div class="marquee-item">NCD Guardian <span class="marquee-dot">◆</span></div>
+    <div class="marquee-item">AI Public Health <span class="marquee-dot">◆</span></div>
+    <div class="marquee-item">50+ Countries <span class="marquee-dot">◆</span></div>
+    <div class="marquee-item">Confidence <span class="marquee-dot">◆</span></div>
+    <div class="marquee-item">Clarity <span class="marquee-dot">◆</span></div>
+    <div class="marquee-item">Courage <span class="marquee-dot">◆</span></div>
+    <div class="marquee-item">Committed <span class="marquee-dot">◆</span></div>
+    <div class="marquee-item">NCD Compass <span class="marquee-dot">◆</span></div>
+    <div class="marquee-item">NCD Guardian <span class="marquee-dot">◆</span></div>
+    <div class="marquee-item">AI Public Health <span class="marquee-dot">◆</span></div>
+    <div class="marquee-item">50+ Countries <span class="marquee-dot">◆</span></div>
+  </div>
 </div>
 
-<!-- COURSES -->
-<section class="section courses-section" id="courses">
-  <div class="sec-header">
-    <div class="tag">The Programs</div>
-    <h2 class="display" style="font-size:clamp(44px,5.5vw,72px);margin-top:16px;">Two Courses.<br><span>One Transformation.</span></h2>
-    <p>Each course is built for depth, not surface-level theory. Real frameworks from 30+ years of proven success. Real results.</p>
+<!-- ── THE 4 Cs ── -->
+<section class="sec fourcee">
+  <div class="sec-label r">
+    <div class="sec-label-line"></div>
+    <div class="sec-label-text">The BrightPath Promise</div>
   </div>
+  <div class="display-title r rd1">Four transformations.<br><em style="font-style:italic; color: rgba(255,255,255,0.25);">Every course.</em></div>
+
+  <div class="fourcee-inner">
+    <div class="c-tile ct-1 r">
+      <div class="c-tile-bg-num">C</div>
+      <div class="c-tile-num">01 · Confidence</div>
+      <div class="c-tile-title">Unshakeable<br>Confidence</div>
+      <p class="c-tile-body">Walk into any room, any board, any crisis — and lead. No more second-guessing. No more imposter syndrome. Just the quiet authority that comes from truly knowing your field.</p>
+    </div>
+    <div class="c-tile ct-2 r rd1">
+      <div class="c-tile-bg-num">C</div>
+      <div class="c-tile-num">02 · Clarity</div>
+      <div class="c-tile-title">Crystal<br>Clarity</div>
+      <p class="c-tile-body">The jargon stops here. Twenty years of NCD complexity, distilled into frameworks you can actually use tomorrow morning. Theory only when it earns its place.</p>
+    </div>
+    <div class="c-tile ct-3 r rd2">
+      <div class="c-tile-bg-num">C</div>
+      <div class="c-tile-num">03 · Courage</div>
+      <div class="c-tile-title">Operational<br>Courage</div>
+      <p class="c-tile-body">The courage to challenge broken systems, advocate where it matters, and take decisive action in the face of complexity. This is what separates practitioners from administrators.</p>
+    </div>
+    <div class="c-tile ct-4 r rd3">
+      <div class="c-tile-bg-num">C</div>
+      <div class="c-tile-num">04 · Committed</div>
+      <div class="c-tile-title">Deeply<br>Committed</div>
+      <p class="c-tile-body">This isn't a certificate to hang on the wall. It's a commitment to the mission — to the communities, the programs, and the one million health workers we're building together.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ── COURSES ── -->
+<section class="sec courses-sec" id="courses">
+  <div class="courses-header">
+    <div>
+      <div class="sec-label r">
+        <div class="sec-label-line"></div>
+        <div class="sec-label-text">The Course Ecosystem</div>
+      </div>
+      <div class="display-title r rd1">Seven courses.<br>One mission.</div>
+    </div>
+    <div class="r rd2">
+      <p class="body-lg">From first principles to frontier AI — there's a BrightPath course for where you are right now, and a path to where you need to be.</p>
+    </div>
+  </div>
+
   <div class="courses-grid">
-    <div class="cc">
-      <div class="cc-bg-num">01</div>
-      <span class="cc-cat">Mindset & Emotional Intelligence</span>
-      <div class="cc-title">Emotional<br>Mastery</div>
-      <div class="cc-quote">"The ability to lead others starts with mastering yourself."</div>
-      <p class="cc-desc">Develop the emotional intelligence to handle pressure, communicate with empathy, and lead from clarity. This course rewires how you respond to the world — not just how you react to it.</p>
-      <ul class="cc-feats">
-        <li>Understand and regulate your emotional responses under pressure</li>
-        <li>Build deeper connections through empathetic communication</li>
-        <li>Develop resilience frameworks that hold up in real life</li>
-        <li>Rewire limiting patterns through structured self-awareness</li>
-      </ul>
-      <div class="cc-meta">
-        <span>Video Lessons</span><span>AI Support</span><span>Self-Paced</span><span>Certificate</span>
+
+    <div class="ccard r">
+      <div class="ccard-corner" style="background: radial-gradient(circle at top right, rgba(13,141,159,0.12), transparent 70%);"></div>
+      <div class="ccard-launch">
+        <div class="launch-dot" style="background: var(--aqua);"></div>
+        <span style="color: var(--aqua);">Live · 2025</span>
       </div>
-      <a href="{% if user.is_authenticated %}{% url 'student_dashboard' %}{% else %}{% url 'login' %}{% endif %}" class="btn btn-outline">Start Course →</a>
-    </div>
-    <div class="cc featured">
-      <div class="cc-bg-num">02</div>
-      <span class="cc-cat">Marketing & Copywriting</span>
-      <div class="cc-title">Intro to<br>Direct Response</div>
-      <div class="cc-quote">"The right words to the right person at the right time — that's the business."</div>
-      <p class="cc-desc">Learn the foundational principles of direct-response marketing that drive real action. From headlines that hook to offers that convert — this is how persuasion actually works in real estate.</p>
-      <ul class="cc-feats">
-        <li>The psychology behind why people buy and how to write to it</li>
-        <li>Craft headlines, hooks, and offers that stop the scroll</li>
-        <li>Build campaigns with measurable, trackable responses</li>
-        <li>Apply proven frameworks to emails, ads, and landing pages</li>
-      </ul>
-      <div class="cc-meta">
-        <span>Video Lessons</span><span>AI Support</span><span>Self-Paced</span><span>Certificate</span>
+      <div class="ccard-title">ABCD of NCD<br>in PHC</div>
+      <div class="ccard-desc">The essential foundation. Core NCD concepts applied directly to primary health care — practical, jargon-free, immediately deployable.</div>
+      <div class="ccard-foot">
+        <div class="ccard-price">$97</div>
+        <div class="ccard-meta">6 Modules<br>Self-Paced</div>
       </div>
-      <a href="{% if user.is_authenticated %}{% url 'student_dashboard' %}{% else %}{% url 'login' %}{% endif %}" class="btn btn-solid">Start Course →</a>
     </div>
+
+    <div class="ccard r rd1">
+      <div class="ccard-corner" style="background: radial-gradient(circle at top right, rgba(74,103,65,0.15), transparent 70%);"></div>
+      <div class="ccard-launch">
+        <div class="launch-dot" style="background: #4A6741;"></div>
+        <span style="color: #6ea86a;">Live · 2025</span>
+      </div>
+      <div class="ccard-title">NCD<br>Compass</div>
+      <div class="ccard-desc">Strategic thinking and program design for navigating complex NCD landscapes with precision and confidence.</div>
+      <div class="ccard-foot">
+        <div class="ccard-price">$297</div>
+        <div class="ccard-meta">8 Modules<br>Self-Paced</div>
+      </div>
+    </div>
+
+    <div class="ccard r rd2">
+      <div class="ccard-corner" style="background: radial-gradient(circle at top right, rgba(184,92,62,0.15), transparent 70%);"></div>
+      <div class="ccard-launch">
+        <div class="launch-dot" style="background: var(--terra, #B85C3E);"></div>
+        <span style="color: #d98070;">Live · 2025</span>
+      </div>
+      <div class="ccard-title">NCD<br>Guardian</div>
+      <div class="ccard-desc">Surveillance, advocacy, and systemic protection. The skills to defend programs and mobilise resources at scale.</div>
+      <div class="ccard-foot">
+        <div class="ccard-price">$479</div>
+        <div class="ccard-meta">8 Modules<br>Self-Paced</div>
+      </div>
+    </div>
+
+    <div class="ccard r rd1">
+      <div class="ccard-corner" style="background: radial-gradient(circle at top right, rgba(196,118,42,0.12), transparent 70%);"></div>
+      <div class="ccard-launch">
+        <div class="launch-dot" style="background: var(--gold);"></div>
+        <span style="color: var(--gold);">March 2026</span>
+      </div>
+      <div class="ccard-title">NCD<br>COMBI</div>
+      <div class="ccard-desc">Communication for Behavioural Impact. Evidence-based strategies to shift health behaviours at population scale.</div>
+      <div class="ccard-foot">
+        <div class="ccard-price">$479</div>
+        <div class="ccard-meta">8 Modules<br>Cohort</div>
+      </div>
+    </div>
+
+    <div class="ccard r rd2">
+      <div class="ccard-corner" style="background: radial-gradient(circle at top right, rgba(13,141,159,0.12), transparent 70%);"></div>
+      <div class="ccard-launch">
+        <div class="launch-dot" style="background: var(--aqua-hi);"></div>
+        <span style="color: var(--aqua);">April 2026</span>
+      </div>
+      <div class="ccard-title">NCD<br>SMILE</div>
+      <div class="ccard-desc">Social, Motivational, Inspirational, Lifestyle & Empowerment. A live coaching-led transformation program.</div>
+      <div class="ccard-foot">
+        <div class="ccard-price">$790</div>
+        <div class="ccard-meta">8 Modules<br>Live Cohort</div>
+      </div>
+    </div>
+
+    <div class="ccard r rd3">
+      <div class="ccard-corner" style="background: radial-gradient(circle at top right, rgba(13,141,159,0.1), transparent 70%);"></div>
+      <div class="ccard-launch">
+        <div class="launch-dot" style="background: rgba(255,255,255,0.3);"></div>
+        <span style="color: rgba(255,255,255,0.3);">Coming Soon</span>
+      </div>
+      <div class="ccard-title">NCD<br>Finance</div>
+      <div class="ccard-desc">Financing mechanisms, budget planning, and resource mobilisation for sustainable NCD program leadership.</div>
+      <div class="ccard-foot">
+        <div class="ccard-price">$790</div>
+        <div class="ccard-meta">6 Modules<br>Self-Paced</div>
+      </div>
+    </div>
+
+    <!-- WIDE FEATURED -->
+    <div class="ccard wide r rd2">
+      <div>
+        <div class="ccard-launch">
+          <div class="launch-dot" style="background: var(--gold); animation-duration:1.5s;"></div>
+          <span style="color: var(--gold);">Premium · May 2026</span>
+        </div>
+        <div class="ccard-title" style="font-size: 48px; line-height:1.05;">AI Assisted<br>Public Health</div>
+        <div class="ccard-desc" style="max-width: 420px;">The frontier program. Master AI tools, workflows, and intelligent systems for NCD programs — and lead the next decade of public health practice. Limited cohort intake.</div>
+      </div>
+      <div class="wide-right">
+        <div class="wide-badge">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1l1.5 3 3.5.5-2.5 2.5.5 3.5L6 9l-3 1.5.5-3.5L1 4.5 4.5 4z" fill="currentColor"/></svg>
+          Premium
+        </div>
+        <div class="wide-price"><sup>$</sup>2,500</div>
+        <div style="font-size:12px; color: rgba(255,255,255,0.25); margin-top:8px; letter-spacing:.1em; text-transform:uppercase;">8 Modules · Live + Cohort</div>
+        <a href="#" class="wide-cta">
+          Join Waitlist
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+      </div>
+    </div>
+
   </div>
 </section>
 
-<!-- HOW IT WORKS -->
-<section class="section how-section" id="how">
-  <div class="sec-header">
-    <div class="tag">The Process</div>
-    <h2 class="display" style="font-size:clamp(44px,5.5vw,72px);margin-top:16px;">From Enrolled<br><span>to Certified.</span></h2>
-  </div>
-  <div class="steps-grid">
-    <div class="step">
-      <span class="step-num">01</span>
-      <h3>Login & Access</h3>
-      <p>Once enrolled, your dashboard gives you instant access to all assigned programs. No confusion. Your journey is laid out clearly from day one.</p>
-    </div>
-    <div class="step">
-      <span class="step-num">02</span>
-      <h3>Learn at Your Pace</h3>
-      <p>Work through video lessons on your schedule. Progress is tracked automatically — resume right where you left off, every time.</p>
-    </div>
-    <div class="step">
-      <span class="step-num">03</span>
-      <h3>Test Your Knowledge</h3>
-      <p>Quizzes and final exams validate your understanding. Get AI-powered help directly inside lessons when you need clarity — no need to search elsewhere.</p>
-    </div>
-    <div class="step">
-      <span class="step-num">04</span>
-      <h3>Earn Certification</h3>
-      <p>Complete the program, pass the exam, and earn a verifiable certificate that proves your mastery — a real milestone worth celebrating.</p>
-    </div>
-  </div>
-</section>
-
-<!-- FEATURES -->
-<section class="section features-section">
-  <div class="features-layout">
-    <div class="feat-img">
-      <img src="https://res.cloudinary.com/dcuswyfur/image/upload/v1773768365/Untitled_x8ehol.png" alt="Brian Moses">
-      <div class="frame"></div>
+<!-- ── MISSION ── -->
+<section class="mission-sec" id="mission">
+  <div class="mission-bg-text" aria-hidden="true">1 Million</div>
+  <div class="mission-inner">
+    <div>
+      <div class="mission-num r">1<span>M</span></div>
+      <div class="mission-label r rd1">health workers<br>in 5 years.</div>
     </div>
     <div>
-      <div class="tag">Everything You Need</div>
-      <h2 class="display" style="font-size:clamp(40px,5vw,66px);margin-top:16px;margin-bottom:16px;">Built for<br><span>Results.</span></h2>
-      <p style="font-size:15px;line-height:1.8;color:var(--text-muted);">Everything you need, nothing you don't. Brian's platform keeps you moving forward — from first lesson to final exam and beyond.</p>
-      <div class="feats-list">
-        <div class="feat-item">Self-Paced Video Lessons</div>
-        <div class="feat-item">AI Chatbot in Every Lesson</div>
-        <div class="feat-item">Lesson Quizzes & Checks</div>
-        <div class="feat-item">Automatic Progress Tracking</div>
-        <div class="feat-item">Final Exams with Scoring</div>
-        <div class="feat-item">Certificates & Tiers</div>
-        <div class="feat-item">Favorites & Continue Learning</div>
-        <div class="feat-item">Analytics & Activity Feed</div>
+      <div class="sec-label r" style="margin-bottom:20px;">
+        <div class="sec-label-line" style="background: var(--teal);"></div>
+        <div class="sec-label-text" style="color: var(--teal);">The Mission</div>
+      </div>
+      <div class="mission-display r rd1">The world's NCD<br>crisis demands<br>a response.</div>
+      <p class="mission-body r rd2">Non-communicable diseases cause 74% of all deaths globally. The front-line health workers who fight them deserve training that is as serious as the problem. BrightPath exists to close that gap — practically, globally, permanently.</p>
+
+      <div class="timeline r rd3">
+        <div class="tl-item">
+          <div class="tl-year">2025</div>
+          <div class="tl-text">First three courses live — 5,000 health professionals given first access</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-year">Q1 2026</div>
+          <div class="tl-text">NCD COMBI and SMILE cohorts launch globally across 50+ country groups</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-year">May 2026</div>
+          <div class="tl-text">AI Assisted Public Health premium program — the future of NCD practice begins</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-year">2030</div>
+          <div class="tl-text">One million health workers trained, equipped, and committed to reducing NCDs worldwide</div>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- QUOTE BANNER -->
-<div class="quote-banner">
-  <div class="qb-bg"></div>
-  <div class="qb-inner">
-    <blockquote>"Don't hunt & chase business. <span>Become the one your market can't ignore.</span>"</blockquote>
-    <cite>— Brian Moses</cite>
+<!-- ── FRAMEWORKS ── -->
+<section class="sec fw-sec" id="frameworks">
+  <div class="sec-label r">
+    <div class="sec-label-line"></div>
+    <div class="sec-label-text">Proprietary Frameworks</div>
   </div>
-</div>
+  <div class="display-title r rd1">The tools behind<br><em style="color: var(--aqua-hi);">every breakthrough.</em></div>
 
-
-
-<!-- TESTIMONIALS -->
-<section class="section testi-section" id="testimonials">
-  <div class="sec-header">
-    <div class="tag">What Learners Say</div>
-    <h2 class="display" style="font-size:clamp(44px,5.5vw,72px);margin-top:16px;">Real People.<br><span>Real Results.</span></h2>
-  </div>
-  <div class="testi-grid">
-    <div class="tc">
-      <div class="tc-stars">★★★★★</div>
-      <p class="tc-text">"I doubled my production in year one and tripled it the next. Brian's system gave me a framework I could actually follow and scale. Forever grateful."</p>
-      <div class="tc-div"></div>
-      <div class="tc-author"><div class="tc-av">AL</div><div><div class="tc-name">Anthony Lamacchia</div><div class="tc-role">Real Estate Broker</div></div></div>
+  <div class="fw-grid">
+    <div class="fw-tile r">
+      <div class="fw-tile-num">5</div>
+      <div class="fw-tile-label">For NCD Courses</div>
+      <div class="fw-tile-title">The 5 Ps<br>Framework</div>
+      <p class="fw-tile-body">The structural backbone of every BrightPath NCD course. Developed through 20 years of field experience across 50+ countries — a repeatable mental model that works in any system, at any level of the health pyramid.</p>
+      <div class="fw-pills">
+        <span class="fw-pill">Prevention</span>
+        <span class="fw-pill">Policy</span>
+        <span class="fw-pill">People</span>
+        <span class="fw-pill">Programs</span>
+        <span class="fw-pill">Performance</span>
+      </div>
     </div>
-    <div class="tc">
-      <div class="tc-stars">★★★★★</div>
-      <p class="tc-text">"We generated 100 leads in 24 hours and 8 appointments booked. All of our team is so excited — Brian's methods deliver results fast."</p>
-      <div class="tc-div"></div>
-      <div class="tc-author"><div class="tc-av">AR</div><div><div class="tc-name">Andy Richardson</div><div class="tc-role">Team Leader</div></div></div>
-    </div>
-    <div class="tc">
-      <div class="tc-stars">★★★★★</div>
-      <p class="tc-text">"Brian was instrumental in helping me go from 40 deals a year to over 400. World-class coach. The system he teaches is the real deal."</p>
-      <div class="tc-div"></div>
-      <div class="tc-author"><div class="tc-av">BG</div><div><div class="tc-name">Brent Gove</div><div class="tc-role">Top-Producing Agent</div></div></div>
-    </div>
-    <div class="tc">
-      <div class="tc-stars">★★★★★</div>
-      <p class="tc-text">"Our team closed $700K in GCI last month. The frameworks Brian teaches translate directly into results. Can't recommend this enough."</p>
-      <div class="tc-div"></div>
-      <div class="tc-author"><div class="tc-av">NM</div><div><div class="tc-name">Nick McLean</div><div class="tc-role">Team Leader</div></div></div>
-    </div>
-    <div class="tc">
-      <div class="tc-stars">★★★★★</div>
-      <p class="tc-text">"I've been a student of Brian's for over 10 years. He's helped me grow my business and team exponentially. I'm forever grateful for his guidance."</p>
-      <div class="tc-div"></div>
-      <div class="tc-author"><div class="tc-av">JM</div><div><div class="tc-name">Jeremy Mellick</div><div class="tc-role">Agent & Team Builder</div></div></div>
-    </div>
-    <div class="tc">
-      <div class="tc-stars">★★★★★</div>
-      <p class="tc-text">"Over 20 years I've watched Brian consistently produce results for top agents across the country. If you want impact, Brian won't disappoint."</p>
-      <div class="tc-div"></div>
-      <div class="tc-author"><div class="tc-av">MW</div><div><div class="tc-name">Matt Wagner</div><div class="tc-role">RATE Mastermind Organizer</div></div></div>
+    <div class="fw-tile r rd2">
+      <div class="fw-tile-num">7</div>
+      <div class="fw-tile-label">For Coaching & Mentoring</div>
+      <div class="fw-tile-title">The 7 Steps<br>Framework</div>
+      <p class="fw-tile-body">The coaching methodology at the heart of BrightPath's live and cohort programs. A step-by-step journey from overwhelm to committed action — battle-tested with health professionals across every context imaginable.</p>
+      <div class="fw-pills">
+        <span class="fw-pill">Assess</span>
+        <span class="fw-pill">Vision</span>
+        <span class="fw-pill">Plan</span>
+        <span class="fw-pill">Act</span>
+        <span class="fw-pill">Reflect</span>
+        <span class="fw-pill">Adjust</span>
+        <span class="fw-pill">Sustain</span>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- CTA -->
-<section class="cta-section" id="cta">
-  <div class="cta-tag"><div class="tag">Ready to Begin?</div></div>
-  <h2 class="display">Your Growth<br><span>Starts Here.</span></h2>
-  <p>Two courses. Unlimited potential. Start learning today and earn your certification at your own pace.</p>
-  <div class="cta-actions">
-    <a href="{% if user.is_authenticated %}{% url 'student_dashboard' %}{% else %}{% url 'login' %}{% endif %}" class="btn btn-solid">{% if user.is_authenticated %}Go to Dashboard{% else %}Login to Start{% endif %}</a>
-    <a href="mailto:Brian@BrianMoses.com" class="btn btn-outline">Book a Demo</a>
+<!-- ── PROOF ── -->
+<section class="proof-sec" id="proof">
+  <div class="sec-label r">
+    <div class="sec-label-line"></div>
+    <div class="sec-label-text">From the Field</div>
   </div>
-  <div class="cta-note">No credit card required <span>·</span> Self-paced <span>·</span> Cancel anytime</div>
+  <div class="display-title r rd1">Words from<br><em style="color: var(--aqua-hi);">practitioners.</em></div>
+
+  <div class="proof-grid">
+    <div class="proof-tile r">
+      <div class="proof-q">"</div>
+      <p class="proof-text">TK doesn't just teach NCD theory — he translates 20 years of real experience into steps I could use the next morning. That kind of clarity is genuinely rare.</p>
+      <div class="proof-author">
+        <div class="proof-avatar">👩🏾‍⚕️</div>
+        <div>
+          <div class="proof-name">Dr. Amara Kofi</div>
+          <div class="proof-role">NCD Program Director · Ghana</div>
+        </div>
+      </div>
+    </div>
+    <div class="proof-tile r rd2">
+      <div class="proof-q">"</div>
+      <p class="proof-text">I've done WHO trainings, academic courses, a dozen workshops. Nothing gave me the confidence and clarity that BrightPath did in six weeks. Nothing.</p>
+      <div class="proof-author">
+        <div class="proof-avatar">👨🏽‍💼</div>
+        <div>
+          <div class="proof-name">Samuel Mensah</div>
+          <div class="proof-role">Health Systems Consultant · Kenya</div>
+        </div>
+      </div>
+    </div>
+    <div class="proof-tile r rd4">
+      <div class="proof-q">"</div>
+      <p class="proof-text">The 5 Ps framework alone changed how I design every program I run. It's become our team's shared language across three countries. That's what real training looks like.</p>
+      <div class="proof-author">
+        <div class="proof-avatar">👩🏻‍🏫</div>
+        <div>
+          <div class="proof-name">Dr. Priya Nair</div>
+          <div class="proof-role">Public Health Specialist · India</div>
+        </div>
+      </div>
+    </div>
+  </div>
 </section>
 
-<!-- FOOTER -->
+<!-- ── CTA ── -->
+<section class="cta-sec">
+  <div class="cta-box r">
+    <p class="cta-eyebrow">The next step is yours</p>
+    <h2 class="cta-title">Ready to lead<br><em>the mission?</em></h2>
+    <p class="cta-sub">Join thousands of public health professionals across 50+ countries who are building the confidence, clarity, and courage the world urgently needs.</p>
+    <div class="cta-btns">
+      <a href="#courses" class="btn-cta-primary">
+        Browse All Courses
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M3.5 9h11M10 5l4.5 4-4.5 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+      <a href="mailto:connect@actioncd.org" class="btn-cta-secondary">
+        Talk to us first →
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ── -->
 <footer>
-  <div class="footer-top">
+  <div class="footer-grid">
     <div class="footer-brand">
-      <img src="https://www.brianmoses.com/_next/image?url=%2Fimages%2Fmain%20logo-coaching-white.png&w=256&q=75" alt="Brian Moses">
-      <p>Clarity. Mastery. Results. Brian Moses Training helps real estate professionals build predictable, profitable businesses through proven systems and mindset mastery.</p>
+      <a href="#" class="logo">
+        <svg class="logo-mark" viewBox="0 0 38 38" fill="none">
+          <circle cx="19" cy="19" r="18" fill="rgba(13,141,159,0.1)" stroke="rgba(13,141,159,0.2)" stroke-width="1"/>
+          <path d="M10 27 L19 9 L28 27" stroke="#12B5CA" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+          <path d="M13.5 22 L19 13 L24.5 22" stroke="rgba(255,255,255,0.4)" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+          <circle cx="19" cy="30" r="2" fill="#C4762A"/>
+        </svg>
+        <div class="logo-word">Bright<em>Path</em></div>
+      </a>
+      <p>World-class NCD training for public health professionals across 50+ countries. ActioNCD International.</p>
+      <a href="mailto:connect@actioncd.org" class="footer-email">connect@actioncd.org</a>
     </div>
     <div class="footer-col">
-      <h4>Courses</h4>
-      <a href="#">Emotional Mastery</a>
-      <a href="#">Intro to Direct Response</a>
-      <a href="#">All Programs</a>
+      <h5>Courses</h5>
+      <ul>
+        <li><a href="#">ABCD of NCD in PHC</a></li>
+        <li><a href="#">NCD Compass</a></li>
+        <li><a href="#">NCD Guardian</a></li>
+        <li><a href="#">NCD COMBI</a></li>
+        <li><a href="#">NCD SMILE</a></li>
+        <li><a href="#">AI Public Health</a></li>
+      </ul>
     </div>
     <div class="footer-col">
-      <h4>Company</h4>
-      <a href="#">About Brian</a>
-      <a href="#">Testimonials</a>
-      <a href="#">Speaking</a>
-      <a href="#">1-on-1 Coaching</a>
+      <h5>Resources</h5>
+      <ul>
+        <li><a href="#">Free Starter Course</a></li>
+        <li><a href="#">Resource Library</a></li>
+        <li><a href="#">Community Forums</a></li>
+        <li><a href="#">Country Groups</a></li>
+        <li><a href="#">Webinars</a></li>
+      </ul>
     </div>
     <div class="footer-col">
-      <h4>Contact</h4>
-      <a href="mailto:Brian@BrianMoses.com">Brian@BrianMoses.com</a>
-      <a href="tel:+16038601104">+1 (603) 860-1104</a>
+      <h5>About</h5>
+      <ul>
+        <li><a href="#">TK Winston</a></li>
+        <li><a href="#">ActioNCD Int'l</a></li>
+        <li><a href="#">The 5 Ps Framework</a></li>
+        <li><a href="#">Membership Site</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
     </div>
   </div>
   <div class="footer-bottom">
-    <span>© 2026 Brian Moses Coaching & Speaking. All rights reserved.</span>
-    <div class="fbl">
-      <a href="#">Privacy Policy</a>
-      <a href="#">Terms of Service</a>
-      <a href="#">Earnings Disclaimer</a>
-    </div>
+    <p>© 2025 BrightPath Ventures Sarl · ActioNCD International. All rights reserved.</p>
+    <p>Built on <span class="aq">Katalyst</span> — Designed for <span class="aq">global impact</span></p>
   </div>
 </footer>
 
+<script>
+/* ── CURSOR ── */
+const dot  = document.getElementById('cur-dot');
+const ring = document.getElementById('cur-ring');
+let mx=0,my=0,rx=0,ry=0;
+
+document.addEventListener('mousemove', e => {
+  mx = e.clientX; my = e.clientY;
+  dot.style.left = mx+'px'; dot.style.top = my+'px';
+});
+
+const interactables = document.querySelectorAll('a, button, .ccard, .c-tile, .fw-tile, .proof-tile');
+interactables.forEach(el => {
+  el.addEventListener('mouseenter', () => document.body.classList.add('cur-hover'));
+  el.addEventListener('mouseleave', () => document.body.classList.remove('cur-hover'));
+});
+
+(function animRing() {
+  rx += (mx-rx)*0.1; ry += (my-ry)*0.1;
+  ring.style.left = rx+'px'; ring.style.top = ry+'px';
+  requestAnimationFrame(animRing);
+})();
+
+/* ── NAV ── */
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('solid', window.scrollY > 80);
+});
+
+/* ── SCROLL REVEAL ── */
+const els = document.querySelectorAll('.r');
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+}, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+els.forEach(el => io.observe(el));
+
+/* ── SMOOTH SCROLL ── */
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const t = document.querySelector(a.getAttribute('href'));
+    if(t){ e.preventDefault(); t.scrollIntoView({behavior:'smooth'}); }
+  });
+});
+
+/* ── MAGNETIC BUTTONS ── */
+document.querySelectorAll('.btn-hero, .btn-cta-primary, .wide-cta').forEach(btn => {
+  btn.addEventListener('mousemove', e => {
+    const r = btn.getBoundingClientRect();
+    const x = e.clientX - r.left - r.width/2;
+    const y = e.clientY - r.top - r.height/2;
+    btn.style.transform = `translate(${x*0.18}px, ${y*0.18}px) translateY(-4px)`;
+  });
+  btn.addEventListener('mouseleave', () => {
+    btn.style.transform = '';
+  });
+});
+</script>
 </body>
 </html>
