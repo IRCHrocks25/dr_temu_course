@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account — BrightPath Ventures</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --white:      #FFFFFF;
+            --paper:      #F9F8F6;
+            --paper2:     #F3F1EE;
+            --paper3:     #EAE8E4;
+            --ink:        #1A1A18;
+            --ink-soft:   #3D3D3A;
+            --ink-muted:  #8A8A86;
+            --ink-hint:   #B8B8B4;
+            --teal:       #1A6B78;
+            --teal-mid:   #2A8C9C;
+            --teal-light: #E6F3F5;
+            --teal-pale:  #F0F8F9;
+            --amber:      #B5722A;
+            --border:     rgba(26,26,24,0.08);
+            --border-med: rgba(26,26,24,0.13);
+            --serif:      'Cormorant Garamond', Georgia, serif;
+            --sans:       'DM Sans', system-ui, sans-serif;
+            --shadow-sm:  0 2px 8px rgba(26,26,24,0.06);
+            --shadow-md:  0 8px 32px rgba(26,26,24,0.09);
+        }
+
+        html, body {
+            min-height: 100%;
+            font-family: var(--sans);
+            background: var(--paper);
+            color: var(--ink);
+        }
+
+        /* ── FULL PAGE SPLIT ── */
+        .page {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            min-height: 100vh;
+        }
+
+        /* ── LEFT — brand/trust column ── */
+        .L {
+            background: var(--ink);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 52px 64px 52px;
+        }
+
+        /* Subtle warm grid */
+        .L::before {
+            content: '';
+            position: absolute; inset: 0;
+            background-image:
+                linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+            background-size: 60px 60px;
+            mask-image: radial-gradient(ellipse 70% 80% at 30% 50%, black 20%, transparent 70%);
+            pointer-events: none;
+        }
+
+        /* Teal wash */
+        .L-wash {
+            position: absolute;
+            top: -100px; right: -80px;
+            width: 440px; height: 440px; border-radius: 50%;
+            background: radial-gradient(circle, rgba(26,107,120,0.18) 0%, transparent 65%);
+            pointer-events: none;
+        }
+        .L-wash-2 {
+            position: absolute;
+            bottom: -80px; left: -60px;
+            width: 360px; height: 360px; border-radius: 50%;
+            background: radial-gradient(circle, rgba(26,107,120,0.1) 0%, transparent 65%);
+            pointer-events: none;
+        }
+
+        /* Right hairline */
+        .L-rail {
+            position: absolute; top: 0; bottom: 0; right: 0;
+            width: 1px;
+            background: linear-gradient(180deg, transparent 0%, rgba(26,107,120,0.4) 35%, rgba(26,107,120,0.5) 60%, rgba(26,107,120,0.4) 85%, transparent 100%);
+        }
+
+        /* Logo */
+        .brand-link {
+            display: inline-flex; align-items: center; gap: 12px;
+            text-decoration: none; position: relative; z-index: 2;
+        }
+        .brand-mark { width: 36px; height: 36px; }
+        .brand-name {
+            font-family: var(--serif);
+            font-size: 22px; font-weight: 500;
+            letter-spacing: -0.01em;
+            color: var(--white);
+        }
+        .brand-name em { font-style: italic; color: var(--teal-mid); }
+
+        /* Centre block */
+        .L-center {
+            position: relative; z-index: 2;
+            animation: riseUp .9s .2s cubic-bezier(.16,1,.3,1) both;
+        }
+
+        .L-kicker {
+            display: flex; align-items: center; gap: 12px;
+            margin-bottom: 32px;
+        }
+        .L-kicker-line { width: 24px; height: 1px; background: var(--teal-mid); }
+        .L-kicker-text {
+            font-size: 10px; font-weight: 500;
+            letter-spacing: 0.28em; text-transform: uppercase;
+            color: var(--teal-mid);
+        }
+
+        .L-headline {
+            font-family: var(--serif);
+            font-size: clamp(42px, 4.4vw, 68px);
+            font-weight: 400; line-height: 0.95;
+            letter-spacing: -0.025em;
+            color: var(--white);
+            margin-bottom: 20px;
+        }
+        .L-headline em {
+            font-style: italic;
+            display: block;
+            color: var(--teal-mid);
+        }
+        .L-headline .ghost {
+            display: block;
+            color: transparent;
+            -webkit-text-stroke: 1px rgba(255,255,255,0.18);
+            font-style: italic;
+        }
+
+        .L-sub {
+            font-size: 14px; font-weight: 300;
+            color: rgba(255,255,255,0.38);
+            line-height: 1.8; max-width: 320px;
+            margin-bottom: 52px;
+        }
+
+        /* Trust points */
+        .trust-list { display: flex; flex-direction: column; gap: 1px; }
+        .trust-item {
+            display: flex; align-items: flex-start; gap: 16px;
+            padding: 18px 20px;
+            background: rgba(255,255,255,0.025);
+            border-left: 2px solid transparent;
+            transition: background .25s, border-color .25s, transform .2s;
+        }
+        .trust-item:hover {
+            background: rgba(26,107,120,0.08);
+            border-left-color: var(--teal-mid);
+            transform: translateX(4px);
+        }
+        .trust-ico {
+            width: 34px; height: 34px; flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 12px;
+            background: var(--teal-light);
+            color: var(--teal);
+            border: 1px solid rgba(26,107,120,0.2);
+        }
+        .trust-title {
+            font-size: 13px; font-weight: 500;
+            color: rgba(255,255,255,0.75);
+            margin-bottom: 3px;
+        }
+        .trust-desc {
+            font-size: 12px; font-weight: 300;
+            color: rgba(255,255,255,0.28);
+            line-height: 1.5;
+        }
+
+        /* Stats strip */
+        .L-stats {
+            display: flex; gap: 0;
+            margin-top: 40px;
+            border-top: 1px solid rgba(255,255,255,0.06);
+            padding-top: 28px;
+            position: relative; z-index: 2;
+            animation: riseUp 1s .4s cubic-bezier(.16,1,.3,1) both;
+        }
+        .L-stat {
+            flex: 1;
+            padding-right: 20px;
+            border-right: 1px solid rgba(255,255,255,0.06);
+            margin-right: 20px;
+        }
+        .L-stat:last-child { border-right: none; margin-right: 0; padding-right: 0; }
+        .ls-n {
+            font-family: var(--serif);
+            font-size: 30px; font-weight: 400;
+            color: var(--white); letter-spacing: -0.03em; line-height: 1;
+        }
+        .ls-n sup { font-size: 15px; color: var(--teal-mid); }
+        .ls-l {
+            font-size: 9px; font-weight: 400;
+            letter-spacing: 0.18em; text-transform: uppercase;
+            color: rgba(255,255,255,0.22);
+            margin-top: 4px;
+        }
+
+        .L-foot {
+            font-size: 10px; font-weight: 400;
+            letter-spacing: 0.05em;
+            color: rgba(255,255,255,0.18);
+            position: relative; z-index: 2;
+        }
+
+        @keyframes riseUp {
+            from { opacity: 0; transform: translateY(22px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ── RIGHT — form column ── */
+        .R {
+            background: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 52px 72px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Barely-there washes */
+        .R::before {
+            content: '';
+            position: absolute; top: -140px; right: -120px;
+            width: 380px; height: 380px; border-radius: 50%;
+            background: radial-gradient(circle, rgba(26,107,120,0.05) 0%, transparent 65%);
+            pointer-events: none;
+        }
+        .R::after {
+            content: '';
+            position: absolute; bottom: -80px; left: -60px;
+            width: 280px; height: 280px; border-radius: 50%;
+            background: radial-gradient(circle, rgba(74,107,90,0.04) 0%, transparent 65%);
+            pointer-events: none;
+        }
+
+        .R-topline {
+            position: absolute; top: 0; left: 10%; right: 10%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(26,107,120,0.25), transparent);
+        }
+
+        .R-inner {
+            width: 100%; max-width: 400px;
+            position: relative; z-index: 2;
+            animation: riseUp .85s .1s cubic-bezier(.16,1,.3,1) both;
+        }
+
+        /* Top bar */
+        .R-bar {
+            display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 44px;
+        }
+        .secure-pill {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: var(--teal-light);
+            border: 1px solid rgba(26,107,120,0.15);
+            padding: 7px 14px;
+            font-size: 9px; font-weight: 500;
+            letter-spacing: 0.25em; text-transform: uppercase;
+            color: var(--teal);
+        }
+        .secure-pip {
+            width: 5px; height: 5px; border-radius: 50%;
+            background: var(--teal);
+            animation: pip 2.4s ease-in-out infinite;
+        }
+        @keyframes pip { 0%,100%{opacity:1} 50%{opacity:.2} }
+
+        .step-pips { display: flex; gap: 5px; }
+        .step-pip {
+            width: 20px; height: 2px;
+            background: var(--border-med);
+            transition: background .3s;
+        }
+        .step-pip.lit { background: var(--teal); }
+
+        /* Heading */
+        .form-head {
+            font-family: var(--serif);
+            font-size: 56px; font-weight: 400;
+            line-height: 0.9; letter-spacing: -0.025em;
+            color: var(--ink);
+            margin-bottom: 10px;
+        }
+        .form-head .accent { color: var(--teal); font-style: italic; }
+
+        .form-tagline {
+            font-size: 14px; font-weight: 300;
+            color: var(--ink-muted);
+            line-height: 1.75; max-width: 320px;
+            margin-bottom: 36px;
+        }
+
+        /* Error messages */
+        .err-box {
+            display: flex; align-items: flex-start; gap: 12px;
+            background: #FEF2F2;
+            border: 1px solid rgba(185,28,28,0.15);
+            padding: 14px 16px;
+            margin-bottom: 24px;
+            font-size: 13px; font-weight: 300;
+            color: #B91C1C; line-height: 1.5;
+        }
+        .err-box i { flex-shrink: 0; margin-top: 1px; font-size: 12px; }
+
+        /* Field groups */
+        .fields-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0 16px;
+        }
+
+        .fld { margin-bottom: 18px; }
+
+        .fld-label {
+            display: block;
+            font-size: 10px; font-weight: 500;
+            letter-spacing: 0.2em; text-transform: uppercase;
+            color: var(--ink-muted);
+            margin-bottom: 8px;
+        }
+
+        .fld-wrap { position: relative; }
+
+        .fld-ico {
+            position: absolute; left: 14px; top: 50%;
+            transform: translateY(-50%);
+            font-size: 11px; color: var(--ink-hint);
+            pointer-events: none;
+            transition: color .25s;
+        }
+
+        .fld-input {
+            width: 100%;
+            padding: 14px 14px 14px 40px;
+            background: var(--paper);
+            border: 1px solid var(--border-med);
+            color: var(--ink);
+            font-family: var(--sans);
+            font-size: 14px; font-weight: 300;
+            letter-spacing: 0.01em;
+            outline: none;
+            border-radius: 0;
+            transition: background .25s, border-color .25s, box-shadow .25s;
+        }
+        .fld-input::placeholder { color: var(--ink-hint); }
+        .fld-input:focus {
+            background: var(--teal-pale);
+            border-color: rgba(26,107,120,0.4);
+            box-shadow: 0 0 0 3px rgba(26,107,120,0.06);
+        }
+        .fld-wrap:focus-within .fld-ico { color: var(--teal); }
+
+        /* Sweep underline */
+        .fld-line {
+            height: 1.5px; margin-top: -1px;
+            background: linear-gradient(90deg, var(--teal), var(--teal-mid));
+            transform: scaleX(0); transform-origin: left;
+            transition: transform .4s cubic-bezier(.16,1,.3,1);
+        }
+        .fld-wrap:focus-within ~ .fld-line { transform: scaleX(1); }
+
+        .eye-btn {
+            position: absolute; right: 12px; top: 50%;
+            transform: translateY(-50%);
+            background: none; border: none; cursor: pointer;
+            color: var(--ink-hint); font-size: 12px;
+            padding: 6px; transition: color .2s;
+        }
+        .eye-btn:hover { color: var(--ink-soft); }
+
+        /* Password strength */
+        .pw-strength {
+            display: flex; gap: 4px; margin-top: 8px;
+        }
+        .pw-seg {
+            flex: 1; height: 2px;
+            background: var(--paper3);
+            transition: background .3s;
+        }
+        .pw-seg.weak   { background: #E57373; }
+        .pw-seg.medium { background: var(--amber); }
+        .pw-seg.strong { background: var(--teal); }
+        .pw-hint {
+            font-size: 10px; font-weight: 400;
+            color: var(--ink-hint);
+            margin-top: 5px; letter-spacing: 0.02em;
+            min-height: 14px;
+            transition: color .2s;
+        }
+        .pw-hint.weak   { color: #B91C1C; }
+        .pw-hint.medium { color: var(--amber); }
+        .pw-hint.strong { color: var(--teal); }
+
+        /* Submit */
+        .go-btn {
+            width: 100%; padding: 18px 24px;
+            background: var(--teal);
+            color: var(--white);
+            font-family: var(--sans);
+            font-size: 12px; font-weight: 500;
+            letter-spacing: 0.2em; text-transform: uppercase;
+            border: none; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; gap: 12px;
+            position: relative; overflow: hidden;
+            transition: background .25s, box-shadow .3s, transform .3s cubic-bezier(.16,1,.3,1);
+            margin-top: 6px;
+        }
+        .go-btn::before {
+            content: '';
+            position: absolute; inset: 0;
+            background: linear-gradient(105deg, transparent 25%, rgba(255,255,255,0.12) 50%, transparent 75%);
+            transform: translateX(-130%);
+            transition: transform .65s ease;
+        }
+        .go-btn:hover {
+            background: var(--teal-mid);
+            box-shadow: 0 12px 40px rgba(26,107,120,0.28);
+            transform: translateY(-3px);
+        }
+        .go-btn:hover::before { transform: translateX(130%); }
+        .go-btn:active { transform: translateY(0); box-shadow: none; }
+
+        /* Terms */
+        .terms-row {
+            display: flex; align-items: flex-start; gap: 10px;
+            margin-bottom: 20px; margin-top: 4px;
+        }
+        .terms-row input[type="checkbox"] {
+            width: 14px; height: 14px;
+            accent-color: var(--teal);
+            flex-shrink: 0; margin-top: 2px;
+            cursor: pointer;
+        }
+        .terms-row span {
+            font-size: 12px; font-weight: 300;
+            color: var(--ink-muted); line-height: 1.6;
+        }
+        .terms-row a { color: var(--teal); text-decoration: none; }
+        .terms-row a:hover { color: var(--teal-mid); }
+
+        /* Divider */
+        .divider {
+            display: flex; align-items: center; gap: 14px;
+            margin: 24px 0;
+        }
+        .div-line { flex: 1; height: 1px; background: var(--border); }
+        .div-txt {
+            font-size: 9px; font-weight: 500;
+            letter-spacing: 0.25em; text-transform: uppercase;
+            color: var(--ink-hint); white-space: nowrap;
+        }
+
+        /* Footer */
+        .form-foot {
+            text-align: center;
+            font-size: 13px; font-weight: 300;
+            color: var(--ink-muted);
+        }
+        .form-foot a {
+            color: var(--teal); text-decoration: none; font-weight: 400;
+            transition: color .2s;
+        }
+        .form-foot a:hover { color: var(--teal-mid); }
+
+        /* Security row */
+        .sec-row {
+            display: flex; align-items: center; justify-content: center; gap: 7px;
+            margin-top: 20px;
+            font-size: 9px; font-weight: 500;
+            letter-spacing: 0.18em; text-transform: uppercase;
+            color: var(--ink-hint);
+        }
+        .sec-row i { font-size: 9px; color: var(--teal); }
+        .sec-dot { color: var(--border-med); }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 1060px) {
+            .page { grid-template-columns: 1fr; }
+            .L { display: none; }
+            .R { padding: 48px 36px; }
+        }
+        @media (max-width: 640px) {
+            .R { padding: 36px 20px; }
+            .fields-row { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="page">
+
+    <!-- ══════════════════════════════════════
+         L E F T   P A N E L
+    ══════════════════════════════════════ -->
+    <div class="L">
+        <div class="L-wash"></div>
+        <div class="L-wash-2"></div>
+        <div class="L-rail"></div>
+
+        <!-- Logo -->
+        <a href="/" class="brand-link">
+            <svg class="brand-mark" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="18" cy="18" r="17" fill="rgba(26,107,120,0.1)" stroke="rgba(26,107,120,0.3)" stroke-width="1"/>
+                <path d="M9 26 L18 9 L27 26" stroke="#2A8C9C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                <path d="M13 21 L18 13 L23 21" stroke="rgba(42,140,156,0.4)" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                <circle cx="18" cy="29" r="2" fill="#B5722A"/>
+            </svg>
+            <div class="brand-name">Bright<em>Path</em></div>
+        </a>
+
+        <!-- Centre -->
+        <div class="L-center">
+            <div class="L-kicker">
+                <div class="L-kicker-line"></div>
+                <div class="L-kicker-text">ActioNCD International · TK Winston</div>
+            </div>
+
+            <h2 class="L-headline">
+                Join the<br>
+                <span class="ghost">world's most</span>
+                <em>urgent mission.</em>
+            </h2>
+
+            <p class="L-sub">
+                Create your account and get immediate access to world-class NCD training — built for public health professionals who are ready to make real impact.
+            </p>
+
+            <div class="trust-list">
+                <div class="trust-item">
+                    <div class="trust-ico"><i class="fas fa-bolt"></i></div>
+                    <div>
+                        <div class="trust-title">Instant Access</div>
+                        <div class="trust-desc">Start learning immediately after account creation.</div>
+                    </div>
+                </div>
+                <div class="trust-item">
+                    <div class="trust-ico"><i class="fas fa-globe"></i></div>
+                    <div>
+                        <div class="trust-title">50+ Country Network</div>
+                        <div class="trust-desc">Join practitioners from across the globe.</div>
+                    </div>
+                </div>
+                <div class="trust-item">
+                    <div class="trust-ico"><i class="fas fa-certificate"></i></div>
+                    <div>
+                        <div class="trust-title">Verified Certificates</div>
+                        <div class="trust-desc">Accredited proof of mastery for every course completed.</div>
+                    </div>
+                </div>
+                <div class="trust-item">
+                    <div class="trust-ico"><i class="fas fa-robot"></i></div>
+                    <div>
+                        <div class="trust-title">AI Learning Assistant</div>
+                        <div class="trust-desc">In-lesson AI support built on TK's proven frameworks.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="L-stats">
+            <div class="L-stat">
+                <div class="ls-n">5<sup>K+</sup></div>
+                <div class="ls-l">Professionals</div>
+            </div>
+            <div class="L-stat">
+                <div class="ls-n">50<sup>+</sup></div>
+                <div class="ls-l">Countries</div>
+            </div>
+            <div class="L-stat">
+                <div class="ls-n">5</div>
+                <div class="ls-l">Courses</div>
+            </div>
+            <div class="L-stat">
+                <div class="ls-n">20<sup>+</sup></div>
+                <div class="ls-l">Yrs Expertise</div>
+            </div>
+        </div>
+
+        <div class="L-foot">© 2025 BrightPath Ventures Sarl · ActioNCD International</div>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         R I G H T   P A N E L
+    ══════════════════════════════════════ -->
+    <div class="R">
+        <div class="R-topline"></div>
+
+        <div class="R-inner">
+
+            <!-- Top bar -->
+            <div class="R-bar">
+                <div class="secure-pill">
+                    <div class="secure-pip"></div>
+                    Secure Registration
+                </div>
+                <div class="step-pips">
+                    <div class="step-pip lit"></div>
+                    <div class="step-pip lit"></div>
+                    <div class="step-pip"></div>
+                </div>
+            </div>
+
+            <!-- Heading -->
+            <h1 class="form-head">Create <span class="accent">Account</span></h1>
+            <p class="form-tagline">Join thousands of public health professionals delivering real NCD impact across 50+ countries.</p>
+
+            <!-- Messages -->
+            {% if messages %}
+                {% for message in messages %}
+                <div class="err-box">
+                    <i class="fas fa-circle-exclamation"></i>
+                    <span>{{ message }}</span>
+                </div>
+                {% endfor %}
+            {% endif %}
+
+            <!-- Form -->
+            <form method="post" action="{% url 'signup' %}" id="signupForm">
+                {% csrf_token %}
+
+                <!-- Name + Username side by side -->
+                <div class="fields-row">
+                    <div class="fld">
+                        <label class="fld-label" for="full_name">Full Name</label>
+                        <div class="fld-wrap">
+                            <i class="fas fa-user fld-ico"></i>
+                            <input class="fld-input" id="full_name" name="full_name"
+                                   type="text" placeholder="Your full name" required autofocus>
+                        </div>
+                        <div class="fld-line"></div>
+                    </div>
+
+                    <div class="fld">
+                        <label class="fld-label" for="username">Username</label>
+                        <div class="fld-wrap">
+                            <i class="fas fa-at fld-ico"></i>
+                            <input class="fld-input" id="username" name="username"
+                                   type="text" placeholder="Choose a username" required>
+                        </div>
+                        <div class="fld-line"></div>
+                    </div>
+                </div>
+
+                <!-- Email full width -->
+                <div class="fld">
+                    <label class="fld-label" for="email">Email Address</label>
+                    <div class="fld-wrap">
+                        <i class="fas fa-envelope fld-ico"></i>
+                        <input class="fld-input" id="email" name="email"
+                               type="email" placeholder="your@email.com" required>
+                    </div>
+                    <div class="fld-line"></div>
+                </div>
+
+                <!-- Password + Confirm side by side -->
+                <div class="fields-row">
+                    <div class="fld">
+                        <label class="fld-label" for="password">Password</label>
+                        <div class="fld-wrap">
+                            <i class="fas fa-lock fld-ico"></i>
+                            <input class="fld-input" id="password" name="password"
+                                   type="password" placeholder="Min. 8 characters"
+                                   minlength="8" required style="padding-right: 40px;"
+                                   oninput="checkStrength(this.value)">
+                            <button type="button" class="eye-btn" onclick="togglePw('password','eyePw1')">
+                                <i class="fas fa-eye" id="eyePw1"></i>
+                            </button>
+                        </div>
+                        <div class="fld-line"></div>
+                        <div class="pw-strength">
+                            <div class="pw-seg" id="ps1"></div>
+                            <div class="pw-seg" id="ps2"></div>
+                            <div class="pw-seg" id="ps3"></div>
+                            <div class="pw-seg" id="ps4"></div>
+                        </div>
+                        <div class="pw-hint" id="pwHint"></div>
+                    </div>
+
+                    <div class="fld">
+                        <label class="fld-label" for="confirm_password">Confirm Password</label>
+                        <div class="fld-wrap">
+                            <i class="fas fa-lock fld-ico"></i>
+                            <input class="fld-input" id="confirm_password" name="confirm_password"
+                                   type="password" placeholder="Repeat password"
+                                   minlength="8" required style="padding-right: 40px;">
+                            <button type="button" class="eye-btn" onclick="togglePw('confirm_password','eyePw2')">
+                                <i class="fas fa-eye" id="eyePw2"></i>
+                            </button>
+                        </div>
+                        <div class="fld-line"></div>
+                    </div>
+                </div>
+
+                <!-- Terms -->
+                <div class="terms-row">
+                    <input type="checkbox" id="terms" required>
+                    <span>I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>. I understand this platform handles health professional data with strict confidentiality.</span>
+                </div>
+
+                <button type="submit" class="go-btn" id="goBtn">
+                    <span id="goTxt">Create My Account</span>
+                    <i class="fas fa-arrow-right" id="goIco"></i>
+                </button>
+            </form>
+
+            <div class="divider">
+                <div class="div-line"></div>
+                <div class="div-txt">Already registered?</div>
+                <div class="div-line"></div>
+            </div>
+
+            <div class="form-foot">
+                Have an account? <a href="{% url 'login' %}">Sign in instead</a>
+            </div>
+
+            <div class="sec-row">
+                <i class="fas fa-shield-halved"></i>
+                AES-256 Encrypted
+                <span class="sec-dot">·</span>
+                GDPR Compliant
+                <span class="sec-dot">·</span>
+                Zero Retention
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<script>
+/* PASSWORD TOGGLE */
+function togglePw(inputId, iconId) {
+    const inp = document.getElementById(inputId);
+    const ico = document.getElementById(iconId);
+    const show = inp.type === 'password';
+    inp.type = show ? 'text' : 'password';
+    ico.className = show ? 'fas fa-eye-slash' : 'fas fa-eye';
+}
+
+/* PASSWORD STRENGTH */
+function checkStrength(val) {
+    const segs = [document.getElementById('ps1'), document.getElementById('ps2'),
+                  document.getElementById('ps3'), document.getElementById('ps4')];
+    const hint = document.getElementById('pwHint');
+    segs.forEach(s => { s.className = 'pw-seg'; });
+
+    if (!val) { hint.textContent = ''; hint.className = 'pw-hint'; return; }
+
+    let score = 0;
+    if (val.length >= 8)  score++;
+    if (val.length >= 12) score++;
+    if (/[A-Z]/.test(val) && /[a-z]/.test(val)) score++;
+    if (/[0-9]/.test(val) || /[^A-Za-z0-9]/.test(val)) score++;
+
+    const labels = ['', 'Weak', 'Fair', 'Good', 'Strong'];
+    const cls    = ['', 'weak', 'medium', 'medium', 'strong'];
+
+    for (let i = 0; i < score; i++) segs[i].classList.add(cls[score]);
+    hint.textContent = score > 0 ? labels[score] : '';
+    hint.className = 'pw-hint ' + (score > 0 ? cls[score] : '');
+}
+
+/* SUBMIT STATE */
+document.getElementById('signupForm').addEventListener('submit', () => {
+    const btn = document.getElementById('goBtn');
+    document.getElementById('goTxt').textContent = 'Creating account…';
+    document.getElementById('goIco').className   = 'fas fa-spinner fa-spin';
+    btn.disabled = true;
+    btn.style.opacity = '.65';
+});
+
+/* FIELD PERSISTENCE TINT */
+document.querySelectorAll('.fld-input').forEach(inp => {
+    inp.addEventListener('blur', function() {
+        if (this.value.trim()) this.style.borderColor = 'rgba(26,107,120,0.28)';
+    });
+    inp.addEventListener('focus', function() {
+        this.style.borderColor = '';
+    });
+});
+
+/* MAGNETIC SUBMIT */
+const goBtn = document.getElementById('goBtn');
+goBtn.addEventListener('mousemove', e => {
+    const r = goBtn.getBoundingClientRect();
+    const x = (e.clientX - r.left  - r.width  / 2) * 0.1;
+    const y = (e.clientY - r.top   - r.height / 2) * 0.1;
+    goBtn.style.transform = `translate(${x}px,${y}px) translateY(-3px)`;
+});
+goBtn.addEventListener('mouseleave', () => { goBtn.style.transform = ''; });
+</script>
+
+</body>
+</html>

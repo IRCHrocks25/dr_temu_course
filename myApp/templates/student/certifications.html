@@ -1,24 +1,24 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}My Certifications — SOP Master{% endblock %}
+{% block title %}My Certifications — BrightPath{% endblock %}
 
 {% block content %}
 
 <style>
     :root {
-        --blue:    #1A6BFF;
-        --blue2:   #4d8fff;
+        --blue:    #1A6B78;
+        --blue2:   #2A8C9C;
         --pink:    #E4177E;
         --purple:  #7B3FE4;
-        --yellow:  #F5A800;
+        --yellow:  #B5722A;
         --navy:    #060d1a;
-        --card:    rgba(255,255,255,0.035);
-        --border:  rgba(255,255,255,0.07);
-        --muted:   rgba(255,255,255,0.42);
+        --card:    #ffffff;
+        --border:  rgba(26,26,24,0.08);
+        --muted:   #8A8A86;
     }
 
-    .cert-page { font-family: 'DM Sans', 'Barlow', sans-serif; }
+    .cert-page { font-family: 'DM Sans', 'Barlow', sans-serif; color: #1A1A18; }
 
     /* ── HEADER ── */
     .back-link {
@@ -28,7 +28,7 @@
         margin-bottom: 16px;
         transition: color .2s, gap .2s;
     }
-    .back-link:hover { color: #fff; gap: 10px; }
+    .back-link:hover { color: #1A6B78; gap: 10px; }
     .back-link i { font-size: 11px; }
 
     .page-hd {
@@ -47,7 +47,7 @@
         font-family: 'Barlow', 'DM Sans', sans-serif;
         font-size: clamp(28px, 3vw, 42px);
         font-weight: 900; letter-spacing: -1px; line-height: 1.05;
-        color: #fff; margin-bottom: 6px;
+        color: #1A1A18; margin-bottom: 6px;
     }
     .page-sub { font-size: 14px; color: var(--muted); }
 
@@ -94,7 +94,7 @@
     .next-trophy-label { font-size: 11px; color: var(--muted); font-weight: 600; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; }
     .next-trophy-track {
         width: 100%; height: 6px; border-radius: 99px;
-        background: rgba(255,255,255,0.06); overflow: hidden; margin-bottom: 6px;
+        background: #EAE8E4; overflow: hidden; margin-bottom: 6px;
     }
     .next-trophy-fill {
         height: 100%; border-radius: 99px;
@@ -112,8 +112,8 @@
     }
 
     .t-card {
-        background: rgba(255,255,255,0.02);
-        border: 1px solid rgba(255,255,255,0.06);
+        background: #fff;
+        border: 1px solid var(--border);
         border-radius: 14px; padding: 18px 12px 14px;
         text-align: center;
         cursor: default;
@@ -161,14 +161,14 @@
     .t-lock-icon {
         position: absolute; inset: 0;
         display: flex; align-items: center; justify-content: center;
-        font-size: 20px; color: rgba(255,255,255,0.2);
+        font-size: 20px; color: rgba(26,26,24,0.25);
     }
     .t-card.unlocked .t-lock-icon { display: none; }
 
     .t-name {
         font-family: 'Barlow', sans-serif;
         font-size: 13px; font-weight: 800; letter-spacing: -0.2px;
-        color: #fff; margin-bottom: 4px;
+        color: #1A1A18; margin-bottom: 4px;
     }
     .t-req { font-size: 10px; color: var(--muted); font-weight: 500; }
 
@@ -231,8 +231,8 @@
         display: flex; flex-direction: column; gap: 10px;
         margin-bottom: 22px;
         padding: 16px 18px;
-        background: rgba(255,255,255,0.025);
-        border: 1px solid rgba(255,255,255,0.05);
+        background: #F9F8F6;
+        border: 1px solid var(--border);
         border-radius: 10px;
     }
     .cert-meta-row {
@@ -240,7 +240,7 @@
         font-size: 13px;
     }
     .cert-meta-key { color: var(--muted); font-weight: 500; }
-    .cert-meta-val { font-weight: 600; color: rgba(255,255,255,0.85); }
+    .cert-meta-val { font-weight: 600; color: #1A1A18; }
     .cert-meta-val.mono { font-family: 'Courier New', monospace; font-size: 11px; color: var(--muted); }
 
     .status-pill {
@@ -251,7 +251,7 @@
     .sp-passed   { background: rgba(245,168,0,0.12);  border: 1px solid rgba(245,168,0,0.3);  color: #ffc94d; }
     .sp-failed   { background: rgba(239,68,68,0.1);   border: 1px solid rgba(239,68,68,0.25); color: #f87171; }
     .sp-eligible { background: rgba(26,107,255,0.12); border: 1px solid rgba(26,107,255,0.28); color: var(--blue2); }
-    .sp-other    { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: var(--muted); }
+    .sp-other    { background: #F3F1EE; border: 1px solid var(--border); color: var(--muted); }
 
     .btn-cert-view {
         display: flex; align-items: center; justify-content: center; gap: 8px;
@@ -278,8 +278,8 @@
     .btn-processing {
         display: flex; align-items: center; justify-content: center; gap: 8px;
         width: 100%; padding: 13px;
-        background: rgba(255,255,255,0.04);
-        border: 1px solid rgba(255,255,255,0.08);
+        background: #F3F1EE;
+        border: 1px solid var(--border);
         color: var(--muted); font-size: 13px; font-weight: 600;
         border-radius: 10px; cursor: default;
     }
@@ -344,6 +344,26 @@
     }
     .empty-title { font-family: 'Barlow', sans-serif; font-size: 20px; font-weight: 800; margin-bottom: 8px; }
     .empty-text { font-size: 14px; color: var(--muted); max-width: 360px; margin: 0 auto 28px; line-height: 1.65; }
+
+    /* light-surface refinement for this page */
+    .trophy-section,
+    .cert-card,
+    .empty-block {
+        box-shadow: 0 2px 10px rgba(26,26,24,0.04);
+    }
+    .cert-name,
+    .section-hd2-title,
+    .empty-title,
+    .trophy-section-title {
+        color: #1A1A18;
+    }
+    .cert-type,
+    .page-sub,
+    .trophy-section-sub,
+    .eligible-hint,
+    .t-req {
+        color: #8A8A86;
+    }
     .btn-empty {
         display: inline-flex; align-items: center; gap: 8px;
         background: var(--blue); color: #fff;

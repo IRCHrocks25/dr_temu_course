@@ -9,6 +9,7 @@ urlpatterns = [
     # Public-facing URLs
     path('', views.home, name='home'),
     path('login/', views.login_view, name='login'),
+    path('signup/', views.signup_view, name='signup'),
     path('logout/', views.logout_view, name='logout'),
     path('courses/', views.courses, name='courses'),
     path('courses/<slug:course_slug>/', views.course_detail, name='course_detail'),

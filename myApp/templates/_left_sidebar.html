@@ -2,26 +2,26 @@
 <!-- Mobile/Tablet: Normal flow -->
 <!-- Desktop: Fixed to left viewport edge -->
 <div class="w-full lg:fixed lg:left-0 lg:top-24 lg:w-[20%] lg:z-40 mb-6 lg:mb-0 sidebar-left-desktop">
-    <div class="bg-[#0a0e27]/60 backdrop-blur-sm border border-cyan-electric/10 rounded-xl lg:rounded-r-xl lg:rounded-l-none p-6 lg:sticky lg:top-24 lg:h-[calc(100vh-6rem)] lg:overflow-y-auto sidebar-scroll border-l lg:border-l-0">
+    <div class="bg-white border border-[#eae8e4] rounded-xl lg:rounded-r-xl lg:rounded-l-none p-6 lg:sticky lg:top-24 lg:h-[calc(100vh-6rem)] lg:overflow-y-auto sidebar-scroll border-l lg:border-l-0 shadow-sm">
         <!-- Program Info -->
         <div class="mb-6">
-            <div class="text-xs uppercase tracking-widest text-cyan-electric/70 font-semibold mb-1">Program</div>
-            <div class="font-bold text-lg mb-3">{{ course.name }}</div>
-            <div class="w-full bg-gray-700/30 rounded-full h-2 mb-2">
-                <div class="bg-cyan-electric h-2 rounded-full transition-all duration-500" style="width: {{ progress_percentage }}%"></div>
+            <div class="text-xs uppercase tracking-widest text-cyan-electric/80 font-semibold mb-1">Program</div>
+            <div class="font-bold text-lg mb-3 text-[#1a1a18]">{{ course.name }}</div>
+            <div class="w-full bg-[#eae8e4] rounded-full h-2 mb-2">
+                <div class="bg-[#1a6b78] h-2 rounded-full transition-all duration-500" style="width: {{ progress_percentage }}%"></div>
             </div>
-            <div class="text-xs text-gray-400">{{ progress_percentage }}% Complete</div>
+            <div class="text-xs text-[#8a8a86]">{{ progress_percentage }}% Complete</div>
         </div>
         
         <!-- Course Resources -->
         {% if course.resources.all %}
         <div class="mb-6">
-            <div class="text-xs uppercase tracking-widest text-cyan-electric/70 font-semibold mb-2">Resources</div>
+            <div class="text-xs uppercase tracking-widest text-cyan-electric/80 font-semibold mb-2">Resources</div>
             <div class="space-y-1.5">
                 {% for resource in course.resources.all %}
                 <a href="{{ resource.get_download_url }}" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 py-2 px-3 rounded-lg hover:bg-cyan-electric/10 transition-all group">
                     <i class="fas fa-file-{% if resource.resource_type == 'pdf' %}pdf{% else %}download{% endif %} text-cyan-electric/80 text-xs flex-shrink-0"></i>
-                    <span class="text-sm text-gray-300 group-hover:text-cyan-electric truncate">{{ resource.title }}</span>
+                    <span class="text-sm text-[#3d3d3a] group-hover:text-cyan-electric truncate">{{ resource.title }}</span>
                 </a>
                 {% endfor %}
             </div>
@@ -32,35 +32,35 @@
         <div class="space-y-4">
             {% for module in course.modules.all %}
             <div>
-                <button class="w-full flex items-center justify-between text-left font-semibold text-sm mb-2 hover:text-cyan-electric transition-colors module-toggle" data-module="{{ module.id }}">
+                <button class="w-full flex items-center justify-between text-left font-semibold text-sm mb-2 text-[#1a1a18] hover:text-cyan-electric transition-colors module-toggle" data-module="{{ module.id }}">
                     <span>{{ module.name }}</span>
-                    <i class="fas fa-chevron-down text-xs text-gray-500 transition-transform"></i>
+                    <i class="fas fa-chevron-down text-xs text-[#b8b8b4] transition-transform"></i>
                 </button>
                 <div class="module-content pl-4 space-y-2" data-module="{{ module.id }}">
                     {% for module_lesson in module.lessons.all %}
                     {% if module_lesson.id in accessible_lessons %}
                     <a href="{% url 'lesson_detail' course.slug module_lesson.slug %}" class="flex items-center gap-3 py-2 px-3 rounded-lg transition-all
-                        {% if module_lesson.id == lesson.id %}bg-cyan-electric/20 border-l-2 border-cyan-electric{% else %}hover:bg-cyan-electric/5{% endif %}">
+                        {% if module_lesson.id == lesson.id %}bg-cyan-electric/10 border-l-2 border-cyan-electric{% else %}hover:bg-cyan-electric/5{% endif %}">
                         <div class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold
-                            {% if module_lesson.id == lesson.id %}bg-cyan-electric text-[#0a0e27]{% else %}bg-gray-700 text-gray-400{% endif %}">
+                            {% if module_lesson.id == lesson.id %}bg-cyan-electric text-white{% else %}bg-[#f3f1ee] text-[#8a8a86]{% endif %}">
                             {{ forloop.counter }}
                         </div>
-                        <span class="flex-1 text-sm {% if module_lesson.id == lesson.id %}font-semibold text-cyan-electric{% else %}text-gray-300{% endif %}">
+                        <span class="flex-1 text-sm {% if module_lesson.id == lesson.id %}font-semibold text-cyan-electric{% else %}text-[#3d3d3a]{% endif %}">
                             {{ module_lesson.title }}
                         </span>
                         {% if module_lesson.id in completed_lessons %}
-                        <i class="fas fa-check-circle text-green-400"></i>
+                        <i class="fas fa-check-circle text-[#4A6B5A]"></i>
                         {% endif %}
                     </a>
                     {% else %}
-                    <div class="flex items-center gap-3 py-2 px-3 rounded-lg opacity-50 cursor-not-allowed">
-                        <div class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold bg-gray-800 text-gray-600">
+                    <div class="flex items-center gap-3 py-2 px-3 rounded-lg opacity-70 cursor-not-allowed">
+                        <div class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold bg-[#eae8e4] text-[#b8b8b4]">
                             {{ forloop.counter }}
                         </div>
-                        <span class="flex-1 text-sm text-gray-500">
+                        <span class="flex-1 text-sm text-[#b8b8b4]">
                             {{ module_lesson.title }}
                         </span>
-                        <i class="fas fa-lock text-gray-600" title="Complete previous lessons to unlock"></i>
+                        <i class="fas fa-lock text-[#b8b8b4]" title="Complete previous lessons to unlock"></i>
                     </div>
                     {% endif %}
                     {% endfor %}

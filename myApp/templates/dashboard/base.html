@@ -28,7 +28,7 @@
                     colors: {
                         'navy-dark': '#0a0e27',
                         'navy-mid': '#1a1f3a',
-                        'cyan-electric': '#00f0ff',
+                        'cyan-electric': '#1A6B78',
                         'purple-accent': '#a855f7',
                     },
                 }
@@ -40,14 +40,46 @@
         body {
             font-family: 'Inter', sans-serif;
         }
+
+        /* Light dashboard theme for all admin subpages */
+        .dashboard-light {
+            background: #f9f8f6 !important;
+            color: #1a1a18 !important;
+        }
+        .dashboard-light .text-white { color: #1a1a18 !important; }
+        .dashboard-light .text-gray-400,
+        .dashboard-light .text-gray-300,
+        .dashboard-light .text-gray-500 { color: #8a8a86 !important; }
+
+        .dashboard-light [class*="bg-[#0a0e27"],
+        .dashboard-light [class*="bg-[#1a1f3a"],
+        .dashboard-light [class*="bg-[#000000"],
+        .dashboard-light [class*="from-[#0a0e27"],
+        .dashboard-light [class*="via-[#1a1f3a"],
+        .dashboard-light [class*="to-[#000000"] {
+            background: #ffffff !important;
+        }
+
+        .dashboard-light [class*="border-cyan-electric"] {
+            border-color: rgba(26, 107, 120, 0.22) !important;
+        }
+        .dashboard-light [class*="hover:bg-cyan-electric"] {
+            background-color: rgba(26, 107, 120, 0.08) !important;
+        }
+        .dashboard-light [class*="text-cyan-electric"] {
+            color: #1a6b78 !important;
+        }
+        .dashboard-light [class*="text-purple-accent"] {
+            color: #7b3fe4 !important;
+        }
     </style>
 </head>
-<body class="bg-gradient-to-br from-[#0a0e27] via-[#1a1f3a] to-[#000000] min-h-screen text-white">
+<body class="dashboard-light bg-[#f9f8f6] min-h-screen text-[#1a1a18]">
     <!-- Mobile Menu Overlay -->
-    <div id="mobile-sidebar-overlay" class="fixed inset-0 bg-black/60 z-40 hidden md:hidden"></div>
+    <div id="mobile-sidebar-overlay" class="fixed inset-0 bg-black/25 z-40 hidden md:hidden"></div>
     
     <!-- Sidebar Navigation -->
-    <div id="sidebar" class="fixed left-0 top-0 h-full w-64 bg-[#0a0e27]/95 backdrop-blur-sm border-r border-cyan-electric/20 z-50 transform -translate-x-full md:translate-x-0 transition-transform duration-300">
+    <div id="sidebar" class="fixed left-0 top-0 h-full w-64 bg-white border-r border-[#eae8e4] z-50 transform -translate-x-full md:translate-x-0 transition-transform duration-300">
         <div class="p-4 sm:p-6">
             <!-- Logo and Close Button -->
             <div class="flex items-center justify-between mb-8">
@@ -56,46 +88,46 @@
                         <i class="fas fa-bolt text-white"></i>
                     </div>
                     <div>
-                        <div class="text-[10px] uppercase tracking-widest text-cyan-electric/70 font-semibold">Dashboard</div>
-                        <div class="text-sm font-bold">AI Academy</div>
+                        <div class="text-[10px] uppercase tracking-widest text-cyan-electric/80 font-semibold">Dashboard</div>
+                        <div class="text-sm font-bold text-[#1a1a18]">AI Academy</div>
                     </div>
                 </div>
-                <button id="close-sidebar" class="md:hidden p-2 text-gray-400 hover:text-white">
+                <button id="close-sidebar" class="md:hidden p-2 text-gray-500 hover:text-[#1a1a18]">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
             
             <!-- Navigation Links -->
             <nav class="space-y-2">
-                <a href="{% url 'dashboard_home' %}" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all {% if request.resolver_match.url_name == 'dashboard_home' %}bg-cyan-electric/20 text-cyan-electric border-l-2 border-cyan-electric{% else %}text-gray-300 hover:bg-cyan-electric/10 hover:text-cyan-electric{% endif %}">
+                <a href="{% url 'dashboard_home' %}" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all {% if request.resolver_match.url_name == 'dashboard_home' %}bg-cyan-electric/10 text-cyan-electric border-l-2 border-cyan-electric{% else %}text-[#3d3d3a] hover:bg-cyan-electric/10 hover:text-cyan-electric{% endif %}">
                     <i class="fas fa-home w-5"></i>
                     <span>Overview</span>
                 </a>
-                <a href="{% url 'dashboard_analytics' %}" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all {% if request.resolver_match.url_name == 'dashboard_analytics' %}bg-cyan-electric/20 text-cyan-electric border-l-2 border-cyan-electric{% else %}text-gray-300 hover:bg-cyan-electric/10 hover:text-cyan-electric{% endif %}">
+                <a href="{% url 'dashboard_analytics' %}" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all {% if request.resolver_match.url_name == 'dashboard_analytics' %}bg-cyan-electric/10 text-cyan-electric border-l-2 border-cyan-electric{% else %}text-[#3d3d3a] hover:bg-cyan-electric/10 hover:text-cyan-electric{% endif %}">
                     <i class="fas fa-chart-line w-5"></i>
                     <span>Analytics</span>
                 </a>
-                <a href="{% url 'dashboard_courses' %}" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all {% if 'course' in request.resolver_match.url_name %}bg-cyan-electric/20 text-cyan-electric border-l-2 border-cyan-electric{% else %}text-gray-300 hover:bg-cyan-electric/10 hover:text-cyan-electric{% endif %}">
+                <a href="{% url 'dashboard_courses' %}" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all {% if 'course' in request.resolver_match.url_name %}bg-cyan-electric/10 text-cyan-electric border-l-2 border-cyan-electric{% else %}text-[#3d3d3a] hover:bg-cyan-electric/10 hover:text-cyan-electric{% endif %}">
                     <i class="fas fa-book w-5"></i>
                     <span>Courses</span>
                 </a>
-                <a href="{% url 'dashboard_lessons' %}" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all {% if 'lesson' in request.resolver_match.url_name and 'dashboard' in request.resolver_match.url_name and 'quiz' not in request.resolver_match.url_name %}bg-cyan-electric/20 text-cyan-electric border-l-2 border-cyan-electric{% else %}text-gray-300 hover:bg-cyan-electric/10 hover:text-cyan-electric{% endif %}">
+                <a href="{% url 'dashboard_lessons' %}" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all {% if 'lesson' in request.resolver_match.url_name and 'dashboard' in request.resolver_match.url_name and 'quiz' not in request.resolver_match.url_name %}bg-cyan-electric/10 text-cyan-electric border-l-2 border-cyan-electric{% else %}text-[#3d3d3a] hover:bg-cyan-electric/10 hover:text-cyan-electric{% endif %}">
                     <i class="fas fa-video w-5"></i>
                     <span>Lessons</span>
                 </a>
-                <a href="{% url 'dashboard_quizzes' %}" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all {% if 'quiz' in request.resolver_match.url_name and 'dashboard' in request.resolver_match.url_name %}bg-cyan-electric/20 text-cyan-electric border-l-2 border-cyan-electric{% else %}text-gray-300 hover:bg-cyan-electric/10 hover:text-cyan-electric{% endif %}">
+                <a href="{% url 'dashboard_quizzes' %}" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all {% if 'quiz' in request.resolver_match.url_name and 'dashboard' in request.resolver_match.url_name %}bg-cyan-electric/10 text-cyan-electric border-l-2 border-cyan-electric{% else %}text-[#3d3d3a] hover:bg-cyan-electric/10 hover:text-cyan-electric{% endif %}">
                     <i class="fas fa-clipboard-question w-5"></i>
                     <span>Quizzes</span>
                 </a>
-                <a href="{% url 'dashboard_students' %}" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all {% if 'student' in request.resolver_match.url_name %}bg-cyan-electric/20 text-cyan-electric border-l-2 border-cyan-electric{% else %}text-gray-300 hover:bg-cyan-electric/10 hover:text-cyan-electric{% endif %}">
+                <a href="{% url 'dashboard_students' %}" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all {% if 'student' in request.resolver_match.url_name %}bg-cyan-electric/10 text-cyan-electric border-l-2 border-cyan-electric{% else %}text-[#3d3d3a] hover:bg-cyan-electric/10 hover:text-cyan-electric{% endif %}">
                     <i class="fas fa-users w-5"></i>
                     <span>Students</span>
                 </a>
-                <a href="{% url 'dashboard_bundles' %}" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all {% if 'bundle' in request.resolver_match.url_name %}bg-purple-accent/20 text-purple-accent border-l-2 border-purple-accent{% else %}text-gray-300 hover:bg-purple-accent/10 hover:text-purple-accent{% endif %}">
+                <a href="{% url 'dashboard_bundles' %}" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all {% if 'bundle' in request.resolver_match.url_name %}bg-purple-accent/10 text-purple-accent border-l-2 border-purple-accent{% else %}text-[#3d3d3a] hover:bg-purple-accent/10 hover:text-purple-accent{% endif %}">
                     <i class="fas fa-gift w-5"></i>
                     <span>Bundles</span>
                 </a>
-                <a href="{% url 'home' %}" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all text-gray-300 hover:bg-cyan-electric/10 hover:text-cyan-electric">
+                <a href="{% url 'home' %}" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all text-[#3d3d3a] hover:bg-cyan-electric/10 hover:text-cyan-electric">
                     <i class="fas fa-external-link-alt w-5"></i>
                     <span>View Site</span>
                 </a>
@@ -106,20 +138,20 @@
     <!-- Main Content Area -->
     <div class="md:ml-64">
         <!-- Top Bar -->
-        <div class="bg-[#0a0e27]/80 backdrop-blur-sm border-b border-cyan-electric/20 sticky top-0 z-30">
+        <div class="bg-white border-b border-[#eae8e4] sticky top-0 z-30">
             <div class="px-4 sm:px-6 lg:px-8 py-3 sm:py-4 flex items-center justify-between">
                 <div class="flex items-center gap-3">
-                    <button id="open-sidebar" class="md:hidden p-2 text-white hover:text-cyan-electric transition-colors">
+                    <button id="open-sidebar" class="md:hidden p-2 text-[#1a1a18] hover:text-cyan-electric transition-colors">
                         <i class="fas fa-bars text-xl"></i>
                     </button>
                     <h1 class="text-xl sm:text-2xl font-bold">{% block page_title %}Dashboard{% endblock %}</h1>
                 </div>
                 <div class="flex items-center gap-2 sm:gap-4">
-                    <div class="text-xs sm:text-sm text-gray-400 hidden sm:block">
+                    <div class="text-xs sm:text-sm text-[#8a8a86] hidden sm:block">
                         <i class="fas fa-user-circle mr-2"></i>
                         {{ user.get_full_name|default:user.username }}
                     </div>
-                    <a href="{% url 'home' %}" class="px-3 sm:px-4 py-2 rounded-full border border-cyan-electric/30 text-xs sm:text-sm font-medium hover:bg-cyan-electric/10 hover:border-cyan-electric/50 transition-all">
+                    <a href="{% url 'home' %}" class="px-3 sm:px-4 py-2 rounded-full border border-cyan-electric/30 text-xs sm:text-sm font-medium text-[#1a1a18] hover:bg-cyan-electric/10 hover:border-cyan-electric/50 transition-all">
                         <span class="hidden sm:inline">Log Out</span>
                         <i class="fas fa-sign-out-alt sm:hidden"></i>
                     </a>

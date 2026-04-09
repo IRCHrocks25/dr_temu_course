@@ -28,7 +28,7 @@
                     colors: {
                         'navy-dark': '#0a0e27',
                         'navy-mid': '#1a1f3a',
-                        'cyan-electric': '#00f0ff',
+                        'cyan-electric': '#1A6B78',
                         'purple-accent': '#a855f7',
                     },
                 }
@@ -47,7 +47,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 50%, #000000 100%);
+            background: #f9f8f6;
             z-index: 9999;
             display: flex;
             align-items: center;
@@ -61,8 +61,8 @@
         .preloader-spinner {
             width: 60px;
             height: 60px;
-            border: 4px solid rgba(0, 240, 255, 0.2);
-            border-top-color: #00f0ff;
+            border: 4px solid rgba(26, 107, 120, 0.2);
+            border-top-color: #1a6b78;
             border-radius: 50%;
             animation: spin 1s linear infinite;
         }
@@ -71,57 +71,57 @@
         }
     </style>
 </head>
-<body class="bg-gradient-to-br from-[#0a0e27] via-[#1a1f3a] to-[#000000] min-h-screen text-white">
+<body class="bg-[#f9f8f6] min-h-screen text-[#1a1a18]">
     <!-- Page Preloader -->
     <div id="page-preloader">
         <div class="text-center">
             <div class="preloader-spinner mx-auto mb-4"></div>
-            <p class="text-cyan-electric text-sm font-medium">Loading...</p>
+            <p class="text-[#1a6b78] text-sm font-medium">Loading...</p>
         </div>
     </div>
     <!-- Top Navigation Bar -->
-    <nav class="bg-[#0a0e27] border-b border-cyan-electric/40 sticky top-0 z-50">
+    <nav class="bg-white border-b border-[#eae8e4] sticky top-0 z-50">
         <div class="max-w-[1200px] mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
             <!-- Left: Logo -->
             <a href="{% url 'home' %}" class="flex items-center gap-2 sm:gap-3 hover:opacity-80 transition-opacity">
                 <img 
-                    src="https://res.cloudinary.com/dcuswyfur/image/upload/v1774007465/BrightPath_wy6rvb.png"
+                    src="https://res.cloudinary.com/dcuswyfur/image/upload/v1775770912/BrightPath_1_zun8eh.png"
                     alt="Line Training Logo"
                     class="h-12 sm:h-16 w-auto"
                     loading="eager"
                 >
-                <div class="text-sm sm:text-lg font-bold text-white hidden sm:block"></div>
+                <div class="text-sm sm:text-lg font-bold text-[#1a1a18] hidden sm:block"></div>
             </a>
             
             <!-- Mobile Menu Button -->
-            <button id="mobile-menu-btn" class="md:hidden p-2 text-white hover:text-cyan-electric transition-colors">
+            <button id="mobile-menu-btn" class="md:hidden p-2 text-[#1a1a18] hover:text-cyan-electric transition-colors">
                 <i class="fas fa-bars text-xl"></i>
             </button>
             
             <!-- Right: Navigation Links (Desktop) -->
             <div class="hidden md:flex items-center gap-6 lg:gap-8">
-                <a href="{% url 'courses' %}" class="text-sm font-medium text-white hover:text-cyan-electric transition-colors">{% if user.is_authenticated %}Dashboard{% else %}Courses{% endif %}</a>
+                <a href="{% url 'courses' %}" class="text-sm font-medium text-[#1a1a18] hover:text-cyan-electric transition-colors">{% if user.is_authenticated %}Dashboard{% else %}Courses{% endif %}</a>
                 {% if user.is_authenticated %}
-                <a href="{% url 'student_certifications' %}" class="text-sm font-medium text-white hover:text-cyan-electric transition-colors">Certifications</a>
+                <a href="{% url 'student_certifications' %}" class="text-sm font-medium text-[#1a1a18] hover:text-cyan-electric transition-colors">Certifications</a>
                 {% endif %}
                 {% if user.is_staff %}
-                <a href="{% url 'dashboard_home' %}" class="text-sm font-medium text-white hover:text-cyan-electric transition-colors">Admin</a>
+                <a href="{% url 'dashboard_home' %}" class="text-sm font-medium text-[#1a1a18] hover:text-cyan-electric transition-colors">Admin</a>
                 {% endif %}
-                <a href="{% url 'logout' %}" class="px-4 py-2 rounded-lg border border-cyan-electric text-white text-sm font-medium hover:bg-cyan-electric/10 hover:border-cyan-electric/70 transition-all bg-[#0a0e27]">Log Out</a>
+                <a href="{% url 'logout' %}" class="px-4 py-2 rounded-lg border border-cyan-electric text-[#1a1a18] text-sm font-medium hover:bg-cyan-electric/10 hover:border-cyan-electric/70 transition-all bg-white">Log Out</a>
             </div>
         </div>
         
         <!-- Mobile Menu (Hidden by default) -->
-        <div id="mobile-menu" class="hidden md:hidden border-t border-cyan-electric/20 bg-[#0a0e27]">
+        <div id="mobile-menu" class="hidden md:hidden border-t border-[#eae8e4] bg-white">
             <div class="px-4 py-4 space-y-3">
-                <a href="{% url 'courses' %}" class="block px-4 py-2 text-sm font-medium text-white hover:text-cyan-electric hover:bg-cyan-electric/10 rounded-lg transition-colors">{% if user.is_authenticated %}Dashboard{% else %}Courses{% endif %}</a>
+                <a href="{% url 'courses' %}" class="block px-4 py-2 text-sm font-medium text-[#1a1a18] hover:text-cyan-electric hover:bg-cyan-electric/10 rounded-lg transition-colors">{% if user.is_authenticated %}Dashboard{% else %}Courses{% endif %}</a>
                 {% if user.is_authenticated %}
-                <a href="{% url 'student_certifications' %}" class="block px-4 py-2 text-sm font-medium text-white hover:text-cyan-electric hover:bg-cyan-electric/10 rounded-lg transition-colors">Certifications</a>
+                <a href="{% url 'student_certifications' %}" class="block px-4 py-2 text-sm font-medium text-[#1a1a18] hover:text-cyan-electric hover:bg-cyan-electric/10 rounded-lg transition-colors">Certifications</a>
                 {% endif %}
                 {% if user.is_staff %}
-                <a href="{% url 'dashboard_home' %}" class="block px-4 py-2 text-sm font-medium text-white hover:text-cyan-electric hover:bg-cyan-electric/10 rounded-lg transition-colors">Admin</a>
+                <a href="{% url 'dashboard_home' %}" class="block px-4 py-2 text-sm font-medium text-[#1a1a18] hover:text-cyan-electric hover:bg-cyan-electric/10 rounded-lg transition-colors">Admin</a>
                 {% endif %}
-                <a href="{% url 'logout' %}" class="block px-4 py-2 text-sm font-medium text-white hover:text-cyan-electric hover:bg-cyan-electric/10 rounded-lg transition-colors border border-cyan-electric/30">Log Out</a>
+                <a href="{% url 'logout' %}" class="block px-4 py-2 text-sm font-medium text-[#1a1a18] hover:text-cyan-electric hover:bg-cyan-electric/10 rounded-lg transition-colors border border-cyan-electric/30">Log Out</a>
             </div>
         </div>
     </nav>
@@ -154,15 +154,15 @@
     </main>
     
     <!-- Universal Preloader for Student Views -->
-    <div id="student-preloader" class="fixed inset-0 z-50 hidden items-center justify-center bg-[#0a0e27]/95 backdrop-blur-md">
+    <div id="student-preloader" class="fixed inset-0 z-50 hidden items-center justify-center bg-[#f9f8f6]/95 backdrop-blur-md">
         <div class="text-center">
             <!-- Animated Spinner -->
             <div class="relative mb-8">
                 <div class="absolute inset-0 flex items-center justify-center">
-                    <div class="w-32 h-32 border-4 border-cyan-electric/30 rounded-full animate-spin" style="border-top-color: cyan-electric;"></div>
+                    <div class="w-32 h-32 border-4 border-cyan-electric/30 rounded-full animate-spin" style="border-top-color: #1a6b78;"></div>
                 </div>
                 <div class="absolute inset-0 flex items-center justify-center">
-                    <div class="w-24 h-24 border-4 border-purple-accent/30 rounded-full animate-spin" style="border-top-color: purple-accent; animation-direction: reverse; animation-duration: 1.5s;"></div>
+                    <div class="w-24 h-24 border-4 border-purple-accent/30 rounded-full animate-spin" style="border-top-color: #7b3fe4; animation-direction: reverse; animation-duration: 1.5s;"></div>
                 </div>
                 <div class="relative flex items-center justify-center">
                     <div class="w-16 h-16 bg-gradient-to-br from-cyan-electric to-purple-accent rounded-full flex items-center justify-center shadow-2xl shadow-cyan-electric/50">
@@ -175,7 +175,7 @@
             <h3 class="text-2xl font-bold mb-4 bg-gradient-to-r from-cyan-electric to-purple-accent bg-clip-text text-transparent" id="student-preloader-text">
                 Processing...
             </h3>
-            <p class="text-gray-400">Please wait</p>
+            <p class="text-[#8a8a86]">Please wait</p>
         </div>
     </div>
 
@@ -255,22 +255,22 @@
     </div>
 
     <!-- Sprint Coach Chat Interface - Mobile Only (Hidden by default) -->
-    <div id="sprint-coach-chat" class="md:hidden fixed inset-0 bg-[#0a0e27]/95 backdrop-blur-md z-50 hidden flex flex-col">
+    <div id="sprint-coach-chat" class="md:hidden fixed inset-0 bg-[#f9f8f6]/95 backdrop-blur-md z-50 hidden flex flex-col">
         <!-- Chat Header -->
-        <div class="flex items-center justify-between p-4 border-b border-cyan-electric/20 bg-[#0a0e27]">
+        <div class="flex items-center justify-between p-4 border-b border-[#eae8e4] bg-white">
             <div class="flex items-center gap-3">
                 <div class="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-electric to-purple-accent flex items-center justify-center shadow-lg shadow-cyan-electric/20">
                     <i class="fas fa-brain text-lg text-[#0a0e27]"></i>
                 </div>
                 <div>
-                    <h3 class="font-bold text-white text-base">Sprint Coach</h3>
+                    <h3 class="font-bold text-[#1a1a18] text-base">Sprint Coach</h3>
                     <div class="text-xs text-cyan-electric/70 flex items-center gap-1.5">
                         <span class="w-1.5 h-1.5 rounded-full bg-cyan-electric animate-pulse"></span>
                         <span>Online</span>
                     </div>
                 </div>
             </div>
-            <button onclick="toggleSprintCoach()" class="w-8 h-8 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-gray-400 hover:text-white transition-colors">
+            <button onclick="toggleSprintCoach()" class="w-8 h-8 rounded-lg bg-[#f3f1ee] hover:bg-[#eae8e4] flex items-center justify-center text-[#8a8a86] hover:text-[#1a1a18] transition-colors">
                 <i class="fas fa-times text-lg"></i>
             </button>
         </div>
@@ -281,48 +281,48 @@
                 <div class="w-8 h-8 rounded-full bg-gradient-to-br from-cyan-electric to-purple-accent flex items-center justify-center flex-shrink-0">
                     <i class="fas fa-brain text-sm text-[#0a0e27]"></i>
                 </div>
-                <div class="flex-1 bg-[#1a1f3a] border border-cyan-electric/20 rounded-2xl rounded-tl-md px-4 py-3">
-                    <p class="text-sm text-gray-200 leading-relaxed">
+                <div class="flex-1 bg-white border border-[#eae8e4] rounded-2xl rounded-tl-md px-4 py-3">
+                    <p class="text-sm text-[#3d3d3a] leading-relaxed">
                         Hi! I'm your AI Lesson Coach. I'm wired to this program and your lesson history.
                     </p>
-                    <p class="text-sm text-gray-200 leading-relaxed mt-2">
+                    <p class="text-sm text-[#3d3d3a] leading-relaxed mt-2">
                         Ask me anything about this lesson, or try one of the suggestions below.
                     </p>
-                    <div class="text-[10px] text-gray-500 mt-2">Just now</div>
+                    <div class="text-[10px] text-[#8a8a86] mt-2">Just now</div>
                 </div>
             </div>
             
             <!-- Quick Action Suggestions -->
             <div id="coach-quick-suggestions" class="space-y-2 ml-11">
-                <button onclick="sendQuickAction('5-bullet summary')" class="w-full text-left bg-[#1a1f3a] border border-cyan-electric/20 rounded-xl px-4 py-3 hover:bg-[#1a1f3a]/80 hover:border-cyan-electric/30 transition-all">
+                <button onclick="sendQuickAction('5-bullet summary')" class="w-full text-left bg-white border border-[#eae8e4] rounded-xl px-4 py-3 hover:bg-[#f9f8f6] hover:border-cyan-electric/30 transition-all">
                     <div class="flex items-center gap-2">
                         <i class="fas fa-list text-cyan-electric text-sm"></i>
-                        <span class="text-sm text-gray-200">5-bullet summary</span>
+                        <span class="text-sm text-[#3d3d3a]">5-bullet summary</span>
                     </div>
                 </button>
-                <button onclick="sendQuickAction('3-step action plan')" class="w-full text-left bg-[#1a1f3a] border border-cyan-electric/20 rounded-xl px-4 py-3 hover:bg-[#1a1f3a]/80 hover:border-cyan-electric/30 transition-all">
+                <button onclick="sendQuickAction('3-step action plan')" class="w-full text-left bg-white border border-[#eae8e4] rounded-xl px-4 py-3 hover:bg-[#f9f8f6] hover:border-cyan-electric/30 transition-all">
                     <div class="flex items-center gap-2">
                         <i class="fas fa-list-check text-cyan-electric text-sm"></i>
-                        <span class="text-sm text-gray-200">3-step action plan</span>
+                        <span class="text-sm text-[#3d3d3a]">3-step action plan</span>
                     </div>
                 </button>
-                <button onclick="sendQuickAction('Delegation guide')" class="w-full text-left bg-[#1a1f3a] border border-cyan-electric/20 rounded-xl px-4 py-3 hover:bg-[#1a1f3a]/80 hover:border-cyan-electric/30 transition-all">
+                <button onclick="sendQuickAction('Delegation guide')" class="w-full text-left bg-white border border-[#eae8e4] rounded-xl px-4 py-3 hover:bg-[#f9f8f6] hover:border-cyan-electric/30 transition-all">
                     <div class="flex items-center gap-2">
                         <i class="fas fa-users text-cyan-electric text-sm"></i>
-                        <span class="text-sm text-gray-200">Delegation guide</span>
+                        <span class="text-sm text-[#3d3d3a]">Delegation guide</span>
                     </div>
                 </button>
             </div>
         </div>
         
         <!-- Chat Input Area -->
-        <div class="border-t border-cyan-electric/20 bg-[#0a0e27] p-4">
+        <div class="border-t border-[#eae8e4] bg-white p-4">
             <div class="flex items-end gap-2">
                 <textarea 
                     id="coach-input" 
                     rows="1"
                     placeholder="Ask me anything..." 
-                    class="flex-1 bg-[#1a1f3a] border border-cyan-electric/20 rounded-xl px-4 py-3 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-cyan-electric/40 focus:ring-1 focus:ring-cyan-electric/20 resize-none"
+                    class="flex-1 bg-white border border-[#eae8e4] rounded-xl px-4 py-3 text-sm text-[#1a1a18] placeholder-[#b8b8b4] focus:outline-none focus:border-cyan-electric/40 focus:ring-1 focus:ring-cyan-electric/20 resize-none"
                     style="min-height: 44px; max-height: 120px;"
                     onkeydown="if(event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); sendCoachMessage(); }"
                 ></textarea>
@@ -334,7 +334,7 @@
                 </button>
             </div>
             <div class="flex items-center justify-center mt-2">
-                <div class="text-[10px] text-gray-500 flex items-center gap-1.5">
+                <div class="text-[10px] text-[#8a8a86] flex items-center gap-1.5">
                     <i class="fas fa-keyboard text-[8px]"></i>
                     <span>Enter to send · Shift+Enter for new line</span>
                 </div>
@@ -385,8 +385,8 @@
             const userMessage = document.createElement('div');
             userMessage.className = 'flex items-start gap-3 justify-end';
             userMessage.innerHTML = `
-                <div class="flex-1 bg-cyan-electric/20 border border-cyan-electric/30 rounded-2xl rounded-tr-md px-4 py-3 max-w-[85%] ml-auto">
-                    <p class="text-sm text-white leading-relaxed">${escapeHtml(messageText)}</p>
+                <div class="flex-1 bg-cyan-electric/10 border border-cyan-electric/30 rounded-2xl rounded-tr-md px-4 py-3 max-w-[85%] ml-auto">
+                    <p class="text-sm text-[#1a1a18] leading-relaxed">${escapeHtml(messageText)}</p>
                 </div>
             `;
             messagesContainer.appendChild(userMessage);
@@ -407,10 +407,10 @@
                 <div class="w-8 h-8 rounded-full bg-gradient-to-br from-cyan-electric to-purple-accent flex items-center justify-center flex-shrink-0">
                     <i class="fas fa-brain text-sm text-[#0a0e27]"></i>
                 </div>
-                <div class="flex-1 bg-[#1a1f3a] border border-cyan-electric/20 rounded-2xl rounded-tl-md px-4 py-3">
+                <div class="flex-1 bg-white border border-[#eae8e4] rounded-2xl rounded-tl-md px-4 py-3">
                     <div class="flex items-center gap-2 text-cyan-electric">
                         <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-cyan-electric"></div>
-                        <p class="text-sm">AI is thinking...</p>
+                        <p class="text-sm text-[#3d3d3a]">AI is thinking...</p>
                     </div>
                 </div>
             `;
@@ -423,9 +423,9 @@
                     <div class="w-8 h-8 rounded-full bg-gradient-to-br from-cyan-electric to-purple-accent flex items-center justify-center flex-shrink-0">
                         <i class="fas fa-brain text-sm text-[#0a0e27]"></i>
                     </div>
-                    <div class="flex-1 bg-[#1a1f3a] border border-cyan-electric/20 rounded-2xl rounded-tl-md px-4 py-3">
-                        <p class="text-sm text-gray-200 leading-relaxed">I'm here to help! This is a placeholder response. Connect me to your AI backend to get real answers based on your lesson content.</p>
-                        <div class="text-[10px] text-gray-500 mt-2">Just now</div>
+                    <div class="flex-1 bg-white border border-[#eae8e4] rounded-2xl rounded-tl-md px-4 py-3">
+                        <p class="text-sm text-[#3d3d3a] leading-relaxed">I'm here to help! This is a placeholder response. Connect me to your AI backend to get real answers based on your lesson content.</p>
+                        <div class="text-[10px] text-[#8a8a86] mt-2">Just now</div>
                     </div>
                 `;
                 messagesContainer.scrollTop = messagesContainer.scrollHeight;
