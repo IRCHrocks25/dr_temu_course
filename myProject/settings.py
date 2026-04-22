@@ -3,6 +3,12 @@ import os
 from dotenv import load_dotenv
 import dj_database_url
 
+# Prevent OpenBLAS/NumPy from spawning too many threads on small containers.
+os.environ.setdefault('OPENBLAS_NUM_THREADS', '1')
+os.environ.setdefault('OMP_NUM_THREADS', '1')
+os.environ.setdefault('MKL_NUM_THREADS', '1')
+os.environ.setdefault('NUMEXPR_NUM_THREADS', '1')
+
 # Load environment variables from .env file
 load_dotenv()
 

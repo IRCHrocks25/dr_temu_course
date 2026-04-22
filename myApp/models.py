@@ -578,24 +578,6 @@ class Cohort(models.Model):
     
     def get_member_count(self):
         return self.members.count()
-# ========== ACCESS CONTROL SYSTEM ==========
-
-class Cohort(models.Model):
-    """Groups of students (e.g., 'Black Friday 2025 Buyers', 'VIP Mastermind')"""
-    name = models.CharField(max_length=200, unique=True)
-    description = models.TextField(blank=True)
-    is_active = models.BooleanField(default=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    
-    class Meta:
-        ordering = ['-created_at']
-    
-    def __str__(self):
-        return self.name
-    
-    def get_member_count(self):
-        return self.members.count()
 
 
 class Bundle(models.Model):
