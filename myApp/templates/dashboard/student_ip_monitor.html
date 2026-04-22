@@ -1,0 +1,108 @@
+{% extends 'dashboard/base.html' %}
+
+{% block title %}Student IP Monitor{% endblock %}
+{% block page_title %}Student IP Monitor{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="bg-white border border-cyan-electric/15 rounded-xl p-4">
+            <div class="text-xs text-gray-500 uppercase tracking-wide">Log Entries</div>
+            <div class="text-2xl font-bold text-[#1a1a18] mt-1">{{ total_logs }}</div>
+        </div>
+        <div class="bg-white border border-cyan-electric/15 rounded-xl p-4">
+            <div class="text-xs text-gray-500 uppercase tracking-wide">Unique Students</div>
+            <div class="text-2xl font-bold text-[#1a1a18] mt-1">{{ unique_students }}</div>
+        </div>
+        <div class="bg-white border border-cyan-electric/15 rounded-xl p-4">
+            <div class="text-xs text-gray-500 uppercase tracking-wide">Unique IPs</div>
+            <div class="text-2xl font-bold text-[#1a1a18] mt-1">{{ unique_ips }}</div>
+        </div>
+        <div class="bg-white border border-cyan-electric/15 rounded-xl p-4">
+            <div class="text-xs text-gray-500 uppercase tracking-wide">Private/Local IP Logs</div>
+            <div class="text-2xl font-bold text-[#1a1a18] mt-1">{{ private_ip_logs }}</div>
+        </div>
+    </div>
+
+    <form method="GET" class="bg-white border border-cyan-electric/15 rounded-xl p-4 grid grid-cols-1 md:grid-cols-4 gap-3" data-no-loader>
+        <input
+            type="text"
+            name="search"
+            value="{{ search_query }}"
+            placeholder="Search user/email/IP/location"
+            class="w-full bg-white border border-cyan-electric/20 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-cyan-electric/50"
+        >
+        <select name="country" class="w-full bg-white border border-cyan-electric/20 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-cyan-electric/50">
+            <option value="">All Countries</option>
+            {% for country in countries %}
+            <option value="{{ country }}" {% if country_filter == country %}selected{% endif %}>{{ country }}</option>
+            {% endfor %}
+        </select>
+        <input
+            type="date"
+            name="date"
+            value="{{ date_filter }}"
+            class="w-full bg-white border border-cyan-electric/20 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-cyan-electric/50"
+        >
+        <div class="flex gap-2">
+            <button type="submit" class="flex-1 px-4 py-2 bg-cyan-electric text-white rounded-lg font-semibold hover:bg-cyan-electric/90 transition-all">
+                Filter
+            </button>
+            <a href="{% url 'dashboard_student_ip_monitor' %}" class="px-4 py-2 border border-cyan-electric/30 rounded-lg hover:bg-cyan-electric/10 transition-all text-sm font-semibold">
+                Reset
+            </a>
+        </div>
+    </form>
+
+    <div class="bg-white border border-cyan-electric/15 rounded-xl overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full min-w-[960px]">
+                <thead class="bg-[#f9f8f6] border-b border-[#eae8e4]">
+                    <tr class="text-left text-xs uppercase tracking-wide text-gray-500">
+                        <th class="px-4 py-3">Student</th>
+                        <th class="px-4 py-3">IP Address</th>
+                        <th class="px-4 py-3">Location</th>
+                        <th class="px-4 py-3">Hits</th>
+                        <th class="px-4 py-3">Last Path</th>
+                        <th class="px-4 py-3">First Seen</th>
+                        <th class="px-4 py-3">Last Seen</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-[#f0efec]">
+                    {% for row in ip_logs %}
+                    <tr class="text-sm text-[#1a1a18]">
+                        <td class="px-4 py-3">
+                            <div class="font-semibold">{{ row.user.get_full_name|default:row.user.username }}</div>
+                            <div class="text-xs text-gray-500">{{ row.user.email }}</div>
+                        </td>
+                        <td class="px-4 py-3 font-mono">
+                            {{ row.ip_address }}
+                            {% if row.is_private_ip %}
+                            <div class="text-[11px] text-gray-500">Private/Local IP</div>
+                            {% endif %}
+                        </td>
+                        <td class="px-4 py-3">
+                            {% if row.country or row.region or row.city %}
+                                {{ row.city }}{% if row.city and row.region %}, {% endif %}{{ row.region }}{% if row.country %} ({{ row.country }}){% endif %}
+                            {% else %}
+                                <span class="text-gray-500">Unknown</span>
+                            {% endif %}
+                        </td>
+                        <td class="px-4 py-3">{{ row.hit_count }}</td>
+                        <td class="px-4 py-3 max-w-[280px] truncate" title="{{ row.last_path }}">{{ row.last_path|default:"-" }}</td>
+                        <td class="px-4 py-3 text-xs text-gray-600">{{ row.first_seen|date:"Y-m-d H:i" }}</td>
+                        <td class="px-4 py-3 text-xs text-gray-600">{{ row.last_seen|date:"Y-m-d H:i" }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7" class="px-4 py-10 text-center text-gray-500">
+                            No student IP activity captured yet.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

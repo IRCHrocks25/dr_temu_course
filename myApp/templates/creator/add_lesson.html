@@ -4,30 +4,51 @@
 {% block title %}Add Lesson - {{ course.name }}{% endblock %}
 
 {% block content %}
-<div class="w-full min-h-screen bg-[#0a0e27] py-8">
+<div class="w-full min-h-screen bg-[#f7fafc] py-8">
     <div class="max-w-[1600px] mx-auto px-6">
         <!-- Header -->
         <div class="mb-8">
             <a href="{% url 'course_lessons' course.slug %}" class="text-cyan-electric hover:text-cyan-electric/80 text-sm mb-4 inline-flex items-center gap-2">
                 <i class="fas fa-arrow-left"></i> Back to {{ course.name }}
             </a>
-            <h1 class="text-4xl font-bold mb-2">Add New Lesson</h1>
-            <p class="text-gray-400">Upload your video and let AI organize everything</p>
+            <h1 class="text-4xl font-bold text-[#1a1a18] mb-2">Add New Lesson</h1>
+            <p class="text-gray-600">Choose manual or AI-assisted lesson creation.</p>
         </div>
 
         <!-- Two-Column Layout -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <!-- Left Column: Main Form -->
             <div class="lg:col-span-2">
-                <div class="bg-[#0f1529]/80 backdrop-blur-sm border border-cyan-electric/10 rounded-2xl p-8 shadow-2xl">
+                <div class="bg-white border border-cyan-electric/15 rounded-2xl p-8 shadow-xl">
                     <form method="POST" id="lesson-form" enctype="multipart/form-data">
                         {% csrf_token %}
+
+                        <!-- Creation mode -->
+                        <div class="mb-8">
+                            <label class="block text-sm font-semibold text-[#1a1a18] mb-3">Creation Mode</label>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                <label class="flex items-start gap-3 p-4 border border-cyan-electric/25 rounded-xl cursor-pointer hover:bg-cyan-electric/5 transition-all">
+                                    <input type="radio" name="creation_mode" value="ai" class="mt-1" checked>
+                                    <span>
+                                        <span class="block font-semibold text-[#1a1a18]"><i class="fas fa-magic mr-1 text-cyan-electric"></i>AI Assisted</span>
+                                        <span class="block text-xs text-gray-500 mt-1">Generate polished lesson content after upload/transcription.</span>
+                                    </span>
+                                </label>
+                                <label class="flex items-start gap-3 p-4 border border-cyan-electric/25 rounded-xl cursor-pointer hover:bg-cyan-electric/5 transition-all">
+                                    <input type="radio" name="creation_mode" value="manual" class="mt-1">
+                                    <span>
+                                        <span class="block font-semibold text-[#1a1a18]">Manual</span>
+                                        <span class="block text-xs text-gray-500 mt-1">Create the lesson directly without AI generation.</span>
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
                         
                         <!-- STEP 1: Video Input -->
                         <div class="mb-8">
                             <div class="flex items-center gap-3 mb-6">
                                 <div class="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-electric to-purple-accent text-[#0a0e27] flex items-center justify-center font-bold text-lg">1</div>
-                                <h2 class="text-2xl font-bold">Video Input</h2>
+                                <h2 class="text-2xl font-bold text-[#1a1a18]">Video Input</h2>
                             </div>
                             
                             <div class="space-y-6">
@@ -44,26 +65,26 @@
                                             accept="video/mp4"
                                             class="hidden"
                                         >
-                                        <label for="video-file" class="flex flex-col items-center justify-center w-full h-48 border-2 border-dashed border-cyan-electric/30 rounded-xl bg-[#0a0e27]/40 cursor-pointer hover:border-cyan-electric/50 hover:bg-[#0a0e27]/60 transition-all group">
+                                        <label for="video-file" class="flex flex-col items-center justify-center w-full h-48 border-2 border-dashed border-cyan-electric/30 rounded-xl bg-cyan-electric/5 cursor-pointer hover:border-cyan-electric/50 hover:bg-cyan-electric/10 transition-all group">
                                             <div class="flex flex-col items-center justify-center pt-5 pb-6">
                                                 <i class="fas fa-cloud-upload-alt text-5xl text-cyan-electric/50 mb-4 group-hover:text-cyan-electric transition-colors"></i>
-                                                <p class="mb-2 text-sm text-gray-400">
+                                                <p class="mb-2 text-sm text-gray-600">
                                                     <span class="font-semibold text-cyan-electric">Click to upload</span> or drag and drop
                                                 </p>
                                                 <p class="text-xs text-gray-500">MP4 video file (MAX. 500MB)</p>
                                             </div>
                                         </label>
                                     </div>
-                                    <p class="text-xs text-gray-400 mt-2">
+                                    <p class="text-xs text-gray-500 mt-2">
                                         <i class="fas fa-info-circle mr-1"></i> Video will be automatically transcribed after upload.
                                     </p>
                                     <!-- Upload Progress -->
                                     <div id="upload-progress" class="hidden mt-4">
                                         <div class="flex items-center gap-3 mb-2">
-                                            <div class="flex-1 bg-gray-700/30 rounded-full h-2 overflow-hidden">
+                                            <div class="flex-1 bg-gray-200 rounded-full h-2 overflow-hidden">
                                                 <div id="progress-bar" class="bg-gradient-to-r from-cyan-electric to-purple-accent h-full rounded-full transition-all duration-300" style="width: 0%"></div>
                                             </div>
-                                            <span id="progress-text" class="text-xs text-gray-400">0%</span>
+                                            <span id="progress-text" class="text-xs text-gray-600">0%</span>
                                         </div>
                                     </div>
                                 </div>
@@ -74,7 +95,7 @@
                                         <div class="w-full border-t border-cyan-electric/10"></div>
                                     </div>
                                     <div class="relative flex justify-center text-sm">
-                                        <span class="px-4 bg-[#0f1529] text-gray-500 uppercase tracking-wider">OR</span>
+                                        <span class="px-4 bg-white text-gray-500 uppercase tracking-wider">OR</span>
                                     </div>
                                 </div>
                                 
@@ -88,9 +109,9 @@
                                         name="vimeo_url" 
                                         id="vimeo-url"
                                         placeholder="https://vimeo.com/xxxxxxxxx"
-                                        class="w-full bg-[#0a0e27]/60 border border-cyan-electric/20 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-cyan-electric/50 focus:bg-[#0a0e27]/80 transition-all"
+                                        class="w-full bg-white border border-cyan-electric/20 rounded-xl px-4 py-3 text-sm text-[#1a1a18] focus:outline-none focus:border-cyan-electric/50 focus:bg-cyan-electric/5 transition-all"
                                     >
-                                    <p class="text-xs text-gray-400 mt-2">
+                                    <p class="text-xs text-gray-500 mt-2">
                                         We'll automatically detect metadata, duration, and thumbnail.
                                     </p>
                                 </div>
@@ -100,8 +121,8 @@
                                     <div class="flex gap-4">
                                         <img id="preview-thumbnail" src="" alt="Video thumbnail" class="w-40 h-24 object-cover rounded-lg">
                                         <div class="flex-1">
-                                            <div id="preview-title" class="font-semibold mb-2 text-white"></div>
-                                            <div class="text-sm text-gray-400 mb-2">
+                                            <div id="preview-title" class="font-semibold mb-2 text-[#1a1a18]"></div>
+                                            <div class="text-sm text-gray-600 mb-2">
                                                 <i class="fas fa-clock mr-2"></i>
                                                 <span id="preview-duration"></span>
                                             </div>
@@ -119,34 +140,57 @@
                         <div class="mb-8 border-t border-cyan-electric/10 pt-8">
                             <div class="flex items-center gap-3 mb-6">
                                 <div class="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-electric to-purple-accent text-[#0a0e27] flex items-center justify-center font-bold text-lg">2</div>
-                                <h2 class="text-2xl font-bold">Lesson Context</h2>
+                                <h2 class="text-2xl font-bold text-[#1a1a18]">Lesson Context</h2>
                             </div>
                             
                             <div class="space-y-6">
                                 <div>
-                                    <label class="block text-sm font-semibold mb-3">
+                                    <label class="block text-sm font-semibold text-[#1a1a18] mb-3">
                                         Working Lesson Title
                                     </label>
                                     <input 
                                         type="text" 
                                         name="working_title" 
                                         placeholder="Sprint 8.0 – Session 1: Orientation"
-                                        class="w-full bg-[#0a0e27]/60 border border-cyan-electric/20 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-cyan-electric/50 focus:bg-[#0a0e27]/80 transition-all"
-                                        required
+                                        class="w-full bg-white border border-cyan-electric/20 rounded-xl px-4 py-3 text-sm text-[#1a1a18] focus:outline-none focus:border-cyan-electric/50 focus:bg-cyan-electric/5 transition-all"
                                     >
+                                </div>
+
+                                <div id="manual-fields" class="hidden space-y-3">
+                                    <div>
+                                        <label class="block text-sm font-semibold text-[#1a1a18] mb-3">Manual Lesson Title *</label>
+                                        <input
+                                            type="text"
+                                            name="manual_title"
+                                            id="manual-title"
+                                            placeholder="e.g., Lesson 2: Patient Follow-up Protocol"
+                                            class="w-full bg-white border border-cyan-electric/20 rounded-xl px-4 py-3 text-sm text-[#1a1a18] focus:outline-none focus:border-cyan-electric/50 focus:bg-cyan-electric/5 transition-all"
+                                        >
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-semibold text-[#1a1a18] mb-3">Manual Description</label>
+                                        <textarea
+                                            name="manual_description"
+                                            id="manual-description"
+                                            rows="5"
+                                            placeholder="Write the lesson description for students."
+                                            class="w-full bg-white border border-cyan-electric/20 rounded-xl px-4 py-3 text-sm text-[#1a1a18] focus:outline-none focus:border-cyan-electric/50 focus:bg-cyan-electric/5 resize-none transition-all"
+                                        ></textarea>
+                                        <p class="text-xs text-gray-500 mt-2">If left blank, notes above will be used as description.</p>
+                                    </div>
                                 </div>
                                 
                                 <div>
-                                    <label class="block text-sm font-semibold mb-3">
+                                    <label class="block text-sm font-semibold text-[#1a1a18] mb-3">
                                         Optional: Notes or rough outline for AI
                                     </label>
                                     <textarea 
                                         name="rough_notes" 
                                         rows="6"
                                         placeholder="Drop session notes, bullets, workshop outline, or even messy copy here. The AI will use this to generate better descriptions and outcomes."
-                                        class="w-full bg-[#0a0e27]/60 border border-cyan-electric/20 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-cyan-electric/50 focus:bg-[#0a0e27]/80 resize-none transition-all"
+                                        class="w-full bg-white border border-cyan-electric/20 rounded-xl px-4 py-3 text-sm text-[#1a1a18] focus:outline-none focus:border-cyan-electric/50 focus:bg-cyan-electric/5 resize-none transition-all"
                                     ></textarea>
-                                    <p class="text-xs text-gray-400 mt-2">
+                                    <p class="text-xs text-gray-500 mt-2">
                                         If you don't add anything, the AI still handles the description based on the video title — but notes improve accuracy.
                                     </p>
                                 </div>
@@ -164,9 +208,9 @@
                                 class="w-full px-6 py-4 bg-gradient-to-r from-cyan-electric to-purple-accent text-[#0a0e27] rounded-xl font-bold text-lg hover:shadow-2xl hover:shadow-cyan-electric/30 transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
                             >
                                 <i class="fas fa-magic mr-2"></i>
-                                Generate Lesson Description & Outputs
+                                <span id="generate-btn-label">Generate Lesson Description & Outputs</span>
                             </button>
-                            <p class="text-xs text-gray-400 mt-3 text-center">
+                            <p class="text-xs text-gray-500 mt-3 text-center" id="generate-btn-help">
                                 The AI will generate: clean title, summary, full description, outcomes, and recommended coach actions.
                             </p>
                         </div>
@@ -176,9 +220,9 @@
             
             <!-- Right Column: Transcription Panel -->
             <div class="lg:col-span-1">
-                <div class="bg-[#0f1529]/80 backdrop-blur-sm border border-cyan-electric/10 rounded-2xl p-6 shadow-2xl sticky top-24">
+                <div class="bg-white border border-cyan-electric/15 rounded-2xl p-6 shadow-xl sticky top-24">
                     <div class="flex items-center justify-between mb-6">
-                        <h3 class="text-lg font-bold flex items-center gap-2">
+                        <h3 class="text-lg font-bold text-[#1a1a18] flex items-center gap-2">
                             <i class="fas fa-file-alt text-cyan-electric"></i>
                             Transcription
                         </h3>
@@ -190,8 +234,8 @@
                     <!-- Transcription Status -->
                     <div id="transcription-status" class="mb-4">
                         <div id="status-pending" class="text-center py-8">
-                            <i class="fas fa-file-video text-4xl text-gray-600 mb-3"></i>
-                            <p class="text-sm text-gray-400">Upload a video to generate transcription</p>
+                            <i class="fas fa-file-video text-4xl text-gray-500 mb-3"></i>
+                            <p class="text-sm text-gray-600">Upload a video to generate transcription</p>
                         </div>
                         
                         <div id="status-processing" class="hidden text-center py-8">
@@ -199,7 +243,7 @@
                                 <i class="fas fa-spinner fa-spin text-2xl text-cyan-electric"></i>
                             </div>
                             <p class="text-sm font-semibold text-cyan-electric mb-1">Generating transcription...</p>
-                            <p class="text-xs text-gray-400">This may take a moment</p>
+                            <p class="text-xs text-gray-500">This may take a moment</p>
                         </div>
                         
                         <div id="status-error" class="hidden text-center py-6">
@@ -218,7 +262,7 @@
                         <textarea 
                             id="transcription-textarea"
                             rows="20"
-                            class="w-full bg-[#0a0e27]/60 border border-cyan-electric/20 rounded-xl px-4 py-3 text-sm text-gray-300 focus:outline-none focus:border-cyan-electric/50 focus:bg-[#0a0e27]/80 resize-none transition-all font-mono leading-relaxed"
+                            class="w-full bg-white border border-cyan-electric/20 rounded-xl px-4 py-3 text-sm text-[#1a1a18] focus:outline-none focus:border-cyan-electric/50 focus:bg-cyan-electric/5 resize-none transition-all font-mono leading-relaxed"
                             placeholder="Transcription will appear here..."
                         ></textarea>
                         
@@ -246,16 +290,16 @@
 <!-- Global Lesson Modal (reusable) -->
 <div 
     id="global-lesson-modal" 
-    class="fixed inset-0 z-50 hidden items-center justify-center bg-black/60 backdrop-blur-sm"
+    class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40 backdrop-blur-sm"
 >
-    <div class="bg-[#0a0e27] border border-cyan-electric/30 rounded-2xl shadow-2xl max-w-md w-full mx-4 p-6">
+    <div class="bg-white border border-cyan-electric/30 rounded-2xl shadow-2xl max-w-md w-full mx-4 p-6">
         <div class="flex items-start gap-3 mb-4">
             <div class="w-9 h-9 rounded-full bg-red-500/10 border border-red-500/40 flex items-center justify-center flex-shrink-0">
                 <i class="fas fa-exclamation-triangle text-red-400"></i>
             </div>
             <div>
-                <h3 class="text-lg font-semibold text-white mb-1" id="global-lesson-modal-title">Heads up</h3>
-                <p id="global-lesson-modal-message" class="text-sm text-gray-300 leading-relaxed"></p>
+                <h3 class="text-lg font-semibold text-[#1a1a18] mb-1" id="global-lesson-modal-title">Heads up</h3>
+                <p id="global-lesson-modal-message" class="text-sm text-gray-600 leading-relaxed"></p>
             </div>
         </div>
         <div class="flex justify-end">
@@ -306,6 +350,8 @@
     const vimeoUrlInput = document.getElementById('vimeo-url');
     const videoPreview = document.getElementById('video-preview');
     const generateBtn = document.getElementById('generate-btn');
+    const generateBtnLabel = document.getElementById('generate-btn-label');
+    const generateBtnHelp = document.getElementById('generate-btn-help');
     const transcriptionInput = document.getElementById('transcription-input');
     const transcriptionTextarea = document.getElementById('transcription-textarea');
     const transcriptionContent = document.getElementById('transcription-content');
@@ -322,10 +368,49 @@
     const copyTranscriptionBtn = document.getElementById('copy-transcription');
     const copyTranscriptionBtn2 = document.getElementById('copy-transcription-btn');
     const useForDescriptionBtn = document.getElementById('use-for-description');
+    const modeInputs = document.querySelectorAll('input[name="creation_mode"]');
+    const manualFields = document.getElementById('manual-fields');
+    const manualTitleInput = document.getElementById('manual-title');
     
     let vimeoVerified = false;
     let transcriptionData = '';
     let currentVideoFile = null;
+
+    function getCreationMode() {
+        const selected = document.querySelector('input[name="creation_mode"]:checked');
+        return selected ? selected.value : 'ai';
+    }
+
+    function updateGenerateEnabled() {
+        if (!generateBtn) return;
+        const mode = getCreationMode();
+        if (mode === 'manual') {
+            generateBtn.disabled = false;
+            return;
+        }
+        generateBtn.disabled = !(vimeoVerified || (transcriptionData && transcriptionData.trim().length > 0));
+    }
+
+    function updateCreationModeUI() {
+        const mode = getCreationMode();
+        if (mode === 'manual') {
+            manualFields.classList.remove('hidden');
+            if (generateBtnLabel) generateBtnLabel.textContent = 'Create Lesson Manually';
+            if (generateBtnHelp) generateBtnHelp.textContent = 'Manual mode saves the lesson immediately without AI generation.';
+            if (manualTitleInput) manualTitleInput.required = true;
+        } else {
+            manualFields.classList.add('hidden');
+            if (generateBtnLabel) generateBtnLabel.textContent = 'Generate Lesson Description & Outputs';
+            if (generateBtnHelp) generateBtnHelp.textContent = 'The AI will generate: clean title, summary, full description, outcomes, and recommended coach actions.';
+            if (manualTitleInput) manualTitleInput.required = false;
+        }
+        updateGenerateEnabled();
+    }
+
+    modeInputs.forEach((input) => {
+        input.addEventListener('change', updateCreationModeUI);
+    });
+    updateCreationModeUI();
     
     // Show status
     function showStatus(status) {
@@ -395,10 +480,11 @@
                 transcriptionTextarea.value = data.transcription;
                 transcriptionInput.value = data.transcription;
                 showStatus('completed');
-                generateBtn.disabled = false;
+                updateGenerateEnabled();
             } else {
                 errorMessage.textContent = data.error || 'Transcription failed';
                 showStatus('error');
+                updateGenerateEnabled();
             }
         })
         .catch(error => {
@@ -406,6 +492,7 @@
             uploadProgress.classList.add('hidden');
             errorMessage.textContent = 'Error: ' + error.message;
             showStatus('error');
+            updateGenerateEnabled();
         });
     });
     
@@ -452,10 +539,8 @@
         const url = this.value.trim();
         if (!url) {
             videoPreview.classList.add('hidden');
-            if (!transcriptionData) {
-                generateBtn.disabled = true;
-            }
             vimeoVerified = false;
+            updateGenerateEnabled();
             return;
         }
         
@@ -475,32 +560,26 @@
                 document.getElementById('preview-title').textContent = data.title || 'Video recognized';
                 document.getElementById('preview-duration').textContent = `Duration: ${data.duration_formatted}`;
                 videoPreview.classList.remove('hidden');
-                generateBtn.disabled = false;
                 vimeoVerified = true;
+                updateGenerateEnabled();
             } else {
                 videoPreview.classList.add('hidden');
-                if (!transcriptionData) {
-                    generateBtn.disabled = true;
-                }
                 vimeoVerified = false;
+                updateGenerateEnabled();
                 showGlobalLessonModal('Could not verify Vimeo URL: ' + (data.error || 'Unknown error'), 'Vimeo error');
             }
         })
         .catch(error => {
             console.error('Error:', error);
             videoPreview.classList.add('hidden');
-            if (!transcriptionData) {
-                generateBtn.disabled = true;
-            }
             vimeoVerified = false;
+            updateGenerateEnabled();
         });
     });
     
     // Enable generate button if either vimeo or transcription is available
     function checkFormReady() {
-        if (vimeoVerified || transcriptionData) {
-            generateBtn.disabled = false;
-        }
+        updateGenerateEnabled();
     }
 </script>
 {% endblock %}

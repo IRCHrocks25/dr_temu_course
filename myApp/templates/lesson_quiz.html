@@ -7,7 +7,7 @@
 <!-- Confetti Canvas -->
 <canvas id="confetti-canvas" class="fixed top-0 left-0 w-full h-full pointer-events-none z-50" style="display: none;"></canvas>
 
-<div class="relative">
+<div class="relative bg-[#f7fafc] min-h-screen">
     {% include '_left_sidebar.html' %}
 
     <div class="w-full pt-6 center-content-rail">
@@ -23,13 +23,13 @@
                             <h1 class="text-3xl lg:text-4xl font-bold">
                                 {{ lesson.title }} Quiz
                             </h1>
-                            <p class="text-gray-400 text-sm mt-1">
+                            <p class="text-gray-600 text-sm mt-1">
                                 {{ questions|length }} question{{ questions|length|pluralize }} &middot; Passing score: {{ quiz.passing_score }}% &middot; <span class="text-red-400 font-semibold">Required</span>
                             </p>
                         </div>
                     </div>
                     {% if quiz.description %}
-                    <p class="text-gray-300 text-lg">
+                    <p class="text-gray-700 text-lg">
                         {{ quiz.description }}
                     </p>
                     {% endif %}
@@ -51,14 +51,14 @@
                                 {% endif %}
                             </h2>
                             <div class="space-y-2">
-                                <div class="text-lg text-white">
+                                <div class="text-lg text-[#1a1a18]">
                                     Score: <span class="font-bold {% if result.passed %}text-green-400{% else %}text-yellow-400{% endif %}">{{ result.score }}%</span>
                                 </div>
-                                <div class="text-gray-300">
+                                <div class="text-gray-700">
                                     {{ result.correct }} out of {{ result.total }} questions correct
                                 </div>
                                 {% if not result.passed %}
-                                <div class="text-sm text-gray-400 mt-3">
+                                <div class="text-sm text-gray-600 mt-3">
                                     Passing score is {{ quiz.passing_score }}%. Review the lesson and try again!
                                 </div>
                                 {% endif %}
@@ -77,10 +77,36 @@
                                 <span>Continue to Next Lesson</span>
                                 <i class="fas fa-arrow-right"></i>
                             </a>
-                            <span id="auto-redirect-notice" class="text-sm text-gray-400">
+                            <span id="auto-redirect-notice" class="text-sm text-gray-600">
                                 Auto-continuing in <span id="countdown-timer" class="text-cyan-electric font-semibold">5</span>s...
-                                <button onclick="clearInterval(window._autoRedirectInterval); document.getElementById('auto-redirect-notice').textContent='Auto-redirect cancelled';" class="ml-2 text-gray-500 hover:text-white underline text-xs">Cancel</button>
+                                <button onclick="clearInterval(window._autoRedirectInterval); document.getElementById('auto-redirect-notice').textContent='Auto-redirect cancelled';" class="ml-2 text-gray-500 hover:text-[#1a1a18] underline text-xs">Cancel</button>
                             </span>
+                        </div>
+                    </div>
+                    {% elif result.passed and not next_lesson %}
+                    <div class="mt-6 pt-6 border-t border-green-500/30">
+                        <div class="space-y-3">
+                            <div class="text-sm text-gray-700">
+                                You have completed the final lesson quiz for this course. Excellent work.
+                            </div>
+                            {% if certification and certification.accredible_certificate_url %}
+                            <a
+                                href="{{ certification.accredible_certificate_url }}"
+                                target="_blank"
+                                class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-500/90 hover:to-yellow-600/90 text-white font-semibold rounded-xl transition-all"
+                            >
+                                <i class="fas fa-certificate"></i>
+                                View Your Certificate
+                            </a>
+                            {% else %}
+                            <a
+                                href="{% url 'student_certifications' %}"
+                                class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-cyan-electric to-purple-accent hover:from-cyan-electric/90 hover:to-purple-accent/90 text-[#0a0e27] font-semibold rounded-xl transition-all"
+                            >
+                                <i class="fas fa-award"></i>
+                                Go to My Certifications
+                            </a>
+                            {% endif %}
                         </div>
                     </div>
                     {% endif %}
@@ -92,13 +118,13 @@
                 <form method="post" class="space-y-6" id="quiz-form">
                     {% csrf_token %}
                     {% for question in questions %}
-                    <div class="bg-gradient-to-br from-[#0a0e27]/80 to-[#1a1f3a]/80 backdrop-blur-sm border border-cyan-electric/20 rounded-xl p-6 hover:border-cyan-electric/40 transition-all">
+                    <div class="bg-white border border-cyan-electric/20 rounded-xl p-6 hover:border-cyan-electric/40 transition-all shadow-sm">
                         <div class="flex items-start gap-4 mb-4">
                             <div class="flex-shrink-0 w-10 h-10 rounded-lg bg-gradient-to-br from-cyan-electric to-purple-accent flex items-center justify-center text-[#0a0e27] font-bold">
                                 {{ forloop.counter }}
                             </div>
                             <div class="flex-1">
-                                <div class="font-semibold text-lg text-white mb-4">
+                                <div class="font-semibold text-lg text-[#1a1a18] mb-4">
                                     {{ question.text }}
                                 </div>
                                 <div class="space-y-3">
@@ -106,14 +132,14 @@
                                         <input type="radio" name="q_{{ question.id }}" value="A" class="mt-1 text-cyan-electric focus:ring-cyan-electric" required>
                                         <div class="flex-1">
                                             <span class="font-medium text-cyan-electric/70 group-hover:text-cyan-electric">A.</span>
-                                            <span class="text-gray-300 ml-2">{{ question.option_a }}</span>
+                                            <span class="text-gray-700 ml-2">{{ question.option_a }}</span>
                                         </div>
                                     </label>
                                     <label class="flex items-start gap-3 p-3 rounded-lg border border-cyan-electric/20 hover:border-cyan-electric/40 hover:bg-cyan-electric/5 cursor-pointer transition-all group">
                                         <input type="radio" name="q_{{ question.id }}" value="B" class="mt-1 text-cyan-electric focus:ring-cyan-electric">
                                         <div class="flex-1">
                                             <span class="font-medium text-cyan-electric/70 group-hover:text-cyan-electric">B.</span>
-                                            <span class="text-gray-300 ml-2">{{ question.option_b }}</span>
+                                            <span class="text-gray-700 ml-2">{{ question.option_b }}</span>
                                         </div>
                                     </label>
                                     {% if question.option_c %}
@@ -121,7 +147,7 @@
                                         <input type="radio" name="q_{{ question.id }}" value="C" class="mt-1 text-cyan-electric focus:ring-cyan-electric">
                                         <div class="flex-1">
                                             <span class="font-medium text-cyan-electric/70 group-hover:text-cyan-electric">C.</span>
-                                            <span class="text-gray-300 ml-2">{{ question.option_c }}</span>
+                                            <span class="text-gray-700 ml-2">{{ question.option_c }}</span>
                                         </div>
                                     </label>
                                     {% endif %}
@@ -130,7 +156,7 @@
                                         <input type="radio" name="q_{{ question.id }}" value="D" class="mt-1 text-cyan-electric focus:ring-cyan-electric">
                                         <div class="flex-1">
                                             <span class="font-medium text-cyan-electric/70 group-hover:text-cyan-electric">D.</span>
-                                            <span class="text-gray-300 ml-2">{{ question.option_d }}</span>
+                                            <span class="text-gray-700 ml-2">{{ question.option_d }}</span>
                                         </div>
                                     </label>
                                     {% endif %}
@@ -140,7 +166,7 @@
                     </div>
                     {% endfor %}
 
-                    <div class="flex items-center justify-between mt-8 pt-6 border-t border-cyan-electric/10">
+                    <div class="flex items-center justify-between mt-8 pt-6 border-t border-cyan-electric/20">
                         <a href="{% url 'lesson_detail' course.slug lesson.slug %}" class="px-5 py-3 rounded-xl border border-cyan-electric/30 text-cyan-electric font-semibold hover:bg-cyan-electric/10 transition-all flex items-center gap-2">
                             <i class="fas fa-arrow-left"></i>
                             <span>Back to Lesson</span>

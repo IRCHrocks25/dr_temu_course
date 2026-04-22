@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Account — BrightPath Ventures</title>
+    <title>Create Account — ActioNCD International</title>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
@@ -48,7 +48,7 @@
 
         /* ── LEFT — brand/trust column ── */
         .L {
-            background: var(--ink);
+            background: var(--paper);
             position: relative;
             overflow: hidden;
             display: flex;
@@ -62,8 +62,8 @@
             content: '';
             position: absolute; inset: 0;
             background-image:
-                linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+                linear-gradient(var(--border) 1px, transparent 1px),
+                linear-gradient(90deg, var(--border) 1px, transparent 1px);
             background-size: 60px 60px;
             mask-image: radial-gradient(ellipse 70% 80% at 30% 50%, black 20%, transparent 70%);
             pointer-events: none;
@@ -74,14 +74,14 @@
             position: absolute;
             top: -100px; right: -80px;
             width: 440px; height: 440px; border-radius: 50%;
-            background: radial-gradient(circle, rgba(26,107,120,0.18) 0%, transparent 65%);
+            background: radial-gradient(circle, rgba(26,107,120,0.09) 0%, transparent 65%);
             pointer-events: none;
         }
         .L-wash-2 {
             position: absolute;
             bottom: -80px; left: -60px;
             width: 360px; height: 360px; border-radius: 50%;
-            background: radial-gradient(circle, rgba(26,107,120,0.1) 0%, transparent 65%);
+            background: radial-gradient(circle, rgba(74,107,90,0.06) 0%, transparent 65%);
             pointer-events: none;
         }
 
@@ -89,7 +89,8 @@
         .L-rail {
             position: absolute; top: 0; bottom: 0; right: 0;
             width: 1px;
-            background: linear-gradient(180deg, transparent 0%, rgba(26,107,120,0.4) 35%, rgba(26,107,120,0.5) 60%, rgba(26,107,120,0.4) 85%, transparent 100%);
+            background: linear-gradient(180deg, transparent 0%, var(--teal) 30%, var(--teal-mid) 60%, var(--teal) 85%, transparent 100%);
+            opacity: 0.2;
         }
 
         /* Logo */
@@ -97,14 +98,18 @@
             display: inline-flex; align-items: center; gap: 12px;
             text-decoration: none; position: relative; z-index: 2;
         }
-        .brand-mark { width: 36px; height: 36px; }
+        .brand-mark {
+            width: 120px;
+            height: auto;
+            display: block;
+        }
         .brand-name {
             font-family: var(--serif);
             font-size: 22px; font-weight: 500;
             letter-spacing: -0.01em;
-            color: var(--white);
+            color: var(--ink);
         }
-        .brand-name em { font-style: italic; color: var(--teal-mid); }
+        .brand-name em { font-style: italic; color: var(--teal); }
 
         /* Centre block */
         .L-center {
@@ -120,7 +125,7 @@
         .L-kicker-text {
             font-size: 10px; font-weight: 500;
             letter-spacing: 0.28em; text-transform: uppercase;
-            color: var(--teal-mid);
+            color: var(--teal);
         }
 
         .L-headline {
@@ -128,24 +133,24 @@
             font-size: clamp(42px, 4.4vw, 68px);
             font-weight: 400; line-height: 0.95;
             letter-spacing: -0.025em;
-            color: var(--white);
+            color: var(--ink);
             margin-bottom: 20px;
         }
         .L-headline em {
             font-style: italic;
             display: block;
-            color: var(--teal-mid);
+            color: var(--teal);
         }
         .L-headline .ghost {
             display: block;
             color: transparent;
-            -webkit-text-stroke: 1px rgba(255,255,255,0.18);
+            -webkit-text-stroke: 1px rgba(26,26,24,0.18);
             font-style: italic;
         }
 
         .L-sub {
             font-size: 14px; font-weight: 300;
-            color: rgba(255,255,255,0.38);
+            color: var(--ink-muted);
             line-height: 1.8; max-width: 320px;
             margin-bottom: 52px;
         }
@@ -155,13 +160,13 @@
         .trust-item {
             display: flex; align-items: flex-start; gap: 16px;
             padding: 18px 20px;
-            background: rgba(255,255,255,0.025);
+            background: transparent;
             border-left: 2px solid transparent;
             transition: background .25s, border-color .25s, transform .2s;
         }
         .trust-item:hover {
-            background: rgba(26,107,120,0.08);
-            border-left-color: var(--teal-mid);
+            background: var(--white);
+            border-left-color: var(--teal);
             transform: translateX(4px);
         }
         .trust-ico {
@@ -174,12 +179,12 @@
         }
         .trust-title {
             font-size: 13px; font-weight: 500;
-            color: rgba(255,255,255,0.75);
+            color: var(--ink);
             margin-bottom: 3px;
         }
         .trust-desc {
             font-size: 12px; font-weight: 300;
-            color: rgba(255,255,255,0.28);
+            color: var(--ink-hint);
             line-height: 1.5;
         }
 
@@ -187,7 +192,7 @@
         .L-stats {
             display: flex; gap: 0;
             margin-top: 40px;
-            border-top: 1px solid rgba(255,255,255,0.06);
+            border-top: 1px solid var(--border);
             padding-top: 28px;
             position: relative; z-index: 2;
             animation: riseUp 1s .4s cubic-bezier(.16,1,.3,1) both;
@@ -195,27 +200,27 @@
         .L-stat {
             flex: 1;
             padding-right: 20px;
-            border-right: 1px solid rgba(255,255,255,0.06);
+            border-right: 1px solid var(--border);
             margin-right: 20px;
         }
         .L-stat:last-child { border-right: none; margin-right: 0; padding-right: 0; }
         .ls-n {
             font-family: var(--serif);
             font-size: 30px; font-weight: 400;
-            color: var(--white); letter-spacing: -0.03em; line-height: 1;
+            color: var(--ink); letter-spacing: -0.03em; line-height: 1;
         }
-        .ls-n sup { font-size: 15px; color: var(--teal-mid); }
+        .ls-n sup { font-size: 15px; color: var(--teal); }
         .ls-l {
             font-size: 9px; font-weight: 400;
             letter-spacing: 0.18em; text-transform: uppercase;
-            color: rgba(255,255,255,0.22);
+            color: var(--ink-hint);
             margin-top: 4px;
         }
 
         .L-foot {
             font-size: 10px; font-weight: 400;
             letter-spacing: 0.05em;
-            color: rgba(255,255,255,0.18);
+            color: var(--ink-hint);
             position: relative; z-index: 2;
         }
 
@@ -518,13 +523,7 @@
 
         <!-- Logo -->
         <a href="/" class="brand-link">
-            <svg class="brand-mark" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="18" cy="18" r="17" fill="rgba(26,107,120,0.1)" stroke="rgba(26,107,120,0.3)" stroke-width="1"/>
-                <path d="M9 26 L18 9 L27 26" stroke="#2A8C9C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-                <path d="M13 21 L18 13 L23 21" stroke="rgba(42,140,156,0.4)" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-                <circle cx="18" cy="29" r="2" fill="#B5722A"/>
-            </svg>
-            <div class="brand-name">Bright<em>Path</em></div>
+            <img class="brand-mark" src="https://res.cloudinary.com/dcuswyfur/image/upload/v1776430196/logo_adtoh8.png" alt="ActioNCD International logo">
         </a>
 
         <!-- Centre -->
@@ -596,7 +595,7 @@
             </div>
         </div>
 
-        <div class="L-foot">© 2025 BrightPath Ventures Sarl · ActioNCD International</div>
+        <div class="L-foot">© 2025 ActioNCD International. All rights reserved.</div>
     </div>
 
     <!-- ══════════════════════════════════════

@@ -67,6 +67,42 @@
                 </div>
             </div>
             {% endfor %}
+
+            <!-- Lessons without module (manually added or ungrouped) -->
+            {% if ungrouped_lessons %}
+            <div>
+                <div class="text-xs uppercase tracking-widest text-cyan-electric/80 font-semibold mb-2">Ungrouped Lessons</div>
+                <div class="pl-1 space-y-2">
+                    {% for ungrouped_lesson in ungrouped_lessons %}
+                    {% if ungrouped_lesson.id in accessible_lessons %}
+                    <a href="{% url 'lesson_detail' course.slug ungrouped_lesson.slug %}" class="flex items-center gap-3 py-2 px-3 rounded-lg transition-all
+                        {% if ungrouped_lesson.id == lesson.id %}bg-cyan-electric/10 border-l-2 border-cyan-electric{% else %}hover:bg-cyan-electric/5{% endif %}">
+                        <div class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold
+                            {% if ungrouped_lesson.id == lesson.id %}bg-cyan-electric text-white{% else %}bg-[#f3f1ee] text-[#8a8a86]{% endif %}">
+                            {{ forloop.counter }}
+                        </div>
+                        <span class="flex-1 text-sm {% if ungrouped_lesson.id == lesson.id %}font-semibold text-cyan-electric{% else %}text-[#3d3d3a]{% endif %}">
+                            {{ ungrouped_lesson.title }}
+                        </span>
+                        {% if ungrouped_lesson.id in completed_lessons %}
+                        <i class="fas fa-check-circle text-[#4A6B5A]"></i>
+                        {% endif %}
+                    </a>
+                    {% else %}
+                    <div class="flex items-center gap-3 py-2 px-3 rounded-lg opacity-70 cursor-not-allowed">
+                        <div class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold bg-[#eae8e4] text-[#b8b8b4]">
+                            {{ forloop.counter }}
+                        </div>
+                        <span class="flex-1 text-sm text-[#b8b8b4]">
+                            {{ ungrouped_lesson.title }}
+                        </span>
+                        <i class="fas fa-lock text-[#b8b8b4]" title="Complete previous lessons to unlock"></i>
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
         </div>
     </div>
 </div>

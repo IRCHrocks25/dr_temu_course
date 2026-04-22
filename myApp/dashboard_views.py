@@ -43,6 +43,7 @@ from .models import (
     BundlePurchase,
     Cohort,
     CohortMember,
+    StudentIPLog,
 )
 from django.contrib import messages
 from django.core.cache import cache
@@ -50,6 +51,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.db.models import Avg, Count, Q, Sum
 from django.utils import timezone
+from django.urls import reverse
 
 
 @staff_member_required
@@ -332,6 +334,56 @@ def dashboard_students(request):
         'status_filter': status_filter,
         'search_query': search_query,
         'sort_by': sort_by,
+    })
+
+
+@staff_member_required
+def dashboard_student_ip_monitor(request):
+    """Monitor student access IP and location data."""
+    search_query = (request.GET.get('search') or '').strip()
+    country_filter = (request.GET.get('country') or '').strip()
+    date_filter = (request.GET.get('date') or '').strip()
+
+    ip_logs = StudentIPLog.objects.select_related('user').all()
+
+    if search_query:
+        ip_logs = ip_logs.filter(
+            Q(user__username__icontains=search_query)
+            | Q(user__email__icontains=search_query)
+            | Q(ip_address__icontains=search_query)
+            | Q(city__icontains=search_query)
+            | Q(region__icontains=search_query)
+            | Q(country__icontains=search_query)
+        )
+
+    if country_filter:
+        ip_logs = ip_logs.filter(country__iexact=country_filter)
+
+    if date_filter:
+        ip_logs = ip_logs.filter(date_bucket=date_filter)
+
+    total_logs = ip_logs.count()
+    unique_students = ip_logs.values('user_id').distinct().count()
+    unique_ips = ip_logs.values('ip_address').distinct().count()
+    private_ip_logs = ip_logs.filter(is_private_ip=True).count()
+
+    countries = (
+        StudentIPLog.objects.exclude(country='')
+        .values_list('country', flat=True)
+        .distinct()
+        .order_by('country')
+    )
+
+    return render(request, 'dashboard/student_ip_monitor.html', {
+        'ip_logs': ip_logs[:500],
+        'search_query': search_query,
+        'country_filter': country_filter,
+        'date_filter': date_filter,
+        'countries': countries,
+        'total_logs': total_logs,
+        'unique_students': unique_students,
+        'unique_ips': unique_ips,
+        'private_ip_logs': private_ip_logs,
     })
 
 
@@ -639,6 +691,32 @@ def dashboard_quizzes(request):
 def dashboard_course_lessons(request, course_slug):
     """View all lessons for a course"""
     course = get_object_or_404(Course, slug=course_slug)
+    
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        if action == 'bulk_delete_lessons':
+            raw_ids = request.POST.getlist('lesson_ids')
+            # Support comma-separated payloads if submitted from JS.
+            if len(raw_ids) == 1 and ',' in raw_ids[0]:
+                raw_ids = [lesson_id.strip() for lesson_id in raw_ids[0].split(',')]
+            
+            lesson_ids = [int(lesson_id) for lesson_id in raw_ids if str(lesson_id).isdigit()]
+            
+            if not lesson_ids:
+                messages.warning(request, 'No lessons were selected for deletion.')
+                return redirect('dashboard_course_lessons', course_slug=course.slug)
+            
+            lessons_to_delete = course.lessons.filter(id__in=lesson_ids)
+            delete_count = lessons_to_delete.count()
+            
+            if delete_count == 0:
+                messages.warning(request, 'No matching lessons were found for this course.')
+                return redirect('dashboard_course_lessons', course_slug=course.slug)
+            
+            lessons_to_delete.delete()
+            messages.success(request, f'{delete_count} lesson(s) deleted successfully.')
+            return redirect('dashboard_course_lessons', course_slug=course.slug)
+    
     lessons = course.lessons.all()
     modules = course.modules.all()
     
@@ -1211,16 +1289,27 @@ def api_ai_generation_status(request, course_id):
 def dashboard_add_course(request):
     """Add new course with optional AI generation"""
     if request.method == 'POST':
-        name = request.POST.get('name')
+        name = (request.POST.get('name') or '').strip()
+        if not name:
+            messages.error(request, 'Course name is required.')
+            return redirect('dashboard_add_course')
+
         slug = generate_slug(name)
         if len(slug) > 200:
             slug = slug[:200].rstrip('-') or 'course'
-        short_description = request.POST.get('short_description', '')
-        description = request.POST.get('description', '')
+        short_description = (request.POST.get('short_description') or '').strip()
+        description = (request.POST.get('description') or '').strip()
         course_type = request.POST.get('course_type', 'sprint')
         status = request.POST.get('status', 'active')
         coach_name = request.POST.get('coach_name', 'Sprint Coach')
-        use_ai = request.POST.get('use_ai') == 'on'
+        creation_mode = (request.POST.get('creation_mode') or '').strip().lower()
+        use_ai = creation_mode == 'ai'
+
+        # Keep required model fields valid even for quick manual creation.
+        if not short_description:
+            short_description = name
+        if not description:
+            description = short_description
         
         # Ensure slug is unique
         base_slug = slug
@@ -1738,7 +1827,8 @@ def dashboard_add_lesson(request):
     course_id = request.GET.get('course')
     if course_id:
         course = get_object_or_404(Course, id=course_id)
-        return redirect('add_lesson', course_slug=course.slug)
+        add_lesson_url = reverse('add_lesson', kwargs={'course_slug': course.slug})
+        return redirect(f'{add_lesson_url}?source=dashboard')
     
     courses = Course.objects.all()
     return render(request, 'dashboard/select_course.html', {

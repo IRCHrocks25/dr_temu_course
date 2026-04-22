@@ -21,6 +21,7 @@ urlpatterns = [
     path('my-dashboard/', views.student_dashboard, name='student_dashboard'),
     path('my-dashboard/course/<slug:course_slug>/', views.student_course_progress, name='student_course_progress'),
     path('my-certifications/', views.student_certifications, name='student_certifications'),
+    path('verify-certificate/<str:certificate_id>/', views.verify_certificate, name='verify_certificate'),
     
     # Dashboard URLs (Admin-facing, for developers)
     path('dashboard/', dashboard_views.dashboard_home, name='dashboard_home'),
@@ -42,6 +43,7 @@ urlpatterns = [
     
     # Student Progress Monitoring
     path('dashboard/students/', dashboard_views.dashboard_students, name='dashboard_students'),
+    path('dashboard/students/ip-monitor/', dashboard_views.dashboard_student_ip_monitor, name='dashboard_student_ip_monitor'),
     path('dashboard/students/progress/', dashboard_views.dashboard_student_progress, name='dashboard_student_progress'),
     path('dashboard/students/<int:user_id>/', dashboard_views.dashboard_student_detail, name='dashboard_student_detail'),
     path('dashboard/students/<int:user_id>/<slug:course_slug>/', dashboard_views.dashboard_student_detail, name='dashboard_student_detail_course'),
@@ -62,7 +64,7 @@ urlpatterns = [
     path('dashboard/students/<int:user_id>/add-cohort/', dashboard_views.add_to_cohort_view, name='dashboard_add_cohort'),
     
     # Creator/Lesson Upload Flow (kept for lesson creation)
-    path('creator/', views.creator_dashboard, name='creator_dashboard'),
+    path('creator/', dashboard_views.dashboard_courses, name='creator_dashboard'),
     path('creator/courses/<slug:course_slug>/lessons/', views.course_lessons, name='course_lessons'),
     path('creator/courses/<slug:course_slug>/add-lesson/', views.add_lesson, name='add_lesson'),
     path('creator/courses/<slug:course_slug>/lessons/<int:lesson_id>/generate/', views.generate_lesson_ai, name='generate_lesson_ai'),

@@ -4,6 +4,7 @@
 {% block title %}{{ lesson.title }} - {{ course.name }}{% endblock %}
 
 {% block content %}
+<canvas id="lesson-confetti-canvas" class="fixed top-0 left-0 w-full h-full pointer-events-none z-50 hidden"></canvas>
 <!-- Desktop: Sidebars are fixed to viewport edges, center content is offset -->
 <!-- Mobile/Tablet: Normal stacked layout -->
 <div class="relative">
@@ -426,6 +427,69 @@
         return cookieValue;
     }
     const csrftoken = getCookie('csrftoken');
+
+    function celebrateLessonCompletion() {
+        const canvas = document.getElementById('lesson-confetti-canvas');
+        if (!canvas) return;
+
+        canvas.classList.remove('hidden');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const colors = ['#1A6B78', '#2A8C9C', '#7B3FE4', '#B5722A', '#5AA8B5'];
+        const pieces = [];
+
+        class Piece {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = -10;
+                this.size = Math.random() * 8 + 4;
+                this.color = colors[Math.floor(Math.random() * colors.length)];
+                this.speed = Math.random() * 3 + 2;
+                this.rotation = Math.random() * 360;
+                this.rotationSpeed = Math.random() * 10 - 5;
+            }
+            update() {
+                this.y += this.speed;
+                this.x += Math.sin(this.y * 0.01) * 2;
+                this.rotation += this.rotationSpeed;
+            }
+            draw() {
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate((this.rotation * Math.PI) / 180);
+                ctx.fillStyle = this.color;
+                ctx.fillRect(-this.size / 2, -this.size / 2, this.size, this.size);
+                ctx.restore();
+            }
+        }
+
+        for (let i = 0; i < 140; i++) {
+            pieces.push(new Piece());
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            pieces.forEach((piece, index) => {
+                piece.update();
+                piece.draw();
+                if (piece.y > canvas.height) {
+                    pieces.splice(index, 1);
+                }
+            });
+            if (pieces.length > 0) {
+                requestAnimationFrame(animate);
+            } else {
+                canvas.classList.add('hidden');
+            }
+        }
+
+        animate();
+        setTimeout(() => {
+            canvas.classList.add('hidden');
+        }, 3000);
+    }
     
     // Lesson Error Modal helpers
     const lessonErrorModal = document.getElementById('lesson-error-modal');
@@ -525,8 +589,42 @@
         .then(response => response.json())
         .then(data => {
             if (data.success && data.completed) {
-                // Lesson was auto-completed, reload to show completion state
+                // Lesson was auto-completed from watch progress.
                 const finishBtn = document.getElementById('finish-lesson-btn');
+                const hasCertificate = data.certificate_released || data.certificate_available;
+
+                if (finishBtn && !finishBtn.disabled && !nextLessonUrl && hasCertificate) {
+                    if (data.certificate_released) {
+                        celebrateLessonCompletion();
+                    }
+                    const certificateHref = data.certificate_url || '{% url "student_certifications" %}';
+                    const certificateLabel = data.certificate_url ? 'View Your Certificate' : 'Go to My Certifications';
+                    if (!finishBtn.parentNode) {
+                        return;
+                    }
+                    finishBtn.outerHTML = `
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-center gap-3 p-4 bg-green-500/10 border border-green-500/20 rounded-xl">
+                                <i class="fas fa-check-circle text-green-400 text-xl"></i>
+                                <span class="text-green-400 font-semibold">Lesson Completed!</span>
+                            </div>
+                            <div class="p-4 bg-yellow-500/10 border border-yellow-500/30 rounded-xl text-center">
+                                <div class="text-yellow-400 font-semibold mb-1">Congratulations! Course Completed</div>
+                                <div class="text-sm text-[#3d3d3a]">Your certificate has been released.</div>
+                            </div>
+                            <a 
+                                href="${certificateHref}"
+                                ${data.certificate_url ? 'target="_blank" rel="noopener noreferrer"' : ''}
+                                class="flex items-center justify-center gap-3 w-full px-6 py-3 bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-500/90 hover:to-yellow-600/90 text-white font-bold rounded-xl transition-all transform hover:scale-[1.02] active:scale-[0.98] shadow-lg"
+                            >
+                                <i class="fas fa-certificate"></i>
+                                <span>${certificateLabel}</span>
+                            </a>
+                        </div>
+                    `;
+                    return;
+                }
+
                 if (finishBtn && !finishBtn.disabled) {
                     setTimeout(() => {
                         window.location.reload();
@@ -1035,6 +1133,9 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
+                        if (data.certificate_released) {
+                            celebrateLessonCompletion();
+                        }
                         // Show completion state with next lesson button if available
                         hideStudentPreloader();
                         let completionHTML = `
@@ -1056,10 +1157,32 @@
                                     <i class="fas fa-arrow-right"></i>
                                 </a>
                             `;
+                        } else if (data.certificate_released || data.certificate_available) {
+                            const certificateHref = data.certificate_url || '{% url "student_certifications" %}';
+                            const certificateLabel = data.certificate_url ? 'View Your Certificate' : 'Go to My Certifications';
+                            completionHTML += `
+                                <div class="p-4 bg-yellow-500/10 border border-yellow-500/30 rounded-xl text-center">
+                                    <div class="text-yellow-400 font-semibold mb-1">Congratulations! Course Completed</div>
+                                    <div class="text-sm text-[#3d3d3a]">Your certificate has been released.</div>
+                                </div>
+                                <a 
+                                    href="${certificateHref}"
+                                    ${data.certificate_url ? 'target="_blank" rel="noopener noreferrer"' : ''}
+                                    class="flex items-center justify-center gap-3 w-full px-6 py-3 bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-500/90 hover:to-yellow-600/90 text-white font-bold rounded-xl transition-all transform hover:scale-[1.02] active:scale-[0.98] shadow-lg"
+                                >
+                                    <i class="fas fa-certificate"></i>
+                                    <span>${certificateLabel}</span>
+                                </a>
+                            `;
                         }
                         
                         completionHTML += `</div>`;
                         const btnParent = btn.parentElement;
+                        if (!btnParent) {
+                            // Button might already be replaced by auto-complete flow.
+                            window.location.reload();
+                            return;
+                        }
                         btn.outerHTML = completionHTML;
                         
                         // Scroll to show the completion message and button
@@ -1070,8 +1193,8 @@
                             }, 100);
                         }
                         
-                        // Reload page after a short delay to update all UI elements (only if no next lesson)
-                        if (!nextLessonUrl) {
+                        // Reload page after a short delay to update all UI elements (only if no next lesson and no certificate celebration)
+                        if (!nextLessonUrl && !data.certificate_released && !data.certificate_available) {
                             setTimeout(() => {
                                 window.location.reload();
                             }, 1000);

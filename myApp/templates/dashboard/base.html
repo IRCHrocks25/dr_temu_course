@@ -123,6 +123,10 @@
                     <i class="fas fa-users w-5"></i>
                     <span>Students</span>
                 </a>
+                <a href="{% url 'dashboard_student_ip_monitor' %}" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all {% if request.resolver_match.url_name == 'dashboard_student_ip_monitor' %}bg-cyan-electric/10 text-cyan-electric border-l-2 border-cyan-electric{% else %}text-[#3d3d3a] hover:bg-cyan-electric/10 hover:text-cyan-electric{% endif %}">
+                    <i class="fas fa-map-marker-alt w-5"></i>
+                    <span>Student IP Monitor</span>
+                </a>
                 <a href="{% url 'dashboard_bundles' %}" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all {% if 'bundle' in request.resolver_match.url_name %}bg-purple-accent/10 text-purple-accent border-l-2 border-purple-accent{% else %}text-[#3d3d3a] hover:bg-purple-accent/10 hover:text-purple-accent{% endif %}">
                     <i class="fas fa-gift w-5"></i>
                     <span>Bundles</span>

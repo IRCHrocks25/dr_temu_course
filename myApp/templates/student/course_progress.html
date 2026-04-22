@@ -4,25 +4,25 @@
 {% block title %}{{ course.name }} - Progress{% endblock %}
 
 {% block content %}
-<div class="space-y-8">
+<div class="space-y-8 text-[#1a1a18] bg-[#f7fafc] min-h-screen -mx-6 px-6 py-6 rounded-2xl">
     <!-- Header -->
     <div class="flex items-center justify-between">
         <div>
             <a href="{% url 'student_dashboard' %}" class="text-cyan-electric hover:text-cyan-electric/80 mb-2 inline-flex items-center gap-2 text-sm">
                 <i class="fas fa-arrow-left"></i> Back to Dashboard
             </a>
-            <h1 class="text-4xl font-bold mb-2">{{ course.name }}</h1>
-            <p class="text-gray-400">{{ course.short_description }}</p>
+            <h1 class="text-4xl font-bold text-[#1a1a18] mb-2">{{ course.name }}</h1>
+            <p class="text-gray-600">{{ course.short_description }}</p>
         </div>
     </div>
 
     <!-- Course Progress Overview -->
-    <div class="bg-[#0a0e27]/60 backdrop-blur-sm border border-cyan-electric/10 rounded-xl p-6">
+    <div class="bg-white border border-cyan-electric/15 rounded-xl p-6 shadow-sm">
         <div class="flex items-center justify-between mb-4">
             <span class="font-semibold text-lg">Course Progress</span>
             <span class="text-cyan-electric font-bold text-2xl">{{ progress_percentage }}%</span>
         </div>
-        <div class="w-full bg-[#1a1f3a] rounded-full h-4 overflow-hidden mb-4">
+        <div class="w-full bg-gray-200 rounded-full h-4 overflow-hidden mb-4">
             <div class="h-full bg-gradient-to-r from-cyan-electric to-purple-accent transition-all duration-500" style="width: {{ progress_percentage }}%"></div>
         </div>
         <div class="flex items-center gap-6 text-sm">
@@ -39,20 +39,20 @@
 
     <!-- Course Resources Section -->
     {% if course_resources %}
-    <div class="bg-[#0a0e27]/60 backdrop-blur-sm border border-cyan-electric/10 rounded-xl p-6">
+    <div class="bg-white border border-cyan-electric/15 rounded-xl p-6 shadow-sm">
         <h3 class="text-xl font-bold mb-4 flex items-center gap-2">
             <i class="fas fa-download text-cyan-electric"></i>
             Course Resources
         </h3>
-        <p class="text-sm text-gray-400 mb-4">Download SOP templates, checklists, and materials for this course.</p>
+        <p class="text-sm text-gray-600 mb-4">Download SOP templates, checklists, and materials for this course.</p>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
             {% for resource in course_resources %}
-            <a href="{{ resource.get_download_url }}" target="_blank" rel="noopener noreferrer" class="flex items-center gap-3 p-4 bg-[#1a1f3a]/50 hover:bg-cyan-electric/10 border border-cyan-electric/10 hover:border-cyan-electric/30 rounded-lg transition-all group">
+            <a href="{{ resource.get_download_url }}" target="_blank" rel="noopener noreferrer" class="flex items-center gap-3 p-4 bg-cyan-electric/5 hover:bg-cyan-electric/10 border border-cyan-electric/10 hover:border-cyan-electric/30 rounded-lg transition-all group">
                 <div class="w-10 h-10 rounded-lg bg-cyan-electric/20 flex items-center justify-center flex-shrink-0 group-hover:bg-cyan-electric/30">
                     <i class="fas fa-file-{% if resource.resource_type == 'pdf' %}pdf{% elif resource.resource_type == 'template' %}code{% elif resource.resource_type == 'checklist' %}list-check{% else %}download{% endif %} text-cyan-electric"></i>
                 </div>
                 <div class="min-w-0 flex-1">
-                    <div class="font-semibold text-sm truncate">{{ resource.title }}</div>
+                    <div class="font-semibold text-[#1a1a18] text-sm truncate">{{ resource.title }}</div>
                     {% if resource.description %}
                     <div class="text-xs text-gray-500 truncate">{{ resource.description }}</div>
                     {% endif %}
@@ -65,10 +65,10 @@
     {% endif %}
 
     <!-- Exam & Certification Section -->
-    {% if exam or certification %}
+    {% if show_exam_panel or certification %}
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {% if exam %}
-        <div class="bg-[#0a0e27]/60 backdrop-blur-sm border border-cyan-electric/10 rounded-xl p-6">
+        {% if show_exam_panel %}
+        <div class="bg-white border border-cyan-electric/15 rounded-xl p-6 shadow-sm">
             <h3 class="text-xl font-bold mb-4 flex items-center gap-2">
                 <i class="fas fa-clipboard-check text-cyan-electric"></i>
                 Final Exam
@@ -76,16 +76,16 @@
             {% if is_exam_available %}
             <div class="space-y-3">
                 <div class="flex items-center justify-between">
-                    <span class="text-sm text-gray-400">Attempts</span>
+                    <span class="text-sm text-gray-600">Attempts</span>
                     <span class="font-semibold">{{ exam_attempts|length }}/{{ exam.max_attempts|default:"∞" }}</span>
                 </div>
                 {% if exam_attempts %}
                 <div class="space-y-2">
                     {% for attempt in exam_attempts %}
-                    <div class="bg-[#1a1f3a]/50 rounded-lg p-3 flex items-center justify-between">
+                    <div class="bg-cyan-electric/5 border border-cyan-electric/10 rounded-lg p-3 flex items-center justify-between">
                         <div>
                             <div class="text-sm font-medium">Attempt #{{ attempt.attempt_number }}</div>
-                            <div class="text-xs text-gray-400">{{ attempt.started_at|date:"M d, Y H:i" }}</div>
+                            <div class="text-xs text-gray-600">{{ attempt.started_at|date:"M d, Y H:i" }}</div>
                         </div>
                         <div class="text-right">
                             {% if attempt.score is not None %}
@@ -96,14 +96,14 @@
                                 {% if attempt.passed %}Passed{% else %}Failed{% endif %}
                             </div>
                             {% else %}
-                            <div class="text-xs text-gray-400">In Progress</div>
+                            <div class="text-xs text-gray-600">In Progress</div>
                             {% endif %}
                         </div>
                     </div>
                     {% endfor %}
                 </div>
                 {% endif %}
-                {% with exam_attempts|last as last_attempt %}
+                {% with exam_attempts|first as last_attempt %}
                 {% if not exam_attempts or not last_attempt.passed %}
                 <button class="w-full mt-4 px-4 py-2 bg-gradient-to-r from-cyan-electric to-purple-accent hover:from-cyan-electric/90 hover:to-purple-accent/90 text-[#0a0e27] font-semibold rounded-lg transition-all">
                     {% if exam_attempts %}Retake Exam{% else %}Start Exam{% endif %}
@@ -114,7 +114,7 @@
             {% else %}
             <div class="text-center py-4">
                 <i class="fas fa-lock text-4xl text-gray-600 mb-2"></i>
-                <p class="text-sm text-gray-400">
+                <p class="text-sm text-gray-600">
                     {% if enrollment.payment_type == 'installment' %}
                     Exam unlocks {{ enrollment.days_until_exam }} days after enrollment
                     {% else %}
@@ -127,14 +127,14 @@
         {% endif %}
         
         {% if certification %}
-        <div class="bg-[#0a0e27]/60 backdrop-blur-sm border border-cyan-electric/10 rounded-xl p-6">
+        <div class="bg-white border border-cyan-electric/15 rounded-xl p-6 shadow-sm">
             <h3 class="text-xl font-bold mb-4 flex items-center gap-2">
                 <i class="fas fa-certificate text-yellow-400"></i>
                 Certification
             </h3>
             <div class="space-y-3">
                 <div class="flex items-center justify-between">
-                    <span class="text-sm text-gray-400">Status</span>
+                    <span class="text-sm text-gray-600">Status</span>
                     <span class="px-3 py-1 rounded-full text-xs font-semibold
                         {% if certification.status == 'passed' %}bg-yellow-500/20 text-yellow-300 border border-yellow-500/30
                         {% elif certification.status == 'failed' %}bg-red-500/20 text-red-400 border border-red-500/30
@@ -145,7 +145,7 @@
                 </div>
                 {% if certification.issued_at %}
                 <div class="flex items-center justify-between">
-                    <span class="text-sm text-gray-400">Issued</span>
+                    <span class="text-sm text-gray-600">Issued</span>
                     <span class="text-sm font-medium">{{ certification.issued_at|date:"M d, Y" }}</span>
                 </div>
                 {% endif %}
@@ -162,11 +162,11 @@
 
     <!-- Lessons Progress -->
     <div class="space-y-4">
-        <h2 class="text-2xl font-bold">Lessons</h2>
+        <h2 class="text-2xl font-bold text-[#1a1a18]">Lessons</h2>
         
         <div class="space-y-3">
             {% for lp in lesson_progress %}
-            <div class="bg-[#0a0e27]/60 backdrop-blur-sm border border-cyan-electric/10 rounded-xl p-4 hover:border-cyan-electric/30 transition-all">
+            <div class="bg-white border border-cyan-electric/15 rounded-xl p-4 hover:border-cyan-electric/30 transition-all shadow-sm">
                 <div class="flex items-center justify-between">
                     <div class="flex items-center gap-4 flex-1">
                         <div class="w-10 h-10 rounded-lg flex items-center justify-center
@@ -182,8 +182,8 @@
                             {% endif %}
                         </div>
                         <div class="flex-1">
-                            <h3 class="font-semibold mb-1">{{ lp.lesson.title }}</h3>
-                            <div class="flex items-center gap-4 text-sm text-gray-400">
+                            <h3 class="font-semibold text-[#1a1a18] mb-1">{{ lp.lesson.title }}</h3>
+                            <div class="flex items-center gap-4 text-sm text-gray-600">
                                 <span><i class="fas fa-clock mr-1"></i>{{ lp.lesson.get_formatted_duration }}</span>
                                 {% if lp.watch_percentage > 0 %}
                                 <span><i class="fas fa-eye mr-1"></i>{{ lp.watch_percentage|floatformat:0 }}% Watched</span>
@@ -196,7 +196,7 @@
                     </div>
                     <div class="flex items-center gap-3">
                         {% if lp.watch_percentage > 0 and lp.watch_percentage < 100 %}
-                        <div class="w-24 bg-[#1a1f3a] rounded-full h-2 overflow-hidden">
+                        <div class="w-24 bg-gray-200 rounded-full h-2 overflow-hidden">
                             <div class="h-full bg-cyan-electric transition-all" style="width: {{ lp.watch_percentage }}%"></div>
                         </div>
                         {% endif %}

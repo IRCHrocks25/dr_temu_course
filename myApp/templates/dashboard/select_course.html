@@ -17,7 +17,7 @@
         
         <div class="space-y-3">
             {% for course in courses %}
-            <a href="{% url 'add_lesson' course.slug %}" class="block p-4 bg-[#0a0e27]/40 border border-cyan-electric/20 rounded-lg hover:bg-cyan-electric/10 hover:border-cyan-electric/40 transition-all group">
+            <a href="{% url 'add_lesson' course.slug %}?source=dashboard" class="block p-4 bg-[#0a0e27]/40 border border-cyan-electric/20 rounded-lg hover:bg-cyan-electric/10 hover:border-cyan-electric/40 transition-all group">
                 <div class="flex items-center justify-between">
                     <div>
                         <div class="font-bold text-lg mb-1">{{ course.name }}</div>

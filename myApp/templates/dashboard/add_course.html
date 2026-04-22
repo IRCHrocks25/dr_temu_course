@@ -16,6 +16,26 @@
         <form method="POST" id="create-course-form">
             {% csrf_token %}
             <div class="space-y-6">
+                <div class="bg-[#0a0e27]/40 border border-cyan-electric/20 rounded-lg p-4">
+                    <label class="block text-sm font-semibold mb-3">Creation Mode</label>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <label class="flex items-start gap-3 p-3 border border-cyan-electric/25 rounded-lg cursor-pointer hover:bg-cyan-electric/10 transition-all">
+                            <input type="radio" name="creation_mode" value="manual" class="mt-1" checked>
+                            <span>
+                                <span class="block font-semibold">Manual (Recommended for quick setup)</span>
+                                <span class="block text-xs text-gray-400 mt-1">Create the course yourself and add lessons manually.</span>
+                            </span>
+                        </label>
+                        <label class="flex items-start gap-3 p-3 border border-cyan-electric/25 rounded-lg cursor-pointer hover:bg-cyan-electric/10 transition-all">
+                            <input type="radio" name="creation_mode" value="ai" class="mt-1">
+                            <span>
+                                <span class="block font-semibold"><i class="fas fa-robot mr-1 text-cyan-electric"></i>AI Assisted</span>
+                                <span class="block text-xs text-gray-400 mt-1">Generate modules and lessons automatically from description.</span>
+                            </span>
+                        </label>
+                    </div>
+                </div>
+
                 <div>
                     <label class="block text-sm font-semibold mb-2">Course Name *</label>
                     <input type="text" name="name" required class="w-full bg-[#0a0e27]/40 border border-cyan-electric/20 rounded-lg px-4 py-3 focus:outline-none focus:border-cyan-electric/50" placeholder="e.g., Diabetes Management Basics">
@@ -23,28 +43,13 @@
                 
                 <div>
                     <label class="block text-sm font-semibold mb-2">Short Description *</label>
-                    <input type="text" name="short_description" required class="w-full bg-[#0a0e27]/40 border border-cyan-electric/20 rounded-lg px-4 py-3 focus:outline-none focus:border-cyan-electric/50" placeholder="One-line description for course cards">
+                    <input type="text" name="short_description" class="w-full bg-[#0a0e27]/40 border border-cyan-electric/20 rounded-lg px-4 py-3 focus:outline-none focus:border-cyan-electric/50" placeholder="One-line description for course cards">
                 </div>
                 
                 <div>
                     <label class="block text-sm font-semibold mb-2">Full Description *</label>
-                    <textarea name="description" rows="6" required class="w-full bg-[#0a0e27]/40 border border-cyan-electric/20 rounded-lg px-4 py-3 focus:outline-none focus:border-cyan-electric/50 resize-none" placeholder="Detailed course description"></textarea>
-                    <p class="text-xs text-gray-400 mt-1">Provide a detailed description of what the course covers. The more detail you provide, the better the AI-generated content will be.</p>
-                </div>
-                
-                <div class="bg-gradient-to-r from-cyan-electric/10 to-purple-500/10 border border-cyan-electric/30 rounded-lg p-4">
-                    <div class="flex items-start gap-3">
-                        <input type="checkbox" name="use_ai" id="use_ai" class="mt-1 w-5 h-5 text-cyan-electric bg-[#0a0e27]/40 border-cyan-electric/30 rounded focus:ring-cyan-electric focus:ring-2">
-                        <div class="flex-1">
-                            <label for="use_ai" class="block text-sm font-semibold mb-1 cursor-pointer">
-                                <i class="fas fa-robot mr-2 text-cyan-electric"></i>
-                                Generate Course Structure with AI
-                            </label>
-                            <p class="text-xs text-gray-400">
-                                Automatically generate modules and lessons based on your description. This will create a complete course structure with 3-6 modules and 12-30 lessons that you can edit afterward.
-                            </p>
-                        </div>
-                    </div>
+                    <textarea name="description" rows="6" class="w-full bg-[#0a0e27]/40 border border-cyan-electric/20 rounded-lg px-4 py-3 focus:outline-none focus:border-cyan-electric/50 resize-none" placeholder="Detailed course description"></textarea>
+                    <p id="description-help" class="text-xs text-gray-400 mt-1">Optional for manual mode. For AI mode, add detailed description for best results.</p>
                 </div>
                 
                 <div class="grid grid-cols-2 gap-4">
@@ -92,16 +97,34 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('create-course-form');
-    const aiCheckbox = document.getElementById('use_ai');
+    const modeInputs = document.querySelectorAll('input[name="creation_mode"]');
+    const descriptionHelp = document.getElementById('description-help');
     const preloader = document.getElementById('universal-preloader');
     const preloaderText = document.getElementById('preloader-text');
     const submitBtn = document.getElementById('submit-btn');
     const submitText = document.getElementById('submit-text');
     const submitLoading = document.getElementById('submit-loading');
+
+    function usingAiMode() {
+        const selected = document.querySelector('input[name="creation_mode"]:checked');
+        return selected && selected.value === 'ai';
+    }
+
+    function updateModeHelp() {
+        if (!descriptionHelp) return;
+        descriptionHelp.textContent = usingAiMode()
+            ? 'Provide detailed context. AI will use this to generate modules and lessons.'
+            : 'Optional for manual mode. You can keep this brief and build lessons yourself.';
+    }
+
+    modeInputs.forEach(input => {
+        input.addEventListener('change', updateModeHelp);
+    });
+    updateModeHelp();
     
     if (form) {
         form.addEventListener('submit', function(e) {
-            const useAI = aiCheckbox && aiCheckbox.checked;
+            const useAI = usingAiMode();
             
             // Disable submit button and show loading state
             if (submitBtn) {

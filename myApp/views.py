@@ -31,6 +31,7 @@ from django.db import models
 from django.utils import timezone
 from .utils.transcription import transcribe_video
 from .utils.access import has_course_access
+from .utils.certificates import generate_course_certificate
 
 
 def home(request):
@@ -460,6 +461,7 @@ def lesson_detail(request, course_slug, lesson_slug):
         lessons_by_module[mid].sort(key=lambda x: (x.order, x.id))
     
     all_modules = list(course.modules.all())
+    ungrouped_lessons = [l for l in all_lessons if not l.module_id]
     
     # Determine which lessons are accessible (using prefetched data, no N+1)
     accessible_lessons = []
@@ -571,6 +573,7 @@ def lesson_detail(request, course_slug, lesson_slug):
         'progress_percentage': progress_percentage,
         'completed_lessons': completed_lessons,
         'accessible_lessons': accessible_lessons,
+        'ungrouped_lessons': ungrouped_lessons,
         'enrollment': enrollment,
         'current_lesson_progress': current_lesson_progress,
         'video_watch_percentage': video_watch_percentage,
@@ -601,6 +604,7 @@ def lesson_quiz_view(request, course_slug, lesson_slug):
 
     questions = quiz.questions.all()
     result = None
+    certification = None
     
     # Get next lesson for redirect after passing (use same logic as lesson_detail)
     all_lessons = course.lessons.order_by('order', 'id')
@@ -687,6 +691,12 @@ def lesson_quiz_view(request, course_slug, lesson_slug):
                     'status': 'completed',
                 }
             )
+            certificate_released = release_course_certificate_if_eligible(request.user, course)
+            if certificate_released:
+                messages.success(
+                    request,
+                    f'Certificate released for "{course.name}" after completing all required lesson quizzes.'
+                )
 
         result = {
             'score': round(score, 1),
@@ -695,6 +705,18 @@ def lesson_quiz_view(request, course_slug, lesson_slug):
             'total': total,
         }
 
+        # If passed and there is a next lesson, move learner forward immediately.
+        if passed and next_lesson:
+            messages.success(request, f'Great work! Quiz passed. Moving you to "{next_lesson.title}".')
+            return redirect('lesson_detail', course_slug=course.slug, lesson_slug=next_lesson.slug)
+
+        # If this was the final lesson quiz, surface certification state for completion UI.
+        if passed and not next_lesson:
+            try:
+                certification = Certification.objects.get(user=request.user, course=course)
+            except Certification.DoesNotExist:
+                certification = None
+
     return render(request, 'lesson_quiz.html', {
         'course': course,
         'lesson': lesson,
@@ -702,7 +724,111 @@ def lesson_quiz_view(request, course_slug, lesson_slug):
         'questions': questions,
         'result': result,
         'next_lesson': next_lesson,
+        'certification': certification,
     })
+
+
+def issue_or_update_certificate(user, course):
+    """
+    Ensure user has a passed certificate record (with generated URL when possible).
+    Returns (certification, released_now).
+    """
+    now = timezone.now()
+    certification, created = Certification.objects.get_or_create(
+        user=user,
+        course=course,
+        defaults={
+            'status': 'passed',
+            'issued_at': now,
+        }
+    )
+
+    released_now = created
+    changed_fields = []
+
+    if certification.status != 'passed':
+        certification.status = 'passed'
+        changed_fields.append('status')
+        released_now = True
+
+    if not certification.issued_at:
+        certification.issued_at = now
+        changed_fields.append('issued_at')
+        released_now = True
+
+    # Generate/upload certificate only if URL missing.
+    if not certification.accredible_certificate_url:
+        generated = generate_course_certificate(
+            user=user,
+            course=course,
+            issued_at=certification.issued_at or now,
+        )
+        if generated:
+            certification.accredible_certificate_id = generated.get('certificate_id', '') or ''
+            certification.accredible_certificate_url = generated.get('certificate_url', '') or ''
+            changed_fields.extend(['accredible_certificate_id', 'accredible_certificate_url'])
+
+    if changed_fields:
+        changed_fields.append('updated_at')
+        certification.save(update_fields=changed_fields)
+
+    return certification, released_now
+
+
+def release_course_certificate_if_eligible(user, course):
+    """
+    Release a course certification when course completion requirements are met.
+    Returns True only if certification is newly released in this call.
+    """
+    required_quizzes = LessonQuiz.objects.filter(lesson__course=course, is_required=True)
+    required_quiz_count = required_quizzes.count()
+
+    # If required quizzes exist, each required quiz must be passed.
+    if required_quiz_count > 0:
+        passed_required_quizzes = (
+            LessonQuizAttempt.objects.filter(
+                user=user,
+                quiz__in=required_quizzes,
+                passed=True
+            )
+            .values('quiz_id')
+            .distinct()
+            .count()
+        )
+        if passed_required_quizzes < required_quiz_count:
+            return False
+
+    total_lessons = course.lessons.count()
+    completed_lessons = (
+        UserProgress.objects.filter(
+            user=user,
+            lesson__course=course,
+            completed=True
+        )
+        .values('lesson_id')
+        .distinct()
+        .count()
+    )
+    if total_lessons == 0 or completed_lessons < total_lessons:
+        return False
+
+    # If a real final exam exists (active + has questions), it must be passed.
+    try:
+        exam = Exam.objects.get(course=course, is_active=True)
+    except Exam.DoesNotExist:
+        exam = None
+
+    if exam and exam.questions.exists():
+        passed_final_exam = ExamAttempt.objects.filter(
+            user=user,
+            exam=exam,
+            passed=True
+        ).exists()
+        if not passed_final_exam:
+            return False
+
+    _, released_now = issue_or_update_certificate(user=user, course=course)
+    return released_now
 
 
 # ========== CREATOR DASHBOARD VIEWS ==========
@@ -736,11 +862,45 @@ def add_lesson(request, course_slug):
     course = get_object_or_404(Course, slug=course_slug)
     
     if request.method == 'POST':
+        source = request.GET.get('source', '')
+        creation_mode = (request.POST.get('creation_mode') or 'ai').strip().lower()
+
         # Handle form submission
-        vimeo_url = request.POST.get('vimeo_url', '')
-        working_title = request.POST.get('working_title', '')
-        rough_notes = request.POST.get('rough_notes', '')
-        transcription = request.POST.get('transcription', '')
+        vimeo_url = (request.POST.get('vimeo_url') or '').strip()
+        working_title = (request.POST.get('working_title') or '').strip()
+        rough_notes = (request.POST.get('rough_notes') or '').strip()
+        manual_title = (request.POST.get('manual_title') or '').strip()
+        manual_description = (request.POST.get('manual_description') or '').strip()
+        transcription = (request.POST.get('transcription') or '').strip()
+
+        if creation_mode not in ('ai', 'manual'):
+            creation_mode = 'ai'
+
+        # Build title/description based on selected flow.
+        if creation_mode == 'manual':
+            lesson_title = manual_title or working_title
+            lesson_description = manual_description or rough_notes
+            if not lesson_description:
+                lesson_description = f'Lesson content for {lesson_title or "new lesson"}'
+        else:
+            lesson_title = working_title or manual_title
+            lesson_description = rough_notes or 'Lesson description will be generated with AI.'
+
+        if not lesson_title:
+            messages.error(request, 'Please provide a lesson title before submitting.')
+            return render(request, 'creator/add_lesson.html', {
+                'course': course,
+            })
+
+        # Keep lesson slug unique within this course.
+        lesson_slug = generate_slug(lesson_title)
+        if len(lesson_slug) > 200:
+            lesson_slug = lesson_slug[:200].rstrip('-') or 'lesson'
+        base_slug = lesson_slug
+        suffix = 1
+        while Lesson.objects.filter(course=course, slug=lesson_slug).exists():
+            lesson_slug = f'{base_slug}-{suffix}'
+            suffix += 1
         
         # Extract Vimeo ID
         vimeo_id = extract_vimeo_id(vimeo_url) if vimeo_url else None
@@ -750,9 +910,10 @@ def add_lesson(request, course_slug):
             course=course,
             working_title=working_title,
             rough_notes=rough_notes,
-            title=working_title,  # Temporary
-            slug=generate_slug(working_title),
-            description='',  # Will be AI-generated
+            title=lesson_title,
+            slug=lesson_slug,
+            description=lesson_description,
+            ai_generation_status='approved' if creation_mode == 'manual' else 'pending',
         )
         
         # Handle Vimeo URL if provided
@@ -812,6 +973,13 @@ def add_lesson(request, course_slug):
             lesson.transcription_status = 'completed'
         
         lesson.save()
+
+        if creation_mode == 'manual':
+            messages.success(request, f'Lesson "{lesson.title}" was added manually.')
+            if source == 'dashboard':
+                return redirect('dashboard_course_lessons', course_slug=course.slug)
+            return redirect('course_lessons', course_slug=course.slug)
+
         return redirect('generate_lesson_ai', course_slug=course_slug, lesson_id=lesson.id)
     
     return render(request, 'creator/add_lesson.html', {
@@ -1160,6 +1328,8 @@ def update_video_progress(request, lesson_id):
             }
         )
         
+        previous_completed = user_progress.completed
+
         # Update progress
         if not created:
             user_progress.video_watch_percentage = watch_percentage
@@ -1168,12 +1338,32 @@ def update_video_progress(request, lesson_id):
         
         # Auto-update status based on watch progress
         user_progress.update_status()
+
+        certificate_released = False
+        certificate_available = False
+        certificate_url = ''
+        certificate_id = ''
+
+        # If this request transitioned lesson to completed, check certificate eligibility.
+        if user_progress.completed and not previous_completed:
+            certificate_released = release_course_certificate_if_eligible(request.user, lesson.course)
+            try:
+                cert = Certification.objects.get(user=request.user, course=lesson.course)
+                certificate_available = cert.status == 'passed'
+                certificate_url = cert.accredible_certificate_url or ''
+                certificate_id = cert.accredible_certificate_id or ''
+            except Certification.DoesNotExist:
+                pass
         
         return JsonResponse({
             'success': True,
             'watch_percentage': user_progress.video_watch_percentage,
             'status': user_progress.status,
-            'completed': user_progress.completed
+            'completed': user_progress.completed,
+            'certificate_released': certificate_released,
+            'certificate_available': certificate_available,
+            'certificate_url': certificate_url,
+            'certificate_id': certificate_id,
         })
     except (json.JSONDecodeError, ValueError, KeyError) as e:
         return JsonResponse({'error': f'Invalid data: {str(e)}'}, status=400)
@@ -1219,14 +1409,29 @@ def complete_lesson(request, lesson_id):
     # Mark as completed
     user_progress.completed = True
     user_progress.status = 'completed'
-    user_progress.completed_at = datetime.now()
+    user_progress.completed_at = timezone.now()
     user_progress.progress_percentage = 100
     user_progress.save()
+    certificate_released = release_course_certificate_if_eligible(request.user, lesson.course)
+    certificate_available = False
+    certificate_url = ''
+    certificate_id = ''
+    try:
+        cert = Certification.objects.get(user=request.user, course=lesson.course)
+        certificate_available = cert.status == 'passed'
+        certificate_url = cert.accredible_certificate_url or ''
+        certificate_id = cert.accredible_certificate_id or ''
+    except Certification.DoesNotExist:
+        pass
     
     return JsonResponse({
         'success': True,
         'message': 'Lesson marked as complete',
-        'lesson_id': lesson_id
+        'lesson_id': lesson_id,
+        'certificate_released': certificate_released,
+        'certificate_available': certificate_available,
+        'certificate_url': certificate_url,
+        'certificate_id': certificate_id,
     })
 
 
@@ -1441,9 +1646,15 @@ def student_course_progress(request, course_slug):
     # Get exam info
     exam = None
     exam_attempts = []
+    exam_has_questions = False
+    show_exam_panel = False
     try:
         exam = Exam.objects.get(course=course)
-        exam_attempts = ExamAttempt.objects.filter(user=user, exam=exam).order_by('-started_at')
+        exam_attempts = list(
+            ExamAttempt.objects.filter(user=user, exam=exam).order_by('-started_at')
+        )
+        exam_has_questions = exam.questions.exists()
+        show_exam_panel = exam_has_questions
     except Exam.DoesNotExist:
         pass
     
@@ -1452,6 +1663,11 @@ def student_course_progress(request, course_slug):
         certification = Certification.objects.get(user=user, course=course)
     except Certification.DoesNotExist:
         certification = None
+
+    # If there is no real final exam configured, release certification when course is fully completed.
+    no_real_final_exam = (exam is None) or (not exam_has_questions)
+    if no_real_final_exam and total_lessons > 0 and completed_lessons >= total_lessons:
+        certification, _ = issue_or_update_certificate(user=user, course=course)
 
     # Get course resources (downloadable SOP materials)
     course_resources = course.resources.all()
@@ -1465,6 +1681,7 @@ def student_course_progress(request, course_slug):
         'progress_percentage': progress_percentage,
         'exam': exam,
         'exam_attempts': exam_attempts,
+        'show_exam_panel': show_exam_panel,
         'certification': certification,
         'is_exam_available': enrollment.is_exam_available() if enrollment else False,
         'course_resources': course_resources,
@@ -1498,6 +1715,21 @@ def student_certifications(request):
     return render(request, 'student/certifications.html', {
         'certifications': certifications,
         'eligible_courses': eligible_courses,
+    })
+
+
+def verify_certificate(request, certificate_id):
+    """Public certificate verification page."""
+    certification = (
+        Certification.objects
+        .select_related('user', 'course')
+        .filter(accredible_certificate_id__iexact=certificate_id)
+        .first()
+    )
+
+    return render(request, 'verify_certificate.html', {
+        'certificate_id': certificate_id,
+        'certification': certification,
     })
 
 

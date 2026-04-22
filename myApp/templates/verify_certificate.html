@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certificate Verification</title>
+    <style>
+        :root {
+            --bg: #f7fafc;
+            --ink: #1a1a18;
+            --muted: #6b7280;
+            --ok-bg: #ecfdf5;
+            --ok-border: #a7f3d0;
+            --ok-ink: #065f46;
+            --bad-bg: #fef2f2;
+            --bad-border: #fecaca;
+            --bad-ink: #991b1b;
+            --card: #ffffff;
+            --border: #e5e7eb;
+        }
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: var(--bg);
+            color: var(--ink);
+        }
+        .wrap {
+            max-width: 760px;
+            margin: 48px auto;
+            padding: 0 16px;
+        }
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 24px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+        }
+        .title {
+            margin: 0 0 10px;
+            font-size: 28px;
+        }
+        .subtitle {
+            margin: 0 0 18px;
+            color: var(--muted);
+            font-size: 14px;
+        }
+        .status {
+            border-radius: 10px;
+            padding: 14px 16px;
+            margin-bottom: 18px;
+            font-weight: 700;
+        }
+        .status.valid {
+            background: var(--ok-bg);
+            border: 1px solid var(--ok-border);
+            color: var(--ok-ink);
+        }
+        .status.invalid {
+            background: var(--bad-bg);
+            border: 1px solid var(--bad-border);
+            color: var(--bad-ink);
+        }
+        .row {
+            display: grid;
+            grid-template-columns: 170px 1fr;
+            gap: 10px;
+            margin: 10px 0;
+            font-size: 15px;
+        }
+        .label {
+            color: var(--muted);
+        }
+        .value {
+            font-weight: 600;
+            word-break: break-word;
+        }
+        @media (max-width: 600px) {
+            .row {
+                grid-template-columns: 1fr;
+                gap: 4px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main class="wrap">
+        <section class="card">
+            <h1 class="title">Certificate Verification</h1>
+            <p class="subtitle">Validate a learner certificate using the certificate ID.</p>
+
+            {% if certification %}
+            <div class="status valid">Valid certificate</div>
+            <div class="row">
+                <div class="label">Certificate ID</div>
+                <div class="value">{{ certification.accredible_certificate_id }}</div>
+            </div>
+            <div class="row">
+                <div class="label">Learner</div>
+                <div class="value">{{ certification.user.get_full_name|default:certification.user.username }}</div>
+            </div>
+            <div class="row">
+                <div class="label">Course</div>
+                <div class="value">{{ certification.course.name }}</div>
+            </div>
+            <div class="row">
+                <div class="label">Status</div>
+                <div class="value">{{ certification.get_status_display }}</div>
+            </div>
+            <div class="row">
+                <div class="label">Issued</div>
+                <div class="value">
+                    {% if certification.issued_at %}
+                        {{ certification.issued_at|date:"F j, Y" }}
+                    {% else %}
+                        Not recorded
+                    {% endif %}
+                </div>
+            </div>
+            {% else %}
+            <div class="status invalid">Invalid certificate ID</div>
+            <div class="row">
+                <div class="label">Requested ID</div>
+                <div class="value">{{ certificate_id }}</div>
+            </div>
+            <p class="subtitle" style="margin-top: 14px;">No matching certificate record was found.</p>
+            {% endif %}
+        </section>
+    </main>
+</body>
+</html>

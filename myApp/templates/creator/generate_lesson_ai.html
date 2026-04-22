@@ -4,24 +4,25 @@
 {% block title %}Generate AI Content - {{ lesson.working_title }}{% endblock %}
 
 {% block content %}
-<div class="max-w-5xl mx-auto">
+<div class="w-full min-h-screen bg-[#f7fafc] py-8">
+<div class="max-w-5xl mx-auto px-6">
     <!-- Header -->
     <div class="mb-8">
         <a href="{% url 'course_lessons' course.slug %}" class="text-cyan-electric hover:text-cyan-electric/80 text-sm mb-4 inline-block">
             <i class="fas fa-arrow-left mr-2"></i> Back to {{ course.name }}
         </a>
-        <h1 class="text-3xl font-bold mb-2">AI Autogeneration Panel</h1>
-        <p class="text-gray-400">Review and approve the AI-generated lesson package</p>
+        <h1 class="text-3xl font-bold text-[#1a1a18] mb-2">AI Autogeneration Panel</h1>
+        <p class="text-gray-600">Review and approve the AI-generated lesson package</p>
     </div>
 
     <!-- Video Preview -->
     {% if lesson.vimeo_thumbnail %}
-    <div class="bg-[#0a0e27]/60 backdrop-blur-sm border border-cyan-electric/10 rounded-xl p-6 mb-6">
+    <div class="bg-white border border-cyan-electric/15 rounded-xl p-6 mb-6 shadow-xl">
         <div class="flex gap-4">
             <img src="{{ lesson.vimeo_thumbnail }}" alt="Video thumbnail" class="w-48 h-32 object-cover rounded">
             <div class="flex-1">
-                <div class="font-bold text-lg mb-2">{{ lesson.working_title }}</div>
-                <div class="text-sm text-gray-400">
+                <div class="font-bold text-lg text-[#1a1a18] mb-2">{{ lesson.working_title }}</div>
+                <div class="text-sm text-gray-600">
                     <i class="fas fa-clock mr-2"></i>
                     {{ lesson.get_formatted_duration }}
                 </div>
@@ -31,11 +32,11 @@
     {% endif %}
 
     <!-- AI Chatbot Transcript Section -->
-    <div class="bg-[#0a0e27]/60 backdrop-blur-sm border border-purple-accent/20 rounded-xl p-6 mb-6" style="position: relative; z-index: 1; pointer-events: auto;">
+    <div class="bg-white border border-purple-accent/20 rounded-xl p-6 mb-6 shadow-xl" style="position: relative; z-index: 1; pointer-events: auto;">
         <div class="flex items-center justify-between mb-4">
             <div>
-                <h3 class="text-lg font-bold mb-1">AI Chatbot Setup</h3>
-                <p class="text-sm text-gray-400">Train an AI assistant for this lesson using the transcript</p>
+                <h3 class="text-lg font-bold text-[#1a1a18] mb-1">AI Chatbot Setup</h3>
+                <p class="text-sm text-gray-600">Train an AI assistant for this lesson using the transcript</p>
             </div>
             <span class="px-3 py-1 rounded-full text-xs font-semibold
                 {% if lesson.ai_chatbot_training_status == 'trained' %}bg-green-500/20 text-green-400 border border-green-500/30
@@ -57,7 +58,7 @@
         <div class="space-y-4">
             <!-- Transcript Input Options -->
             <div>
-                <label class="block text-sm font-medium mb-2 text-gray-300">Lesson Transcript</label>
+                <label class="block text-sm font-medium mb-2 text-gray-700">Lesson Transcript</label>
                 <div class="flex gap-2 mb-3">
                     <button type="button" id="use-existing-transcript" class="px-4 py-2 bg-cyan-electric/10 border border-cyan-electric/30 rounded-lg text-sm hover:bg-cyan-electric/20 transition-all text-cyan-electric cursor-pointer" style="pointer-events: auto !important; z-index: 100; position: relative;" onclick="if(window.handleUseExistingTranscript){window.handleUseExistingTranscript(event);}else{alert('Function not loaded yet');} return false;">
                         <i class="fas fa-file-alt mr-2"></i> Use Existing Transcription
@@ -73,7 +74,7 @@
                     name="transcript"
                     rows="10"
                     placeholder="Paste transcript here or use existing transcription...&#10;&#10;The AI will learn from this transcript to answer student questions about the lesson."
-                    class="w-full bg-[#0a0e27]/40 border border-cyan-electric/20 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-cyan-electric/50 resize-none text-gray-300 placeholder-gray-500"
+                    class="w-full bg-white border border-cyan-electric/20 rounded-lg px-4 py-3 text-sm text-[#1a1a18] focus:outline-none focus:border-cyan-electric/50 resize-none placeholder-gray-500"
                 >{{ lesson.transcription }}</textarea>
                 
                 <!-- File upload input (hidden) -->
@@ -103,19 +104,19 @@
                         <i class="fas fa-flask"></i>
                         Test AI Chatbot
                     </h4>
-                    <button id="toggle-test-chatbot" class="text-gray-400 hover:text-white transition-all">
+                    <button id="toggle-test-chatbot" class="text-gray-500 hover:text-[#1a1a18] transition-all">
                         <i class="fas fa-chevron-down" id="test-chatbot-icon"></i>
                     </button>
                 </div>
                 
                 <div id="test-chatbot-container" class="hidden">
-                    <div id="test-chatbot-messages" class="space-y-3 mb-4 max-h-64 overflow-y-auto bg-[#0a0e27]/40 rounded-lg p-3">
+                    <div id="test-chatbot-messages" class="space-y-3 mb-4 max-h-64 overflow-y-auto bg-white border border-purple-accent/20 rounded-lg p-3">
                         <div class="bg-purple-accent/10 border border-purple-accent/20 rounded-lg p-3 text-sm">
                             <div class="flex items-start gap-2">
                                 <i class="fas fa-robot text-purple-accent mt-1"></i>
                                 <div>
                                     <p class="font-semibold mb-1 text-purple-accent">AI Assistant</p>
-                                    <p class="text-gray-300">Hi! I'm the AI assistant for this lesson. Ask me anything about the lesson content to test my knowledge!</p>
+                                    <p class="text-gray-700">Hi! I'm the AI assistant for this lesson. Ask me anything about the lesson content to test my knowledge!</p>
                                 </div>
                             </div>
                         </div>
@@ -126,7 +127,7 @@
                             type="text" 
                             id="test-chatbot-input" 
                             placeholder="Ask a question to test the AI..."
-                            class="flex-1 bg-[#0a0e27]/40 border border-purple-accent/20 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-purple-accent/50 text-white placeholder-gray-500"
+                            class="flex-1 bg-white border border-purple-accent/20 rounded-lg px-4 py-2 text-sm text-[#1a1a18] focus:outline-none focus:border-purple-accent/50 placeholder-gray-500"
                         >
                         <button 
                             id="test-chatbot-send-btn"
@@ -177,7 +178,7 @@
             </button>
             
             {% if lesson.ai_chatbot_training_status == 'trained' %}
-            <div class="bg-purple-accent/10 border border-purple-accent/20 rounded-lg p-3 text-sm text-gray-300">
+            <div class="bg-purple-accent/10 border border-purple-accent/20 rounded-lg p-3 text-sm text-gray-700">
                 <i class="fas fa-lightbulb text-purple-accent mr-2"></i>
                 <strong>Tip:</strong> Students will be able to ask questions about this lesson using the AI assistant on the lesson page.
             </div>
@@ -189,18 +190,18 @@
         {% csrf_token %}
         
         <!-- Video Section - Add or edit lesson video -->
-        <div class="bg-[#0a0e27]/60 backdrop-blur-sm border border-cyan-electric/10 rounded-xl p-6 mb-6">
-            <h3 class="text-lg font-bold mb-4 flex items-center gap-2">
+        <div class="bg-white border border-cyan-electric/15 rounded-xl p-6 mb-6 shadow-xl">
+            <h3 class="text-lg font-bold text-[#1a1a18] mb-4 flex items-center gap-2">
                 <i class="fas fa-video text-cyan-electric"></i>
                 Lesson Video
             </h3>
-            <p class="text-sm text-gray-400 mb-4">Add a video for this lesson. Students will see the first non-empty option (Vimeo, Google Drive, or generic URL).</p>
+            <p class="text-sm text-gray-600 mb-4">Add a video for this lesson. Students will see the first non-empty option (Vimeo, Google Drive, or generic URL).</p>
             <div class="space-y-4">
                 <div>
                     <label class="block text-sm font-semibold mb-2">Vimeo URL</label>
                     <input type="url" name="vimeo_url" id="vimeo-url-input" value="{{ lesson.vimeo_url }}"
                         placeholder="https://vimeo.com/123456789"
-                        class="w-full bg-[#0a0e27]/40 border border-cyan-electric/20 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-cyan-electric/50">
+                        class="w-full bg-white border border-cyan-electric/20 rounded-lg px-4 py-2 text-sm text-[#1a1a18] focus:outline-none focus:border-cyan-electric/50">
                     <input type="hidden" name="vimeo_thumbnail" id="vimeo-thumbnail" value="{{ lesson.vimeo_thumbnail }}">
                     <input type="hidden" name="vimeo_duration_seconds" id="vimeo-duration-seconds" value="{{ lesson.vimeo_duration_seconds }}">
                     <button type="button" id="verify-vimeo-btn" class="mt-2 px-3 py-1 bg-cyan-electric/10 border border-cyan-electric/30 rounded text-xs hover:bg-cyan-electric/20 cursor-pointer">Verify & Fetch Metadata</button>
@@ -210,14 +211,14 @@
                     <label class="block text-sm font-semibold mb-2">Google Drive Embed URL</label>
                     <input type="url" name="google_drive_url" value="{{ lesson.google_drive_url }}"
                         placeholder="https://drive.google.com/file/d/.../preview"
-                        class="w-full bg-[#0a0e27]/40 border border-cyan-electric/20 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-cyan-electric/50">
+                        class="w-full bg-white border border-cyan-electric/20 rounded-lg px-4 py-2 text-sm text-[#1a1a18] focus:outline-none focus:border-cyan-electric/50">
                     <p class="text-xs text-gray-500 mt-1">Use Share → Embed link for the video</p>
                 </div>
                 <div>
                     <label class="block text-sm font-semibold mb-2">Generic Video URL (YouTube, etc.)</label>
                     <input type="url" name="video_url" value="{{ lesson.video_url }}"
                         placeholder="https://www.youtube.com/embed/VIDEO_ID or youtube.com/watch?v=..."
-                        class="w-full bg-[#0a0e27]/40 border border-cyan-electric/20 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-cyan-electric/50">
+                        class="w-full bg-white border border-cyan-electric/20 rounded-lg px-4 py-2 text-sm text-[#1a1a18] focus:outline-none focus:border-cyan-electric/50">
                     <p class="text-xs text-gray-500 mt-1">Use embed URL (youtube.com/embed/...) or paste watch URL — both work</p>
                 </div>
                 <div class="grid grid-cols-2 gap-4">
@@ -225,13 +226,13 @@
                         <label class="block text-sm font-semibold mb-2">Workbook URL</label>
                         <input type="url" name="workbook_url" value="{{ lesson.workbook_url }}"
                             placeholder="https://..."
-                            class="w-full bg-[#0a0e27]/40 border border-cyan-electric/20 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-cyan-electric/50">
+                            class="w-full bg-white border border-cyan-electric/20 rounded-lg px-4 py-2 text-sm text-[#1a1a18] focus:outline-none focus:border-cyan-electric/50">
                     </div>
                     <div>
                         <label class="block text-sm font-semibold mb-2">Resources URL</label>
                         <input type="url" name="resources_url" value="{{ lesson.resources_url }}"
                             placeholder="https://..."
-                            class="w-full bg-[#0a0e27]/40 border border-cyan-electric/20 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-cyan-electric/50">
+                            class="w-full bg-white border border-cyan-electric/20 rounded-lg px-4 py-2 text-sm text-[#1a1a18] focus:outline-none focus:border-cyan-electric/50">
                     </div>
                 </div>
             </div>
@@ -240,9 +241,9 @@
         <!-- AI Generated Content Sections -->
         <div class="space-y-6">
             <!-- 1. Clean Lesson Title -->
-            <div class="bg-[#0a0e27]/60 backdrop-blur-sm border border-cyan-electric/10 rounded-xl p-6">
+            <div class="bg-white border border-cyan-electric/15 rounded-xl p-6 shadow-xl">
                 <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-lg font-bold">1. Clean Lesson Title</h3>
+                    <h3 class="text-lg font-bold text-[#1a1a18]">1. Clean Lesson Title</h3>
                     <div class="flex gap-2">
                         <button type="button" class="edit-field-btn px-3 py-1 bg-cyan-electric/10 border border-cyan-electric/30 rounded-full text-xs font-medium hover:bg-cyan-electric/20 transition-all" data-field="clean_title">
                             <i class="fas fa-edit mr-1"></i> Edit
@@ -250,59 +251,59 @@
                     </div>
                 </div>
                 <div class="space-y-3">
-                    <div id="clean-title-display" class="text-xl font-semibold">{{ lesson.ai_clean_title|default:lesson.working_title }}</div>
+                    <div id="clean-title-display" class="text-xl font-semibold text-[#1a1a18]">{{ lesson.ai_clean_title|default:lesson.working_title }}</div>
                     <input 
                         type="text" 
                         name="clean_title" 
                         id="clean-title-input"
                         value="{{ lesson.ai_clean_title|default:lesson.working_title }}"
-                        class="hidden w-full bg-[#0a0e27]/40 border border-cyan-electric/20 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-cyan-electric/50"
+                        class="hidden w-full bg-white border border-cyan-electric/20 rounded-lg px-4 py-2 text-sm text-[#1a1a18] focus:outline-none focus:border-cyan-electric/50"
                     >
                 </div>
             </div>
 
             <!-- 2. Short Lesson Summary -->
-            <div class="bg-[#0a0e27]/60 backdrop-blur-sm border border-cyan-electric/10 rounded-xl p-6">
+            <div class="bg-white border border-cyan-electric/15 rounded-xl p-6 shadow-xl">
                 <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-lg font-bold">2. Short Lesson Summary</h3>
+                    <h3 class="text-lg font-bold text-[#1a1a18]">2. Short Lesson Summary</h3>
                     <button type="button" class="edit-field-btn px-3 py-1 bg-cyan-electric/10 border border-cyan-electric/30 rounded-full text-xs font-medium hover:bg-cyan-electric/20 transition-all" data-field="short_summary">
                         <i class="fas fa-edit mr-1"></i> Edit
                     </button>
                 </div>
                 <div class="space-y-3">
-                    <div id="short-summary-display" class="text-gray-300">{{ lesson.ai_short_summary|default:"AI summary will appear here..." }}</div>
+                    <div id="short-summary-display" class="text-gray-700">{{ lesson.ai_short_summary|default:"AI summary will appear here..." }}</div>
                     <textarea 
                         name="short_summary" 
                         id="short-summary-input"
                         rows="3"
-                        class="hidden w-full bg-[#0a0e27]/40 border border-cyan-electric/20 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-cyan-electric/50 resize-none"
+                        class="hidden w-full bg-white border border-cyan-electric/20 rounded-lg px-4 py-2 text-sm text-[#1a1a18] focus:outline-none focus:border-cyan-electric/50 resize-none"
                     >{{ lesson.ai_short_summary }}</textarea>
                 </div>
             </div>
 
             <!-- 3. Full Lesson Description -->
-            <div class="bg-[#0a0e27]/60 backdrop-blur-sm border border-cyan-electric/10 rounded-xl p-6">
+            <div class="bg-white border border-cyan-electric/15 rounded-xl p-6 shadow-xl">
                 <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-lg font-bold">3. Full Lesson Description</h3>
+                    <h3 class="text-lg font-bold text-[#1a1a18]">3. Full Lesson Description</h3>
                     <button type="button" class="edit-field-btn px-3 py-1 bg-cyan-electric/10 border border-cyan-electric/30 rounded-full text-xs font-medium hover:bg-cyan-electric/20 transition-all" data-field="full_description">
                         <i class="fas fa-edit mr-1"></i> Edit
                     </button>
                 </div>
                 <div class="space-y-3">
-                    <div id="full-description-display" class="text-gray-300 leading-relaxed">{{ lesson.ai_full_description|default:"AI description will appear here..." }}</div>
+                    <div id="full-description-display" class="text-gray-700 leading-relaxed">{{ lesson.ai_full_description|default:"AI description will appear here..." }}</div>
                     <textarea 
                         name="full_description" 
                         id="full-description-input"
                         rows="6"
-                        class="hidden w-full bg-[#0a0e27]/40 border border-cyan-electric/20 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-cyan-electric/50 resize-none"
+                        class="hidden w-full bg-white border border-cyan-electric/20 rounded-lg px-4 py-2 text-sm text-[#1a1a18] focus:outline-none focus:border-cyan-electric/50 resize-none"
                     >{{ lesson.ai_full_description }}</textarea>
                 </div>
             </div>
 
             <!-- 4. This Lesson Will Produce (Outcomes) -->
-            <div class="bg-[#0a0e27]/60 backdrop-blur-sm border border-cyan-electric/10 rounded-xl p-6">
+            <div class="bg-white border border-cyan-electric/15 rounded-xl p-6 shadow-xl">
                 <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-lg font-bold">4. "This Lesson Will Produce" Outcomes</h3>
+                    <h3 class="text-lg font-bold text-[#1a1a18]">4. "This Lesson Will Produce" Outcomes</h3>
                     <button type="button" class="edit-field-btn px-3 py-1 bg-cyan-electric/10 border border-cyan-electric/30 rounded-full text-xs font-medium hover:bg-cyan-electric/20 transition-all" data-field="outcomes">
                         <i class="fas fa-edit mr-1"></i> Edit
                     </button>
@@ -312,14 +313,14 @@
                         {% if lesson.get_outcomes_list %}
                             <ul class="space-y-2">
                                 {% for outcome in lesson.get_outcomes_list %}
-                                <li class="flex items-start gap-2 text-gray-300">
+                                <li class="flex items-start gap-2 text-gray-700">
                                     <i class="fas fa-check-circle text-cyan-electric mt-1"></i>
                                     <span>{{ outcome }}</span>
                                 </li>
                                 {% endfor %}
                             </ul>
                         {% else %}
-                            <p class="text-gray-400">AI outcomes will appear here...</p>
+                            <p class="text-gray-600">AI outcomes will appear here...</p>
                         {% endif %}
                     </div>
                     <textarea 
@@ -327,16 +328,16 @@
                         id="outcomes-input"
                         rows="6"
                         placeholder="One outcome per line"
-                        class="hidden w-full bg-[#0a0e27]/40 border border-cyan-electric/20 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-cyan-electric/50 resize-none"
+                        class="hidden w-full bg-white border border-cyan-electric/20 rounded-lg px-4 py-2 text-sm text-[#1a1a18] focus:outline-none focus:border-cyan-electric/50 resize-none"
                     >{% for outcome in lesson.get_outcomes_list %}{{ outcome }}
 {% endfor %}</textarea>
                 </div>
             </div>
 
             <!-- 5. Recommended AI Coach Actions -->
-            <div class="bg-[#0a0e27]/60 backdrop-blur-sm border border-cyan-electric/10 rounded-xl p-6">
+            <div class="bg-white border border-cyan-electric/15 rounded-xl p-6 shadow-xl">
                 <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-lg font-bold">5. Recommended AI Coach Actions</h3>
+                    <h3 class="text-lg font-bold text-[#1a1a18]">5. Recommended AI Coach Actions</h3>
                     <button type="button" class="edit-field-btn px-3 py-1 bg-cyan-electric/10 border border-cyan-electric/30 rounded-full text-xs font-medium hover:bg-cyan-electric/20 transition-all" data-field="coach_actions">
                         <i class="fas fa-edit mr-1"></i> Edit
                     </button>
@@ -350,7 +351,7 @@
                             </div>
                             {% endfor %}
                         {% else %}
-                            <p class="text-gray-400">AI coach actions will appear here...</p>
+                            <p class="text-gray-600">AI coach actions will appear here...</p>
                         {% endif %}
                     </div>
                     <textarea 
@@ -358,23 +359,23 @@
                         id="coach-actions-input"
                         rows="6"
                         placeholder="One action per line"
-                        class="hidden w-full bg-[#0a0e27]/40 border border-cyan-electric/20 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-cyan-electric/50 resize-none"
+                        class="hidden w-full bg-white border border-cyan-electric/20 rounded-lg px-4 py-2 text-sm text-[#1a1a18] focus:outline-none focus:border-cyan-electric/50 resize-none"
                     >{% for action in lesson.get_coach_actions_list %}{{ action }}
 {% endfor %}</textarea>
                 </div>
             </div>
 
             <!-- 6. Lesson Notes (Content Blocks) -->
-            <div class="bg-[#0a0e27]/60 backdrop-blur-sm border border-cyan-electric/10 rounded-xl p-6">
+            <div class="bg-white border border-cyan-electric/15 rounded-xl p-6 shadow-xl">
                 <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-lg font-bold">6. Lesson Notes</h3>
+                    <h3 class="text-lg font-bold text-[#1a1a18]">6. Lesson Notes</h3>
                     <button type="button" class="edit-field-btn px-3 py-1 bg-cyan-electric/10 border border-cyan-electric/30 rounded-full text-xs font-medium hover:bg-cyan-electric/20 transition-all" data-field="content_blocks">
                         <i class="fas fa-edit mr-1"></i> Edit
                     </button>
                 </div>
-                <p class="text-sm text-gray-400 mb-4">Structured content shown to students (paragraphs, headers, lists, quotes). JSON format with blocks.</p>
+                <p class="text-sm text-gray-600 mb-4">Structured content shown to students (paragraphs, headers, lists, quotes). JSON format with blocks.</p>
                 <div class="space-y-3">
-                    <div id="content-blocks-display" class="text-gray-300 text-sm max-h-48 overflow-y-auto">
+                    <div id="content-blocks-display" class="text-gray-700 text-sm max-h-48 overflow-y-auto">
                         {% if lesson.content and lesson.content.blocks %}
                             {% for block in lesson.content.blocks %}
                                 {% if block.type == 'paragraph' %}<p class="mb-2">{{ block.data.text|truncatewords:30 }}</p>
@@ -392,7 +393,7 @@
                         id="content-blocks-input"
                         rows="12"
                         placeholder='{"blocks": [{"type": "paragraph", "data": {"text": "..."}}, {"type": "header", "data": {"level": 2, "text": "..."}}]}'
-                        class="hidden w-full bg-[#0a0e27]/40 border border-cyan-electric/20 rounded-lg px-4 py-2 text-sm font-mono focus:outline-none focus:border-cyan-electric/50 resize-none"
+                        class="hidden w-full bg-white border border-cyan-electric/20 rounded-lg px-4 py-2 text-sm text-[#1a1a18] font-mono focus:outline-none focus:border-cyan-electric/50 resize-none"
                     ></textarea>
                     {{ content_data|json_script:"content-blocks-data" }}
                 </div>
@@ -427,6 +428,7 @@
             </button>
         </div>
     </form>
+</div>
 </div>
 {% endblock %}
 
@@ -805,7 +807,7 @@
                     <i class="fas ${iconClass} text-${color} mt-1"></i>
                     <div class="flex-1">
                         <p class="font-semibold mb-1 text-${color}">${isUser ? 'You' : 'AI Assistant'}</p>
-                        <p class="text-gray-300">${content}</p>
+                        <p class="text-gray-700">${content}</p>
                     </div>
                 </div>
             `;
@@ -832,7 +834,7 @@
                     <i class="fas fa-robot text-purple-accent mt-1"></i>
                     <div class="flex-1">
                         <p class="font-semibold mb-1 text-purple-accent">AI Assistant</p>
-                        <p class="text-gray-300"><i class="fas fa-spinner fa-spin"></i> Thinking...</p>
+                        <p class="text-gray-700"><i class="fas fa-spinner fa-spin"></i> Thinking...</p>
                     </div>
                 </div>
             `;

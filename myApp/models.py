@@ -366,6 +366,34 @@ class UserProgress(models.Model):
         self.save()
 
 
+class StudentIPLog(models.Model):
+    """Track student access IP and coarse location metadata for dashboard monitoring."""
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='ip_logs')
+    ip_address = models.GenericIPAddressField()
+    date_bucket = models.DateField(default=timezone.localdate, help_text="Day-level bucket to limit duplicates")
+    country = models.CharField(max_length=100, blank=True)
+    region = models.CharField(max_length=100, blank=True)
+    city = models.CharField(max_length=100, blank=True)
+    is_private_ip = models.BooleanField(default=False)
+    hit_count = models.PositiveIntegerField(default=1)
+    last_path = models.CharField(max_length=300, blank=True)
+    user_agent = models.TextField(blank=True)
+    first_seen = models.DateTimeField(auto_now_add=True)
+    last_seen = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-last_seen']
+        unique_together = ['user', 'ip_address', 'date_bucket']
+        indexes = [
+            models.Index(fields=['ip_address', 'last_seen']),
+            models.Index(fields=['date_bucket', 'last_seen']),
+            models.Index(fields=['user', 'last_seen']),
+        ]
+
+    def __str__(self):
+        return f"{self.user.username} - {self.ip_address} ({self.date_bucket})"
+
+
 class CourseEnrollment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='enrollments')
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='enrollments')
