@@ -25,6 +25,8 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-7-9br=zyg7m$!ewa^nlsg+&#e+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+ENABLE_IP_TRACKING = os.getenv('ENABLE_IP_TRACKING', 'true').strip().lower() in ('1', 'true', 'yes', 'on')
+
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'drtemucourse-production.up.railway.app']
 
 CSRF_TRUSTED_ORIGINS = [

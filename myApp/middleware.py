@@ -2,6 +2,7 @@ import ipaddress
 import time
 
 import requests
+from django.conf import settings
 from django.db.models import F
 from django.utils import timezone
 
@@ -20,6 +21,8 @@ class StudentIPTrackingMiddleware:
         self.get_response = get_response
 
     def __call__(self, request):
+        if not getattr(settings, "ENABLE_IP_TRACKING", True):
+            return self.get_response(request)
         self._track_student_request(request)
         return self.get_response(request)
 
